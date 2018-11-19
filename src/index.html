@@ -1,0 +1,48 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>RentHero Landlord Admin</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- Allow Fullscreen Web App with HomeScreen icon on mobile device -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Web Manifest File for firebase cloud messaging -->
+    <link rel="manifest" href="/manifest.json">
+
+    <link rel='shortcut icon' type='images/png' href='https://s3.amazonaws.com/rentburrow-static-assets/Icons/favicon.png' / >
+
+    <!-- Google Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh3Q0Z_1WFRpRrpNz-j1h81wp9EyuNuhg&libraries=places,geometry"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+
+    <!-- Fonts by Google and Ionic -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
+
+    <!-- Google Login -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+      // function initGoogleAuth() {
+      //   console.log('initGoogleAuth')
+      //   gapi.load('client:auth2', function() {
+      //
+      //   })
+      // }
+    </script>
+
+  </head>
+  <style>
+    .pac-container {
+      z-index: 1051 !important;
+      position: relative;
+    }
+  </style>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "short_name": "Renthero.me",
+  "name": "Your Personal Home Finder",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}

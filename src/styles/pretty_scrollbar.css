@@ -1,0 +1,21 @@
+.pretty_scrollbar
+{
+	overflow-y: scroll;
+}
+
+.pretty_scrollbar::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+.pretty_scrollbar::-webkit-scrollbar
+{
+	width: 5px;
+	height: 5px;
+}
+
+.pretty_scrollbar::-webkit-scrollbar-thumb
+{
+	background-color: #74a9d8;
+	border-radius: 10px;
+}
