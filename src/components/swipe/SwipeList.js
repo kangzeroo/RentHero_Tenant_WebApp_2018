@@ -25,21 +25,48 @@ class SwipeList extends Component {
 		this.state = {
 			imgHeight: 176,
 			priceHeight: 0,
+			commute_time: 0,
+			commute_mode: 'driving'
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.current_listing.listing && prevProps.current_listing !== this.props.current_listing.listing) {
+		if (this.props.current_listing.listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
-			const location = { lat: this.props.current_listing.listing.GPS.lat, lng: this.props.current_listing.listing.GPS.lng }
-			const map = new google.maps.Map(document.getElementById('map'), {
-	      center: location,
-	      zoom: 13,
-				disableDefaultUI: true,
-	    })
-			const marker = new google.maps.Marker({position: location, map: map});
+			this.renderDirections()
 		}
 	}
+
+	renderDirections() {
+		const self = this
+		const location = { lat: this.props.current_listing.listing.GPS.lat, lng: this.props.current_listing.listing.GPS.lng }
+		const map = new google.maps.Map(document.getElementById('map'), {
+			center: location,
+			zoom: 13,
+			disableDefaultUI: true,
+		})
+		const marker = new google.maps.Marker({position: location, map: map});
+		var directionsService = new google.maps.DirectionsService;
+		var directionsDisplay = new google.maps.DirectionsRenderer;
+		directionsDisplay.setMap(map);
+		// directionsDisplay.setDirections(this.props.current_listing.commute_score.data[0]);
+		directionsService.route({
+			origin: this.props.current_listing.listing.ADDRESS,
+			destination: '783 Bay St, Toronto, ON',
+			travelMode: 'DRIVING'
+		}, function(response, status) {
+			if (status === 'OK') {
+				console.log(response)
+				self.setState({
+					commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
+					commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
+				})
+				directionsDisplay.setDirections(response);
+			} else {
+				window.alert('Directions request failed due to ' + status);
+			}
+	 })
+  }
 
 	renderPriceTag() {
 		if (document.getElementById('img_carousel')) {
@@ -135,6 +162,19 @@ class SwipeList extends Component {
 								}
 							</div>
 							<div style={comStyles().quick_stats_white}>
+								{
+									this.state.commute_time
+									?
+									<div style={pStats(1-(this.state.commute_time/60/70)).pStats_container}>
+										<div style={pStats().pStats_top}>
+											<div style={pStats().pStats_val}>{(this.state.commute_time/60).toFixed(0)}</div>
+											<div style={pStats().pStats_unit}>min</div>
+										</div>
+										<div style={pStats().pStats_label}>COMMUTE</div>
+									</div>
+									:
+									null
+								}
 								{
 									this.props.current_listing.listing.SQFT
 									?
@@ -596,7 +636,7 @@ const pStats = (percentage) => {
 		color = 'white'
 	} else if (percentage < 0.4) {
 		backgroundColor = '#ffc200'
-		color = 'white'
+		color = 'black'
 	} else if (percentage < 0.5) {
 		backgroundColor = '#ffeb00'
 		color = 'black'
