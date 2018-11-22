@@ -42,6 +42,7 @@ class SwipeList extends Component {
 		const commute_time = 47
 		const match_perct = 0.76
 		const walkscore = 0.89
+		const cost_of_living = 0.7
 		if (this.props.current_listing) {
 			return (
 				<div id='SwipeList' style={comStyles().container}>
@@ -86,6 +87,13 @@ class SwipeList extends Component {
 										<div style={pStats().pStats_unit}>min</div>
 									</div>
 									<div style={pStats().pStats_label}>COMMUTE</div>
+								</div>
+								<div style={pStats(cost_of_living).pStats_container}>
+									<div style={pStats().pStats_top}>
+										<div style={pStats().pStats_val}>{cost_of_living}</div>
+										<div style={pStats().pStats_unit}></div>
+									</div>
+									<div style={pStats().pStats_label}>LIVING COST</div>
 								</div>
 								<div style={pStats(match_perct).pStats_container}>
 									<div style={pStats().pStats_top}>

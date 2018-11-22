@@ -19,7 +19,11 @@ import AppRootMechanics from './AppRootMechanics'
 import AppRoutes from './AppRoutes'
 import HomePage from './pages/HomePage'
 import Logout from './auth/Logout'
+import WelcomeScreen from './home/WelcomeScreen'
+import UserPreferences from './home/UserPreferences'
+import NoteToTester from './home/NoteToTester'
 import SwipeList from './swipe/SwipeList'
+import DidCreditCheck from './resume/dialog/DidCreditCheck'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 
@@ -31,13 +35,17 @@ class AppRoot extends Component {
     if (this.props.authentication_loaded) {
       return (
         <Switch>
-          <Route exact path='/' render={HomePage} />
+          <Route exact path='/' render={WelcomeScreen} />
+          <Route exact path='/preferences' render={UserPreferences} />
           <Route exact path='/login' render={HomePage} />
           <Route exact path='/logout' render={Logout} />
 
           <Route path='/app/*' component={AppRoutes} />
 
-          <Route exact path='/sandbox' render={SwipeList} />
+          <Route exact path='/notes' render={NoteToTester} />
+          <Route exact path='/matches' render={SwipeList} />
+
+          <Route exact path='/credit/start' render={DidCreditCheck} />
         </Switch>
       )
     } else {
