@@ -30,6 +30,14 @@ class SwipeList extends Component {
 		}
 	}
 
+	componentDidMount() {
+		if (this.props.current_listing) {
+			this.renderDirections()
+		} else {
+			this.props.history.push('/')
+		}
+	}
+
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing.listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
@@ -52,8 +60,8 @@ class SwipeList extends Component {
 		// directionsDisplay.setDirections(this.props.current_listing.commute_score.data[0]);
 		directionsService.route({
 			origin: this.props.current_listing.listing.ADDRESS,
-			destination: '783 Bay St, Toronto, ON',
-			travelMode: 'DRIVING'
+			destination: this.props.destination,
+			travelMode: this.props.prefs.destination.commute_mode.toUpperCase()
 		}, function(response, status) {
 			if (status === 'OK') {
 				console.log(response)
@@ -76,6 +84,9 @@ class SwipeList extends Component {
 
 	clickedJudgement(judgement) {
 		this.props.nextListing()
+		if (Math.random() > 0.95) {
+			window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
+		}
 		window.scrollTo(0,0)
 	}
 
@@ -142,7 +153,13 @@ class SwipeList extends Component {
 				        </Carousel>
 							}
 							<div style={priceStyle(this.state.priceHeight).priceDiv}>
-								<Badge text={`$${this.props.current_listing.listing.PRICE}`} size='large' style={priceStyle().price} />
+								<Badge text={
+									this.props.current_listing.listing.PRICE === 0
+									?
+									'contact'
+									:
+									`$${this.props.current_listing.listing.PRICE}`
+								} size='large' style={priceStyle().price} />
 							</div>
 							<div style={comStyles().titleDiv}>
 								<div style={comStyles().title}>
@@ -170,7 +187,7 @@ class SwipeList extends Component {
 											<div style={pStats().pStats_val}>{(this.state.commute_time/60).toFixed(0)}</div>
 											<div style={pStats().pStats_unit}>min</div>
 										</div>
-										<div style={pStats().pStats_label}>COMMUTE</div>
+										<div style={pStats().pStats_label}>{this.props.prefs.destination.commute_mode.toUpperCase()}</div>
 									</div>
 									:
 									null
@@ -312,10 +329,10 @@ class SwipeList extends Component {
 								</Card.Body>*/}
 								<Card.Body style={comStyles().interactive}>
 									<h2 style={{ color: '#eff8f8', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '50px' }}>Tell RentHero to ...</h2>
-									<div style={comStyles().interactive_button}>Book A Visit</div>
-									<div style={comStyles().interactive_button}>Ask Seller Questions</div>
-									<div style={comStyles().interactive_button}>Send My Application</div>
-									<div style={comStyles().interactive_button}>Connect Me To Seller</div>
+									<div onClick={() => alert('Tell us your availability and we will schedule tours for you. Is this necessary? Any flaws? Feedback?')} style={comStyles().interactive_button}>Book A Visit</div>
+									<div onClick={() => alert('RentHero can ask the rent seller custom questions. Just tell us what you want to know. Is this necessary? any flaws? feedback?')} style={comStyles().interactive_button}>Ask Seller Questions</div>
+									<div onClick={() => alert('RentHero can fill out the rental application on your behalf. Is this necessary? Any flaws? Feedback?')} style={comStyles().interactive_button}>Send My Application</div>
+									<div onClick={() => alert('RentHero can send you the sellers contact info for you to speak to directly.')} style={comStyles().interactive_button}>Connect Me To Seller</div>
 								</Card.Body>
 								<Card.Body style={comStyles().about_stats}>
 									{
@@ -401,6 +418,8 @@ SwipeList.propTypes = {
   listings: PropTypes.array.isRequired,
 	current_listing: PropTypes.object,
 	nextListing: PropTypes.func.isRequired,
+	destination: PropTypes.string,
+	prefs: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -415,7 +434,9 @@ const RadiumHOC = Radium(SwipeList)
 const mapReduxToProps = (redux) => {
 	return {
     listings: redux.listings.listings,
-		current_listing: redux.listings.current_listing
+		current_listing: redux.listings.current_listing,
+		destination: redux.listings.prefs.destination.address,
+		prefs: redux.listings.prefs,
 	}
 }
 

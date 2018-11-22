@@ -2,7 +2,7 @@ import moment from 'moment'
 import axios from 'axios'
 
 
-const myPrefs = {
+let myPrefs = {
   rooms: {
     avail: {
       min: 1,
@@ -45,11 +45,21 @@ const myPrefs = {
     cosigner_needed: true,
     allergies: '',
   },
-  posted_in_last_x_days: 5,
+  destinations: [
+    { address: '123 Main St', place_id: 'abcdef', commute_mode: 'transit', gps: { lat: 46.7846426, lng: -68.4352647 } }
+  ],
+  posted_in_last_x_days: 10,
   include_missing_matched: true
 }
 
-export const getListings = () => {
+export const getListings = (prefs) => {
+  console.log(prefs)
+  myPrefs.rooms.avail.min = prefs.max_beds
+  myPrefs.rooms.avail.ideal = prefs.max_beds
+  myPrefs.rooms.avail.max = prefs.max_beds
+  myPrefs.budget.ideal_per_person = prefs.max_budget
+  myPrefs.budget.max_per_person = prefs.max_budget
+  myPrefs.destinations = [prefs.destination]
 	const p = new Promise((res, rej) => {
 		axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings', myPrefs)
 			.then((data) => {

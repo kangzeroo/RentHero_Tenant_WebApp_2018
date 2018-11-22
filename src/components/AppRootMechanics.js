@@ -37,7 +37,6 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
     componentWillMount() {
-			this.grabListings()
 			// check if staff is already authenticated
 			this.checkIfStaffLoggedIn()
 
@@ -45,16 +44,16 @@ export default (ComposedComponent) => {
 			this.executeOnURL()
     }
 
-		grabListings() {
-			getListings()
-				.then((data) => {
-					console.log(data)
-					this.props.saveListingsToRedux(data)
-				})
-				.catch((err) => {
-					console.log(err)
-				})
-		}
+		// grabListings() {
+		// 	getListings()
+		// 		.then((data) => {
+		// 			console.log(data)
+		// 			this.props.saveListingsToRedux(data)
+		// 		})
+		// 		.catch((err) => {
+		// 			console.log(err)
+		// 		})
+		// }
 
 		checkIfStaffLoggedIn() {
 			// grab the url that was given, will be used in this,saveStaffProfileToRedux()
