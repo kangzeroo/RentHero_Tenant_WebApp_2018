@@ -19,10 +19,20 @@ class SubtitlesMachine extends Component {
     this.state = {
       text: ''
     }
+    this.observable = null
   }
 
   componentDidMount() {
-    this.renderAnimation(this.props.text)
+    setTimeout(() => {
+      this.renderAnimation(this.props.text)
+    }, this.props.delay)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.observable && this.props.instant && this.props.instant !== prevProps.instant) {
+      this.setState({ text: this.props.text })
+      this.observable.complete()
+    }
   }
 
   renderAnimation(text) {
@@ -52,6 +62,7 @@ class SubtitlesMachine extends Component {
       }
     }
     Rx.Observable.create((obs) => {
+      this.observable = obs
       obs.next({
         obs
       })
@@ -85,6 +96,8 @@ SubtitlesMachine.propTypes = {
   containerStyles: PropTypes.object,    // passed in
   textStyles: PropTypes.object,         // passed in
   doneEvent: PropTypes.func,        // passed in
+  instant: PropTypes.bool,          // passed in - if true then instant load text
+  delay: PropTypes.number,          // passed in
 }
 
 // for all optional props, define a default value
@@ -98,6 +111,7 @@ SubtitlesMachine.defaultProps = {
     fontWeight: 'bold',
   },
   doneEvent: () => {},
+  delay: 0,
 }
 
 // Wrap the prop in Radium to allow JS styling

@@ -2,6 +2,8 @@ import {
   SAVE_LISTINGS_TO_REDUX,
   NEXT_LISTING,
   SAVE_PREFS,
+  INCREMENT_LIKES,
+  DECREMENT_LIKES,
 } from '../action_types'
 
 // change the language of the app
@@ -34,22 +36,28 @@ export const savePrefs = (prefs) => {
   }
 }
 
-export const incrementLikes = (id, integer) => {
+export const incrementLikes = (judgement, id) => {
   // dispatch lets you send actions to Redux
   return (dispatch) => {
     dispatch({
-      type: SAVE_PREFS,
-      payload: prefs
+      type: INCREMENT_LIKES,
+      payload: {
+        judgement,
+        id,
+      }
     })
   }
 }
 
-export const incrementDislikes = (prefs) => {
+export const decrementLikes = (judgement, id) => {
   // dispatch lets you send actions to Redux
   return (dispatch) => {
     dispatch({
-      type: SAVE_PREFS,
-      payload: prefs
+      type: DECREMENT_LIKES,
+      payload: {
+        judgement,
+        id,
+      }
     })
   }
 }

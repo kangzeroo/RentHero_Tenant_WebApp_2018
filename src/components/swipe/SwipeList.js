@@ -15,7 +15,7 @@ import {
 	Badge,
 	Button,
 } from 'antd-mobile'
-import { nextListing } from '../../actions/listings/listings_actions'
+import { nextListing, incrementLikes, decrementLikes } from '../../actions/listings/listings_actions'
 
 
 class SwipeList extends Component {
@@ -34,7 +34,7 @@ class SwipeList extends Component {
 		if (this.props.current_listing) {
 			this.renderDirections()
 		} else {
-			this.props.history.push('/')
+			// this.props.history.push('/')
 		}
 	}
 
@@ -83,7 +83,9 @@ class SwipeList extends Component {
 	}
 
 	clickedJudgement(judgement) {
-		this.props.nextListing()
+		this.props.nextListing(judgement)
+		this.props.incrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
+		// this.props.decrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
 		if (Math.random() > 0.95) {
 			window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
 		}
@@ -358,7 +360,7 @@ class SwipeList extends Component {
 								<div style={comStyles().bottom_area}>
 								</div>
 								<div style={comStyles().judgementIcons}>
-								<div onClick={() => this.clickedJudgement('dislike')} style={likeOrNotStyles().dislike}>
+								<div onClick={() => this.clickedJudgement('dislikes')} style={likeOrNotStyles().dislike}>
 								<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
  width="60" height="60"
  viewBox="0 0 252 252"
@@ -370,7 +372,7 @@ class SwipeList extends Component {
 	 viewBox="0 0 252 252"
 	 style="fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,252v-252h252v252z" fill="none"></path><path d="M126,191.52c-36.1857,0 -65.52,-29.3343 -65.52,-65.52v0c0,-36.1857 29.3343,-65.52 65.52,-65.52h0c36.1857,0 65.52,29.3343 65.52,65.52v0c0,36.1857 -29.3343,65.52 -65.52,65.52z" fill="#ffffff"></path><g id="Layer_1"><g><g fill="#e74c3c"><g><g><g><g><g><g><path d="M28.31063,126c0,-53.94375 43.74563,-97.68937 97.68938,-97.68937c53.94375,0 97.68937,43.74563 97.68937,97.68938c0,53.94375 -43.74563,97.68937 -97.68937,97.68937c-53.94375,0 -97.68937,-43.74563 -97.68937,-97.68937z"></path></g></g></g></g></g></g></g><path d="M175.6125,89.42062c-13.7025,-13.7025 -35.91,-13.7025 -49.6125,0v0c-13.7025,-13.7025 -35.91,-13.7025 -49.6125,0c-13.7025,13.7025 -11.73375,34.1775 0,49.6125c12.40313,16.34063 35.08312,43.27312 49.6125,43.27312v0c14.52937,0 37.20937,-26.97188 49.6125,-43.27312c11.73375,-15.435 13.7025,-35.91 0,-49.6125z" fill="#ffffff"></path></g></g></g></svg>
 									</div>*/}
-									<div onClick={() => this.clickedJudgement('like')} style={likeOrNotStyles().like}>
+									<div onClick={() => this.clickedJudgement('likes')} style={likeOrNotStyles().like}>
 									<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
 	 width="60" height="60"
 	 viewBox="0 0 252 252"
@@ -420,6 +422,8 @@ SwipeList.propTypes = {
 	nextListing: PropTypes.func.isRequired,
 	destination: PropTypes.string,
 	prefs: PropTypes.object.isRequired,
+	incrementLikes: PropTypes.func.isRequired,
+	decrementLikes: PropTypes.func.isRequired
 }
 
 // for all optional props, define a default value
@@ -444,6 +448,8 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
 		nextListing,
+		incrementLikes,
+		decrementLikes
 	})(RadiumHOC)
 )
 

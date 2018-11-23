@@ -37,6 +37,7 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
     componentWillMount() {
+			this.grabListings()
 			// check if staff is already authenticated
 			this.checkIfStaffLoggedIn()
 
@@ -44,16 +45,25 @@ export default (ComposedComponent) => {
 			this.executeOnURL()
     }
 
-		// grabListings() {
-		// 	getListings()
-		// 		.then((data) => {
-		// 			console.log(data)
-		// 			this.props.saveListingsToRedux(data)
-		// 		})
-		// 		.catch((err) => {
-		// 			console.log(err)
-		// 		})
-		// }
+		grabListings() {
+			getListings({
+	      max_beds: this.props.prefs.max_beds,
+	      max_budget: this.props.prefs.max_budget,
+	      destination: {
+	        address: this.props.prefs.destination.address,
+	        place_id: this.props.prefs.destination.place_id,
+	        commute_mode: this.props.prefs.destination.commute_mode,
+	        gps: { lat: this.props.prefs.destination.gps.lat, lng: this.props.prefs.destination.gps.lng }
+	      }
+	    })
+				.then((data) => {
+					console.log(data)
+					this.props.saveListingsToRedux(data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+		}
 
 		checkIfStaffLoggedIn() {
 			// grab the url that was given, will be used in this,saveStaffProfileToRedux()
@@ -97,7 +107,7 @@ export default (ComposedComponent) => {
 			return getCorporationProfile(staff.corporation_id)
 				.then((corp) => {
 					if (corp === '') {
-						console.log('corp is nth nigga')
+						console.log('corp is nth')
 						this.props.saveCorporationProfileToRedux({})
 						app_location = '/app/registration'
 						this.props.history.push('/app/registration')
@@ -162,6 +172,7 @@ export default (ComposedComponent) => {
 		saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 		authenticationLoaded: PropTypes.func.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
+		prefs: PropTypes.object.isRequired,
   }
 
   // for all optional props, define a default value
@@ -171,6 +182,7 @@ export default (ComposedComponent) => {
 
 	const mapStateToProps = (redux) => {
 		return {
+			prefs: redux.listings.prefs
 		}
 	}
 

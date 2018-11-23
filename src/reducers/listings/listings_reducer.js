@@ -8,13 +8,13 @@ const INITIAL_STATE = {
   listings: [],
   current_listing: null,
   prefs: {
-    max_beds: 0,
-    max_budget: 0,
+    max_beds: 2,
+    max_budget: 3000,
     destination: {
-      address: '',
-      place_id: '',
+      address: "763 Bay St, Toronto, ON M5G 2R3, Canada",
+      place_id: "ChIJC9nc5rU0K4gRgyoVQ0e7q8c",
       commute_mode: 'transit',
-      gps: { lat: 46.7846426, lng: -68.4352647 }
+      gps: { lat: 43.6601025, lng: -79.3850843 }
     }
   }
 }

@@ -1,6 +1,6 @@
 import {
   INCREMENT_LIKES,
-  INCREMENT_DISLIKES,
+  DECREMENT_LIKES,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -13,12 +13,12 @@ export default (state = INITIAL_STATE, action) => {
     case INCREMENT_LIKES:
       return {
         ...state,
-        likes: state.likes.concat(action.payload)
+        [action.payload.judgement]: state[action.payload.judgement].concat(action.payload.id)
       }
-    case INCREMENT_DISLIKES:
+    case DECREMENT_LIKES:
       return {
         ...state,
-        dislikes: state.likes.concat(action.payload)
+        [action.payload.judgement]: state[action.payload.judgement].filter(id => id !== action.payload.id)
       }
     default:
       return {
