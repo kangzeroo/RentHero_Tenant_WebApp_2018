@@ -1,4 +1,4 @@
-// Compt for copying as a CreditReportWelcome
+// Compt for copying as a CreditReportDialogMe
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -16,7 +16,7 @@ import {
 } from 'antd-mobile'
 
 
-class CreditReportWelcome extends Component {
+class CreditReportDialogMe extends Component {
 
 	constructor() {
 		super()
@@ -175,6 +175,32 @@ class CreditReportWelcome extends Component {
 		)
 	}
 
+	renderCreditHealth(creditScore) {
+		let label = 'HEALTHY'
+		let color = ''
+		if (creditScore >= 750) {
+			label = 'EXCELLENT'
+			color = '#32cd32'
+		} else if (creditScore >= 700) {
+			label = 'HEALTHY'
+			color = '#72d92d'
+		} else if (creditScore >= 620) {
+			label = 'NORMAL'
+			color = '#72d92d'
+		} else if (creditScore >= 500) {
+			label = 'POOR'
+			color = '#ff9600'
+		} else {
+			label = 'WORST'
+			color = '#ff0000'
+		}
+		return (
+			<div style={{ width: '70px', padding: '3px', backgroundColor: 'white', fontSize: '0.65rem', borderRadius: '10px', textAlign: 'center', color: color }}>
+				{label}
+			</div>
+		)
+	}
+
 	renderCreditScoreInputScreen() {
 		return (
 			<div id='input_credit_score_screen' style={comStyles().sectional}>
@@ -201,7 +227,9 @@ class CreditReportWelcome extends Component {
 					{
 						this.state.completed.filter(c => c === 'input_credit_score_screen').length > 0
 						?
-						<a href='https://renthero.fyi/rent-basics/how-to-do-credit-checks-as-tenants' target='_blank' style={{ textDecoration: 'none', color: 'white', margin: '20px 0px 20px 0px', width: '100%' }}>Click here for a how-to guide</a>
+						<div style={{ margin: '20px 0px 20px 0px', width: '100%' }}>
+							<a href='https://renthero.fyi/rent-basics/how-to-do-credit-checks-as-tenants' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Click here for a how-to guide</a>
+						</div>
 						:
 						null
 					}
@@ -211,7 +239,10 @@ class CreditReportWelcome extends Component {
 						<div id='input_credit_score_screen_input' style={comStyles().field_holder}>
 							<div style={inputStyles().counterDiv}>
 								<div onClick={() => this.incrementCounter('creditScore', -1)} style={{ fontSize: '3rem', color: 'white', fontWeight: 'bold' }}>-</div>
-								<div style={{ fontSize: '2rem', color: 'white', fontWeight: 'bold' }}>{this.state.creditScore}</div>
+								<div style={{ fontSize: '2rem', color: 'white', fontWeight: 'bold', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+									{this.state.creditScore}
+									{this.renderCreditHealth(this.state.creditScore)}
+								</div>
 								<div onClick={() => this.incrementCounter('creditScore', 1)} style={{ fontSize: '3rem', color: 'white', fontWeight: 'bold' }}>+</div>
 							</div>
 							<WhiteSpace size="lg" />
@@ -226,7 +257,7 @@ class CreditReportWelcome extends Component {
 							/>
 							<div onClick={() => {
 								this.setState({ changedMind: true })
-								this.clickedCheck('#remind_me_later', 'input_credit_score_screen_input')
+								this.clickedCheck('#remind_me_later', 'remind_later')
 							}} style={inputStyles().smallButton}>Remind Me Later</div>
 							<Icon onClick={() => {
 								this.setState({ completed: this.state.completed.concat(['input_credit_score_screen_input']) })
@@ -381,7 +412,7 @@ class CreditReportWelcome extends Component {
 						<SubtitlesMachine
 								speed={0.25}
 								delay={500}
-								text={`Before you go back to browsing properties, share the link below with your roommates so they can be better prepared too. Teamwork! 💪`}
+								text={`Before you go back to browsing properties, share the link below with your roommates so they can be better prepared too 💪 Teamwork!`}
 								textStyles={{
 									fontSize: '1.3rem',
 									color: 'white',
@@ -434,7 +465,7 @@ class CreditReportWelcome extends Component {
 
 	render() {
 		return (
-			<div id='CreditReportWelcome' style={comStyles().container}>
+			<div id='CreditReportDialogMe' style={comStyles().container}>
         <div style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
@@ -450,7 +481,7 @@ class CreditReportWelcome extends Component {
 							<SubtitlesMachine
 									speed={0.25}
 									delay={500}
-									text={`It seems like you've found some cool properties! 😎`}
+									text={`I see you've found some cool properties! 😎 Let's briefly talk about paperwork.`}
 									textStyles={{
 										fontSize: '1.3rem',
 										color: 'white',
@@ -484,6 +515,7 @@ class CreditReportWelcome extends Component {
 													width: '100%',
 													backgroundColor: 'rgba(0,0,0,0)',
 													borderRadius: '20px',
+													margin: '30px 0px 0px 0px'
 												}}
 												doneEvent={() => {
 													setTimeout(() => {
@@ -561,7 +593,7 @@ class CreditReportWelcome extends Component {
 							null
 						}
 						{
-							this.state.completed.filter(c => c === 'input_credit_report_screen_input').length > 0
+							this.state.completed.filter(c => c === 'input_credit_report_screen_input').length > 0 && !this.state.changedMind
 							?
 							this.renderCompletionScreen()
 							:
@@ -588,17 +620,17 @@ class CreditReportWelcome extends Component {
 }
 
 // defines the types of variables in this.props
-CreditReportWelcome.propTypes = {
+CreditReportDialogMe.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-CreditReportWelcome.defaultProps = {
+CreditReportDialogMe.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CreditReportWelcome)
+const RadiumHOC = Radium(CreditReportDialogMe)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -769,7 +801,7 @@ const inputStyles = () => {
       color: 'white',
       border: '1px solid white',
       padding: '15px',
-      width: '90%',
+      width: '100%',
       borderRadius: '15px',
       textAlign: 'center',
       cursor: 'pointer',

@@ -92,10 +92,8 @@ class InteractiveTemplate extends Component {
 										borderRadius: '20px',
 									}}
 									doneEvent={() => {
-										console.log('DONE')
 										setTimeout(() => {
 											this.setState({ completed: this.state.completed.concat(['one']) })
-											// console.log('DONE')
 										}, 500)
 									}}
 								/>
@@ -145,7 +143,6 @@ class InteractiveTemplate extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												// this.setState({ step: this.state.step + 1 })
 											}, 1000)
