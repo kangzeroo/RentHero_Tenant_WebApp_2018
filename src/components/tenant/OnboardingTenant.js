@@ -179,7 +179,7 @@ class OnboardingTenant extends Component {
 							<SubtitlesMachine
 									speed={0.25}
 									delay={500}
-									text={`I'm so excited to help you find a home! 😊 What is your name?`}
+									text={`Let's get to know each other better 😊 What is your name?`}
 									textStyles={{
 										fontSize: '1.3rem',
 										color: 'white',
@@ -191,7 +191,6 @@ class OnboardingTenant extends Component {
 										borderRadius: '20px',
 									}}
 									doneEvent={() => {
-										console.log('DONE')
 										setTimeout(() => {
 											this.setState({ completed: this.state.completed.concat(['ask_name']) })
 											// console.log('DONE')
@@ -231,7 +230,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
-										text={`Nice to meet you ${this.state.full_name.split(' ')[0].charAt(0).toUpperCase() + this.state.full_name.split(' ')[0].slice(1)}. Where do you travel to most days?`}
+										text={`Nice to meet you ${this.state.full_name.split(' ')[0].charAt(0).toUpperCase() + this.state.full_name.split(' ')[0].slice(1)} 🤝 Where do you most frequently commute to? Work, school... etc`}
 										textStyles={{
 											fontSize: '1.3rem',
 											color: 'white',
@@ -240,11 +239,9 @@ class OnboardingTenant extends Component {
 										containerStyles={{
 											width: '100%',
 											backgroundColor: 'rgba(0,0,0,0)',
-											padding: '20px',
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_destination']) })
 												this.startAutocomplete()
@@ -297,11 +294,9 @@ class OnboardingTenant extends Component {
 										containerStyles={{
 											width: '100%',
 											backgroundColor: 'rgba(0,0,0,0)',
-											padding: '20px',
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['asked_commute_mode']) })
 											}, 300)
@@ -348,11 +343,9 @@ class OnboardingTenant extends Component {
 										containerStyles={{
 											width: '100%',
 											backgroundColor: 'rgba(0,0,0,0)',
-											padding: '20px',
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_group_size']) })
 											}, 300)
@@ -392,11 +385,9 @@ class OnboardingTenant extends Component {
 										containerStyles={{
 											width: '100%',
 											backgroundColor: 'rgba(0,0,0,0)',
-											padding: '20px',
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_budget_per_person']) })
 											}, 300)
@@ -449,11 +440,9 @@ class OnboardingTenant extends Component {
 										containerStyles={{
 											width: '100%',
 											backgroundColor: 'rgba(0,0,0,0)',
-											padding: '20px',
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['done1']) })
 											}, 300)
@@ -474,11 +463,10 @@ class OnboardingTenant extends Component {
 												containerStyles={{
 													width: '100%',
 													backgroundColor: 'rgba(0,0,0,0)',
-													padding: '20px',
 													borderRadius: '20px',
+													margin: '50px 0px 0px 0px'
 												}}
 												doneEvent={() => {
-													console.log('DONE')
 													setTimeout(() => {
 														this.setState({ completed: this.state.completed.concat(['done2']) })
 													}, 300)
@@ -490,7 +478,7 @@ class OnboardingTenant extends Component {
 									{
 										this.state.completed.filter(c => c === 'done2').length > 0
 										?
-										<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
+										<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', width: '100%', margin: '30px 0px 0px 0px' }}>
 											<Checkbox.AgreeItem onChange={(e) => this.setState({ agreed_terms: e.target.checked })}>
 						            <span style={{ color: 'white' }}>Agree to </span><a href='https://terms.renthero.com' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Terms of Use and Privacy Policy</a>
 						          </Checkbox.AgreeItem>
@@ -691,7 +679,7 @@ const inputStyles = () => {
       color: 'white',
       border: '1px solid white',
       padding: '15px',
-      width: '90%',
+      width: '100%',
       borderRadius: '15px',
       textAlign: 'center',
       cursor: 'pointer',

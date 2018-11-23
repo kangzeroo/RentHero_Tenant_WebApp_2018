@@ -1,4 +1,4 @@
-// Compt for copying as a NameIntro
+// Compt for copying as a InteractiveTemplate
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -14,7 +14,7 @@ import {
 } from 'antd-mobile'
 
 
-class NameIntro extends Component {
+class InteractiveTemplate extends Component {
 
 	constructor() {
 		super()
@@ -64,7 +64,7 @@ class NameIntro extends Component {
 
 	render() {
 		return (
-			<div id='NameIntro' style={comStyles().container}>
+			<div id='InteractiveTemplate' style={comStyles().container}>
         <div style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
@@ -92,10 +92,8 @@ class NameIntro extends Component {
 										borderRadius: '20px',
 									}}
 									doneEvent={() => {
-										console.log('DONE')
 										setTimeout(() => {
 											this.setState({ completed: this.state.completed.concat(['one']) })
-											// console.log('DONE')
 										}, 500)
 									}}
 								/>
@@ -145,7 +143,6 @@ class NameIntro extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												// this.setState({ step: this.state.step + 1 })
 											}, 1000)
@@ -176,17 +173,17 @@ class NameIntro extends Component {
 }
 
 // defines the types of variables in this.props
-NameIntro.propTypes = {
+InteractiveTemplate.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-NameIntro.defaultProps = {
+InteractiveTemplate.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(NameIntro)
+const RadiumHOC = Radium(InteractiveTemplate)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -273,6 +270,7 @@ const comStyles = () => {
 			cursor: 'pointer',
 		},
 		sectional: {
+			position: 'relative',
 			height: '90vh',
 			minHeight: '90vh',
       display: 'flex',

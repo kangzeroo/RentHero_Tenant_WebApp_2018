@@ -86,7 +86,10 @@ class SwipeList extends Component {
 		this.props.nextListing(judgement)
 		this.props.incrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
 		// this.props.decrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
-		if (Math.random() > 0.95) {
+		if (this.props.likes.length === 4) {
+			this.props.history.push('/dialog/credit_report/me')
+		}
+		if (this.props.likes.length > 4 && this.props.likes.concat(this.props.dislikes).length > 6) {
 			window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
 		}
 		window.scrollTo(0,0)
@@ -423,7 +426,9 @@ SwipeList.propTypes = {
 	destination: PropTypes.string,
 	prefs: PropTypes.object.isRequired,
 	incrementLikes: PropTypes.func.isRequired,
-	decrementLikes: PropTypes.func.isRequired
+	decrementLikes: PropTypes.func.isRequired,
+	likes: PropTypes.array.isRequired,
+	dislikes: PropTypes.array.isRequired,
 }
 
 // for all optional props, define a default value
@@ -441,6 +446,8 @@ const mapReduxToProps = (redux) => {
 		current_listing: redux.listings.current_listing,
 		destination: redux.tenant.prefs.destination.address,
 		prefs: redux.tenant.prefs,
+		likes: redux.tenant.likes,
+		dislikes: redux.tenant.dislikes,
 	}
 }
 
@@ -616,6 +623,7 @@ const comStyles = () => {
 			justifyContent: 'space-between',
 			alignItems: 'center',
 			width: '100vw',
+			maxWidth: '500px',
 			position: 'fixed',
 			bottom: '0px',
 			zIndex: 2,
@@ -741,6 +749,7 @@ const likeOrNotStyles = () => {
 			bottom: '0px',
 			left: '0px',
 			width: '100vw',
+			maxWidth: '500px',
 		},
 		inner_container: {
 			display: 'flex',
@@ -749,8 +758,8 @@ const likeOrNotStyles = () => {
 			alignItems: 'center',
 			background: 'white',
 			borderRadius: '20px 20px 0px 0px',
-			width: '90vw',
-			padding: '20px 5px 5px 5px'
+			width: '100%',
+			padding: '20px 10px 5px 10px'
 		},
 		dislike: {
 			cursor: 'pointer',

@@ -1,4 +1,4 @@
-// Compt for copying as a InteractiveTemplate
+// Compt for copying as a MoveInPrefs
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -14,7 +14,7 @@ import {
 } from 'antd-mobile'
 
 
-class InteractiveTemplate extends Component {
+class MoveInPrefs extends Component {
 
 	constructor() {
 		super()
@@ -64,7 +64,7 @@ class InteractiveTemplate extends Component {
 
 	render() {
 		return (
-			<div id='InteractiveTemplate' style={comStyles().container}>
+			<div id='MoveInPrefs' style={comStyles().container}>
         <div style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
@@ -76,16 +76,15 @@ class InteractiveTemplate extends Component {
 						}
 					</div>*/}
 					<div id='middle_part' style={comStyles().middle_part}>
-						<div id='hello' style={comStyles().sectional}>
+						<div id='section_one' style={comStyles().sectional}>
 							<SubtitlesMachine
 									speed={0.25}
 									delay={500}
-									text={`Hello 👋`}
+									text={`Ask some questions and click for the next slide 😊`}
 									textStyles={{
-										fontSize: '1.5rem',
+										fontSize: '1.3rem',
 										color: 'white',
 										textAlign: 'left',
-		                fontWeight: 'bold'
 									}}
 									containerStyles={{
 										width: '100%',
@@ -95,111 +94,70 @@ class InteractiveTemplate extends Component {
 									doneEvent={() => {
 										console.log('DONE')
 										setTimeout(() => {
-											this.setState({ completed: this.state.completed.concat(['hello']) })
+											this.setState({ completed: this.state.completed.concat(['one']) })
 											// console.log('DONE')
 										}, 500)
 									}}
 								/>
 							{
-								this.state.completed.filter(c => c === 'hello').length > 0
+								this.state.completed.filter(c => c === 'one').length > 0
 								?
-								<div id='im_renthero' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											speed={0.25}
-											delay={500}
-											text={`My name is RentHero 😇`}
-											textStyles={{
-												fontSize: '1.5rem',
-												color: 'white',
-												textAlign: 'left',
-												fontWeight: 'bold'
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['im_renthero']) })
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'im_renthero').length > 0
-								?
-								<div id='what_i_do' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											speed={0.3}
-											delay={500}
-											text={`I'm an A.I. rental agent looking out for your best interests 💪 . . . I'll help you find homes 🏠 provide expert advice 💡 and prepare your paperwork 📜`}
-											textStyles={{
-												fontSize: '1.3rem',
-												color: 'white',
-												textAlign: 'left',
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-												margin: '50px 0px 0px 0px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['what_i_do']) })
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'what_i_do').length > 0
-								?
-								<div id='home_hunting' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											speed={0.25}
-											delay={800}
-											text={`Ready to start home hunting? 😄 🎉`}
-											textStyles={{
-												fontSize: '1.3rem',
-												color: 'white',
-												textAlign: 'left',
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-												margin: '50px 0px 0px 0px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['home_hunting']) })
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'home_hunting').length > 0
-								?
-								<div onClick={() => this.props.history.push('/onboarding')} style={inputStyles().button}>
-									BEGIN ADVENTURE
+								<div style={comStyles().field_holder}>
+									<input
+		                id="input_field"
+		                value={this.state.string1}
+		                onChange={(e) => {
+		                  console.log(e.target.value)
+		                  this.setState({ string1: e.target.value })
+		                }}
+		                placeholder="Type Something"
+		                style={inputStyles().text}
+		              ></input>
+									{
+										this.state.string1
+										?
+										<Icon onClick={() => this.clickedCheck('#section_two', 'two', 'input_field')} type='check-circle' size='lg' style={comStyles().check} />
+										:
+										null
+									}
 								</div>
 								:
 								null
 							}
 						</div>
+						{
+							this.state.completed.filter(c => c === 'two').length > 0
+							?
+							<div id='section_two' style={comStyles().sectional}>
+								<SubtitlesMachine
+										speed={0.25}
+										delay={800}
+										text={`Section Two`}
+										textStyles={{
+											fontSize: '1.3rem',
+											color: 'white',
+											textAlign: 'left',
+										}}
+										containerStyles={{
+											width: '100%',
+											backgroundColor: 'rgba(0,0,0,0)',
+											padding: '20px',
+											borderRadius: '20px',
+										}}
+										doneEvent={() => {
+											console.log('DONE')
+											setTimeout(() => {
+												// this.setState({ step: this.state.step + 1 })
+											}, 1000)
+										}}
+									/>
+							</div>
+							:
+							null
+						}
 					</div>
 					<div style={comStyles().down_part}>
-						{/*
+						{
 							this.state.show_down
 							?
 							<Icon onClick={() => {
@@ -209,7 +167,7 @@ class InteractiveTemplate extends Component {
 							}} type='down' size='lg' style={comStyles().down} />
 							:
 							null
-						*/}
+						}
 					</div>
 				</div>
 			</div>
@@ -218,17 +176,17 @@ class InteractiveTemplate extends Component {
 }
 
 // defines the types of variables in this.props
-InteractiveTemplate.propTypes = {
+MoveInPrefs.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-InteractiveTemplate.defaultProps = {
+MoveInPrefs.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(InteractiveTemplate)
+const RadiumHOC = Radium(MoveInPrefs)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -330,6 +288,7 @@ const comStyles = () => {
 			flexDirection: 'column',
 			width: '100%',
 			position: 'relative',
+			padding: '20px 0px 70px 0px'
 		},
 		check: {
 			color: 'white',
@@ -359,19 +318,6 @@ const inputStyles = () => {
       color: '#ffffff',
       webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    },
-    button: {
-      fontSize: '1.3rem',
-      fontWeight: 'bold',
-      color: 'white',
-      border: '1px solid white',
-      padding: '15px',
-      width: '100%',
-      borderRadius: '15px',
-      textAlign: 'center',
-      cursor: 'pointer',
-			position: 'absolute',
-			bottom: '8vh'
-    },
+    }
   }
 }

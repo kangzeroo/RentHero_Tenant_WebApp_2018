@@ -24,10 +24,11 @@ import UserPreferences from './home/UserPreferences'
 import NoteToTester from './home/NoteToTester'
 import SwipeList from './swipe/SwipeList'
 import OnboardingTenant from './tenant/OnboardingTenant'
+import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
+import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
-
 
 
 class AppRoot extends Component {
@@ -37,7 +38,7 @@ class AppRoot extends Component {
       return (
         <Switch>
           <Route exact path='/' render={WelcomeScreen} />
-          <Route exact path='/preferences' render={OnboardingTenant} />
+          <Route exact path='/onboarding' render={OnboardingTenant} />
           <Route exact path='/login' render={HomePage} />
           <Route exact path='/logout' render={Logout} />
 
@@ -45,7 +46,9 @@ class AppRoot extends Component {
 
           <Route exact path='/notes' render={NoteToTester} />
           <Route exact path='/matches' render={SwipeList} />
-          <Route exact path='/sandbox' render={InteractiveTemplate} />
+          <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
+          <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
+          <Route exact path='/sandbox' render={MoveInPrefs} />
 
         </Switch>
       )
