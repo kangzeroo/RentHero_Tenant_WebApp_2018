@@ -191,7 +191,6 @@ class OnboardingTenant extends Component {
 										borderRadius: '20px',
 									}}
 									doneEvent={() => {
-										console.log('DONE')
 										setTimeout(() => {
 											this.setState({ completed: this.state.completed.concat(['ask_name']) })
 											// console.log('DONE')
@@ -244,7 +243,6 @@ class OnboardingTenant extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_destination']) })
 												this.startAutocomplete()
@@ -301,7 +299,6 @@ class OnboardingTenant extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['asked_commute_mode']) })
 											}, 300)
@@ -352,7 +349,6 @@ class OnboardingTenant extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_group_size']) })
 											}, 300)
@@ -396,7 +392,6 @@ class OnboardingTenant extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_budget_per_person']) })
 											}, 300)
@@ -453,7 +448,6 @@ class OnboardingTenant extends Component {
 											borderRadius: '20px',
 										}}
 										doneEvent={() => {
-											console.log('DONE')
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['done1']) })
 											}, 300)
@@ -478,7 +472,6 @@ class OnboardingTenant extends Component {
 													borderRadius: '20px',
 												}}
 												doneEvent={() => {
-													console.log('DONE')
 													setTimeout(() => {
 														this.setState({ completed: this.state.completed.concat(['done2']) })
 													}, 300)

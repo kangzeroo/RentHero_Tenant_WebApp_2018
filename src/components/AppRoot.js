@@ -25,6 +25,7 @@ import NoteToTester from './home/NoteToTester'
 import SwipeList from './swipe/SwipeList'
 import OnboardingTenant from './tenant/OnboardingTenant'
 import InteractiveTemplate from './misc/InteractiveTemplate'
+import CreditReportWelcome from './qualifications/credit_report/CreditReportWelcome'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 
@@ -45,7 +46,7 @@ class AppRoot extends Component {
 
           <Route exact path='/notes' render={NoteToTester} />
           <Route exact path='/matches' render={SwipeList} />
-          <Route exact path='/sandbox' render={InteractiveTemplate} />
+          <Route exact path='/sandbox' render={CreditReportWelcome} />
 
         </Switch>
       )
