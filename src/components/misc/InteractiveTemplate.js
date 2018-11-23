@@ -21,18 +21,44 @@ class NameIntro extends Component {
 		this.state = {
 			show_up: true,
 			show_down: true,
-			step: 0,
+			listeners: [],
+			completed: [],
 
 			string1: '',
 		}
 	}
 
-	clickedCheck(nextDiv) {
-		this.setState({ step: this.state.step + 1 }, () => {
-			history.pushState(null, null, `${this.props.location.pathname}${nextDiv}`)
-			$('#middle_part').animate({
-					scrollTop: document.getElementById("middle_part").scrollHeight - $(nextDiv).position().top
-			}, 500);
+	componentDidUpdate() {
+		// repeat this for each HTML input field you need to auto-close on enter key press
+		if (this.state.listeners.filter(l => l === 'input_field').length === 0 && document.getElementById('input_field')) {
+			this.listenToInputClose('#section_two', 'two', 'input_field')
+		}
+	}
+
+	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
+	clickedCheck(nextDiv, justFinished, inputDiv, timeout = 0) {
+		if (inputDiv && document.getElementById(inputDiv)) {
+			document.getElementById(inputDiv).blur()
+		}
+		setTimeout(() => {
+			this.setState({ completed: this.state.completed.concat([justFinished]) }, () => {
+				history.pushState(null, null, `${this.props.location.pathname}${nextDiv}`)
+				$('#middle_part').animate({
+						scrollTop: document.getElementById("middle_part").scrollHeight - $(nextDiv).position().top
+				}, 500);
+			})
+		}, timeout)
+	}
+
+	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
+	listenToInputClose(nextDiv, justFinished, inputDiv) {
+		document.getElementById(inputDiv).addEventListener('keyup', (e) => {
+			if (e.keyCode === 13) {
+				this.clickedCheck(nextDiv, justFinished, inputDiv, 500)
+			}
+		})
+		this.setState({
+			listeners: this.state.listeners.concat([inputDiv])
 		})
 	}
 
@@ -68,13 +94,13 @@ class NameIntro extends Component {
 									doneEvent={() => {
 										console.log('DONE')
 										setTimeout(() => {
-											this.setState({ step: this.state.step + 1 })
+											this.setState({ completed: this.state.completed.concat(['one']) })
 											// console.log('DONE')
 										}, 500)
 									}}
 								/>
 							{
-								this.state.step >= 1
+								this.state.completed.filter(c => c === 'one').length > 0
 								?
 								<div style={comStyles().field_holder}>
 									<input
@@ -90,7 +116,7 @@ class NameIntro extends Component {
 									{
 										this.state.string1
 										?
-										<Icon onClick={() => this.clickedCheck('#section_two')} type='check-circle' size='lg' style={comStyles().check} />
+										<Icon onClick={() => this.clickedCheck('#section_two', 'two', 'input_field')} type='check-circle' size='lg' style={comStyles().check} />
 										:
 										null
 									}
@@ -100,7 +126,7 @@ class NameIntro extends Component {
 							}
 						</div>
 						{
-							this.state.step >= 2
+							this.state.completed.filter(c => c === 'two').length > 0
 							?
 							<div id='section_two' style={comStyles().sectional}>
 								<SubtitlesMachine

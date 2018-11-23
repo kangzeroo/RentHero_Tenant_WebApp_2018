@@ -45,7 +45,7 @@ class AppRoot extends Component {
 
           <Route exact path='/notes' render={NoteToTester} />
           <Route exact path='/matches' render={SwipeList} />
-          <Route exact path='/sandbox' render={OnboardingTenant} />
+          <Route exact path='/sandbox' render={InteractiveTemplate} />
 
         </Switch>
       )

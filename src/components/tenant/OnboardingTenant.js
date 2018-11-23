@@ -31,7 +31,8 @@ class OnboardingTenant extends Component {
 		this.state = {
 			show_up: true,
 			show_down: true,
-			step: 0,
+			listeners: [],
+			completed: [],
 
 			full_name: '',
 			people: 1,
@@ -47,12 +48,37 @@ class OnboardingTenant extends Component {
 		}
 	}
 
-	clickedCheck(nextDiv) {
-		this.setState({ step: this.state.step + 1 }, () => {
-			history.pushState(null, null, `${this.props.location.pathname}${nextDiv}`)
-			$('#middle_part').animate({
-					scrollTop: document.getElementById("middle_part").scrollHeight - $(nextDiv).position().top
-			}, 500);
+	componentDidUpdate() {
+		// repeat this for each HTML input field you need to auto-close on enter key press
+		if (this.state.listeners.filter(l => l === 'full_name').length === 0 && document.getElementById('full_name')) {
+			this.listenToInputClose('#ask_destination', 'gave_name', 'full_name')
+		}
+	}
+
+	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
+	clickedCheck(nextDiv, justFinished, inputDiv, timeout = 0) {
+		if (inputDiv && document.getElementById(inputDiv)) {
+			document.getElementById(inputDiv).blur()
+		}
+		setTimeout(() => {
+			this.setState({ completed: this.state.completed.concat([justFinished]) }, () => {
+				history.pushState(null, null, `${this.props.location.pathname}${nextDiv}`)
+				$('#middle_part').animate({
+						scrollTop: document.getElementById("middle_part").scrollHeight - $(nextDiv).position().top
+				}, 500);
+			})
+		}, timeout)
+	}
+
+	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
+	listenToInputClose(nextDiv, justFinished, inputDiv) {
+		document.getElementById(inputDiv).addEventListener('keyup', (e) => {
+			if (e.keyCode === 13) {
+				this.clickedCheck(nextDiv, justFinished, inputDiv, 500)
+			}
+		})
+		this.setState({
+			listeners: this.state.listeners.concat([inputDiv])
 		})
 	}
 
@@ -88,14 +114,21 @@ class OnboardingTenant extends Component {
       destination_address_lng: place.geometry.location.lng().toFixed(7),
       destination_address_place_id: place.place_id,
       destination_address: place.formatted_address,
-    }, () => console.log(this.state))
-		const destination_coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
-		const map = new google.maps.Map(document.getElementById('destination-map'), {
-			center: destination_coords,
-			zoom: 13,
-			disableDefaultUI: true,
+    }, () => {
+			document.getElementById('destination_address').blur()
+			setTimeout(() => {
+				$('#middle_part').animate({
+						scrollTop: document.getElementById("middle_part").scrollHeight - $('#ask_destination').position().top
+				}, 200);
+				const destination_coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
+				const map = new google.maps.Map(document.getElementById('destination-map'), {
+					center: destination_coords,
+					zoom: 13,
+					disableDefaultUI: true,
+				})
+				const marker = new google.maps.Marker({position: destination_coords, map: map})
+			}, 500)
 		})
-		const marker = new google.maps.Marker({position: destination_coords, map: map});
   }
 
 	submitPrefs() {
@@ -160,17 +193,17 @@ class OnboardingTenant extends Component {
 									doneEvent={() => {
 										console.log('DONE')
 										setTimeout(() => {
-											this.setState({ step: this.state.step + 1 })
+											this.setState({ completed: this.state.completed.concat(['ask_name']) })
 											// console.log('DONE')
 										}, 500)
 									}}
 								/>
 							{
-								this.state.step >= 1
+								this.state.completed.filter(c => c === 'ask_name').length > 0
 								?
 								<div style={comStyles().field_holder}>
 									<input
-		                id="input_field"
+		                id="full_name"
 		                value={this.state.string1}
 		                onChange={(e) => {
 		                  console.log(e.target.value)
@@ -182,7 +215,7 @@ class OnboardingTenant extends Component {
 									{
 										this.state.full_name
 										?
-										<Icon onClick={() => this.clickedCheck('#ask_destination')} type='check-circle' size='lg' style={comStyles().check} />
+										<Icon onClick={() => this.clickedCheck('#ask_destination', 'gave_name', 'full_name')} type='check-circle' size='lg' style={comStyles().check} />
 										:
 										null
 									}
@@ -192,7 +225,7 @@ class OnboardingTenant extends Component {
 							}
 						</div>
 						{
-							this.state.step >= 2
+							this.state.completed.filter(c => c === 'gave_name').length > 0
 							?
 							<div id='ask_destination' style={comStyles().sectional}>
 								<SubtitlesMachine
@@ -213,13 +246,13 @@ class OnboardingTenant extends Component {
 										doneEvent={() => {
 											console.log('DONE')
 											setTimeout(() => {
-												this.setState({ step: this.state.step + 1 })
+												this.setState({ completed: this.state.completed.concat(['ask_destination']) })
 												this.startAutocomplete()
 											}, 300)
 										}}
 									/>
 									{
-										this.state.step >= 3
+										this.state.completed.filter(c => c === 'ask_destination').length > 0
 										?
 										<div style={comStyles().field_holder}>
 											<input
@@ -234,9 +267,9 @@ class OnboardingTenant extends Component {
 											></input>
 											<div id='destination-map' style={{ height: '250px', borderRadius: '10px', margin: '10px 0px 0px 0px' }}></div>
 											{
-												this.state.destination_address
+												this.state.destination_address_place_id
 												?
-												<Icon onClick={() => this.clickedCheck('#commute_mode')} type='check-circle' size='lg' style={comStyles().check} />
+												<Icon onClick={() => this.clickedCheck('#asked_commute_mode', 'gave_destination', 'destination_address')} type='check-circle' size='lg' style={comStyles().check} />
 												:
 												null
 											}
@@ -249,13 +282,13 @@ class OnboardingTenant extends Component {
 							null
 						}
 						{
-							this.state.step >= 4
+							this.state.completed.filter(c => c === 'gave_destination').length > 0
 							?
-							<div id='commute_mode' style={comStyles().sectional}>
+							<div id='asked_commute_mode' style={comStyles().sectional}>
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
-										text={`How do you usually get around?`}
+										text={`What is your primary means of transportation?`}
 										textStyles={{
 											fontSize: '1.3rem',
 											color: 'white',
@@ -270,12 +303,12 @@ class OnboardingTenant extends Component {
 										doneEvent={() => {
 											console.log('DONE')
 											setTimeout(() => {
-												this.setState({ step: this.state.step + 1 })
+												this.setState({ completed: this.state.completed.concat(['asked_commute_mode']) })
 											}, 300)
 										}}
 									/>
 									{
-										this.state.step >= 5
+										this.state.completed.filter(c => c === 'asked_commute_mode').length > 0
 										?
 										<div style={comStyles().field_holder}>
 											<div style={travelStyles().listDiv}>
@@ -287,7 +320,7 @@ class OnboardingTenant extends Component {
 											{
 												this.state.commute_mode
 												?
-												<Icon onClick={() => this.clickedCheck('#section_two')} type='check-circle' size='lg' style={comStyles().check} />
+												<Icon onClick={() => this.clickedCheck('#ask_group_size', 'gave_commute_mode')} type='check-circle' size='lg' style={comStyles().check} />
 												:
 												null
 											}
@@ -300,9 +333,9 @@ class OnboardingTenant extends Component {
 							null
 						}
 						{
-							this.state.step >= 6
+							this.state.completed.filter(c => c === 'gave_commute_mode').length > 0
 							?
-							<div id='section_two' style={comStyles().sectional}>
+							<div id='ask_group_size' style={comStyles().sectional}>
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
@@ -321,12 +354,12 @@ class OnboardingTenant extends Component {
 										doneEvent={() => {
 											console.log('DONE')
 											setTimeout(() => {
-												this.setState({ step: this.state.step + 1 })
+												this.setState({ completed: this.state.completed.concat(['ask_group_size']) })
 											}, 300)
 										}}
 									/>
 									{
-										this.state.step >= 7
+										this.state.completed.filter(c => c === 'ask_group_size').length > 0
 										?
 										<div style={comStyles().field_holder}>
 											<div style={inputStyles().counterDiv}>
@@ -334,7 +367,7 @@ class OnboardingTenant extends Component {
 				                <div style={{ fontSize: '3rem', color: 'white', fontWeight: 'bold' }}>{this.state.people}</div>
 				                <div onClick={() => this.incrementCounter('people', 1)} style={{ fontSize: '3rem', color: 'white', fontWeight: 'bold' }}>+</div>
 				              </div>
-											<Icon onClick={() => this.clickedCheck('#section_three')} type='check-circle' size='lg' style={comStyles().check} />
+											<Icon onClick={() => this.clickedCheck('#ask_budget_per_person', 'gave_group_size')} type='check-circle' size='lg' style={comStyles().check} />
 										</div>
 										:
 										null
@@ -344,9 +377,9 @@ class OnboardingTenant extends Component {
 							null
 						}
 						{
-							this.state.step >= 8
+							this.state.completed.filter(c => c === 'gave_group_size').length > 0
 							?
-							<div id='section_three' style={comStyles().sectional}>
+							<div id='ask_budget_per_person' style={comStyles().sectional}>
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
@@ -365,12 +398,12 @@ class OnboardingTenant extends Component {
 										doneEvent={() => {
 											console.log('DONE')
 											setTimeout(() => {
-												this.setState({ step: this.state.step + 1 })
+												this.setState({ completed: this.state.completed.concat(['ask_budget_per_person']) })
 											}, 300)
 										}}
 									/>
 									{
-										this.state.step >= 9
+										this.state.completed.filter(c => c === 'ask_budget_per_person').length > 0
 										?
 										<div style={comStyles().field_holder}>
 											<div style={inputStyles().counterDiv}>
@@ -390,7 +423,7 @@ class OnboardingTenant extends Component {
 											/>
 											<Icon onClick={() => {
 												this.submitPrefs()
-												this.clickedCheck('#section_three')}
+												this.clickedCheck('#done1', 'gave_budget_per_person')}
 											} type='check-circle' size='lg' style={comStyles().check} />
 										</div>
 										:
@@ -401,13 +434,13 @@ class OnboardingTenant extends Component {
 							null
 						}
 						{
-							this.state.step >= 10
+							this.state.completed.filter(c => c === 'gave_budget_per_person').length > 0
 							?
-							<div id='section_three' style={comStyles().sectional}>
+							<div id='done1' style={comStyles().sectional}>
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
-										text={`Alright, I'll go search the internet for rentals that match your preferences. 🔍`}
+										text={`Alright 😄 I'll search the internet for rentals that match your preferences. 🔍`}
 										textStyles={{
 											fontSize: '1.3rem',
 											color: 'white',
@@ -422,17 +455,17 @@ class OnboardingTenant extends Component {
 										doneEvent={() => {
 											console.log('DONE')
 											setTimeout(() => {
-												this.setState({ step: this.state.step + 1 })
+												this.setState({ completed: this.state.completed.concat(['done1']) })
 											}, 300)
 										}}
 									/>
 									{
-										this.state.step >= 11
+										this.state.completed.filter(c => c === 'done1').length > 0
 										?
 										<SubtitlesMachine
 												speed={0.25}
 												delay={800}
-												text={`Ready to start your journey? 😄`}
+												text={`Ready to start your journey? 👀`}
 												textStyles={{
 													fontSize: '1.3rem',
 													color: 'white',
@@ -447,7 +480,7 @@ class OnboardingTenant extends Component {
 												doneEvent={() => {
 													console.log('DONE')
 													setTimeout(() => {
-														this.setState({ step: this.state.step + 1 })
+														this.setState({ completed: this.state.completed.concat(['done2']) })
 													}, 300)
 												}}
 											/>
@@ -455,7 +488,7 @@ class OnboardingTenant extends Component {
 										null
 									}
 									{
-										this.state.step >= 12
+										this.state.completed.filter(c => c === 'done2').length > 0
 										?
 										<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
 											<Checkbox.AgreeItem onChange={(e) => this.setState({ agreed_terms: e.target.checked })}>
@@ -663,7 +696,7 @@ const inputStyles = () => {
       textAlign: 'center',
       cursor: 'pointer',
 			position: 'absolute',
-			bottom: '10vh'
+			bottom: '15vh'
     },
   }
 }
