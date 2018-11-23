@@ -19,3 +19,16 @@
 	background-color: #74a9d8;
 	border-radius: 10px;
 }
+
+::placeholder {
+    color: #e6f6fe;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color: #e6f6fe;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+   color: #e6f6fe;
+}

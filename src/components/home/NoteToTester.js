@@ -33,7 +33,7 @@ class NoteToTester extends Component {
         <div style={comStyles().slim}>
         <SubtitlesMachine
             speed={0.25}
-            text={`Please fill out the feedback form when it pops up. Before you look at your matches, heres a few points to note: (keep scrolling down)`}
+            text={`Please fill out the feedback form when it pops up.`}
             textStyles={{
               fontSize: '1.3rem',
               color: 'white',
@@ -49,8 +49,8 @@ class NoteToTester extends Component {
               console.log('DONE')
               setTimeout(() => {
                 this.setState({ step: 1 })
-                window.scrollTo(0,window.innerHeight)
-              }, 1000)
+                // window.scrollTo(0,window.innerHeight)
+              }, 500)
             }}
           />
           {
@@ -58,7 +58,7 @@ class NoteToTester extends Component {
             ?
             <SubtitlesMachine
                 speed={0.25}
-                text={`- We compile multiple listing websites to find the top 5% best deals in the GTA`}
+                text={`Your feedback is important to us! 😊`}
                 textStyles={{
                   fontSize: '1.3rem',
                   color: 'white',
@@ -74,14 +74,16 @@ class NoteToTester extends Component {
                   console.log('DONE')
                   setTimeout(() => {
                     this.setState({ step: 2 })
-                    window.scrollTo(0,window.innerHeight)
-                  }, 500)
+                    window.scrollTo(0,0)
+                    this.props.history.push('/matches')
+                    // window.scrollTo(0,window.innerHeight)
+                  }, 1000)
                 }}
               />
             :
             null
           }
-          {
+          {/*
             this.state.step >= 2
             ?
             <SubtitlesMachine
@@ -108,7 +110,7 @@ class NoteToTester extends Component {
               />
             :
             null
-          }
+          */}
           {
             this.state.step >= 3
             ?
@@ -246,6 +248,7 @@ const comStyles = () => {
       flexDirection: 'column',
       minHeight: '100vh',
       justifyContent: 'flex-start',
+      padding: '50px 0px 0px 0px',
       alignItems: 'center',
 			background: '#00c6ff', /* fallback for old browsers */
 		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */

@@ -7,6 +7,7 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
+import $ from "jquery"
 import SubtitlesMachine from '../modules/SubtitlesMachine'
 import {
   InputItem,
@@ -66,7 +67,7 @@ class UserPreferences extends Component {
       ad_long: place.geometry.location.lng().toFixed(7),
       ad_place_id: place.place_id,
       dest_attr: place.formatted_address,
-    }, () => this.setState({ step: 2 }))
+    }, () => this.setState({ step: this.state.step + 1 }))
   }
 
   incrementCounter(attr, inc) {
@@ -75,7 +76,7 @@ class UserPreferences extends Component {
         [attr]: this.state[attr] + inc,
         step: this.state.step + 1
       })
-      window.scrollTo(0,window.innerHeight)
+      // window.scrollTo(0,window.innerHeight)
     }
   }
 
@@ -84,7 +85,7 @@ class UserPreferences extends Component {
       commute_mode: mode,
       step: this.state.step + 1
     }, () => console.log(this.state))
-    window.scrollTo(0,window.innerHeight)
+    // window.scrollTo(0,window.innerHeight)
   }
 
   submitPrefs() {
@@ -121,10 +122,16 @@ class UserPreferences extends Component {
       })
   }
 
+  clickedNext() {
+    if (this.state.ad_place_id) {
+      this.setState({ step: this.state.step + 1 })
+    }
+  }
+
 	render() {
 		return (
 			<div id='UserPreferences' style={comStyles().container}>
-        <div style={comStyles().slim}>
+        <div onClick={() => this.clickedNext()} style={comStyles().slim}>
           <br/>
           <SubtitlesMachine
               speed={0.25}
@@ -143,26 +150,27 @@ class UserPreferences extends Component {
               doneEvent={() => {
                 console.log('DONE')
                 setTimeout(() => {
-                  this.setState({ step: 1 }, () => this.startAutocomplete())
-                  window.scrollTo(0,window.innerHeight)
+                  this.setState({ step: this.state.step + 1 }, () => this.startAutocomplete())
+                  // window.scrollTo(0,window.innerHeight)
                 }, 1000)
               }}
             />
             {
               this.state.step >= 1
               ?
-              <InputItem
+              <div onClick={(e) => e.stopPropagation()}>
+              <input
                 id="ad_address"
-                clear
                 value={this.state.dest_attr}
-                onChange={(v) => {
-                  console.log(v)
-                  this.setState({ dest_attr: v })
-                  window.scrollTo(0,window.innerHeight)
+                onChange={(e) => {
+                  console.log(e.target.value)
+                  this.setState({ dest_attr: e.target.value })
+                  // window.scrollTo(0,window.innerHeight)
                 }}
                 placeholder="Enter Address"
-                style={{ width: '100%' }}
-              ></InputItem>
+                style={inputStyles().text}
+              ></input>
+              </div>
               :
               null
             }
@@ -177,7 +185,6 @@ class UserPreferences extends Component {
                     fontSize: '1.5rem',
                     color: 'white',
                     textAlign: 'left',
-                    fontWeight: 'bold'
                   }}
                   containerStyles={{
                     width: '100%',
@@ -188,8 +195,8 @@ class UserPreferences extends Component {
                   doneEvent={() => {
                     console.log('DONE')
                     setTimeout(() => {
-                      this.setState({ step: 3 })
-                      window.scrollTo(0,window.innerHeight)
+                      this.setState({ step: this.state.step + 1 })
+                      // window.scrollTo(0,window.innerHeight)
                     }, 600)
                   }}
               />
@@ -227,8 +234,8 @@ class UserPreferences extends Component {
                 doneEvent={() => {
                   console.log('DONE')
                   setTimeout(() => {
-                    this.setState({ step: 5 })
-                    window.scrollTo(0,window.innerHeight)
+                    this.setState({ step: this.state.step + 1 })
+                    // window.scrollTo(0,window.innerHeight)
                   }, 1000)
                 }}
               />
@@ -320,6 +327,7 @@ const comStyles = () => {
       flexDirection: 'column',
       minHeight: '100vh',
       justifyContent: 'flex-start',
+      padding: '50px 0px 0px 0px',
       alignItems: 'center',
 			background: '#00c6ff', /* fallback for old browsers */
 		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
@@ -335,7 +343,7 @@ const comStyles = () => {
       alignItems: 'center',
     },
     start_btn: {
-      margin: '150px 0px 0px 20px',
+      margin: '50px 0px 20px 0px',
       fontSize: '1.3rem',
       fontWeight: 'bold',
       color: 'white',
@@ -393,5 +401,30 @@ const commuteStyles = (commute_mode) => {
     transit: {
       ...transitStyle
     }
+  }
+}
+
+const inputStyles = () => {
+  return {
+    text: {
+      background: 'rgba(255,255,255,0.2)',
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.5rem',
+      height: '30px',
+      borderRadius: '10px',
+      margin: '20px 0px 0px 0px',
+      padding: '25px',
+      color: '#ffffff',
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+    },
+    // '::-webkit-input-placeholder': { color: '#666' },
+    // ':placeholder': { color: '#666' },
+    // ':-moz-placeholder': { color: '#666' },
+    // '::-moz-placeholder': { color: '#666' },
+    // ':-ms-input-placeholder': { color: '#666' },
   }
 }

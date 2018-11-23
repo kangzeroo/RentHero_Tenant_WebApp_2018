@@ -25,11 +25,12 @@ class WelcomeScreen extends Component {
 	render() {
 		return (
 			<div id='WelcomeScreen' style={comStyles().container}>
-        <div style={comStyles().slim}>
+        <div onClick={() => this.setState({ step: this.state.step + 1 })} style={comStyles().slim}>
           <br/>
           <SubtitlesMachine
               speed={0.15}
               text={`Hello 👋`}
+              instant={this.state.step >= 1}
               textStyles={{
                 fontSize: '1.5rem',
                 color: 'white',
@@ -45,7 +46,7 @@ class WelcomeScreen extends Component {
               doneEvent={() => {
                 console.log('DONE')
                 setTimeout(() => {
-                  this.setState({ step: 1 })
+                  this.setState({ step: this.state.step + 1 })
                   window.scrollTo(0,window.innerHeight)
                 }, 600)
               }}
@@ -56,6 +57,7 @@ class WelcomeScreen extends Component {
               <SubtitlesMachine
                   speed={0.7}
                   text={`My name is RentHero 💪`}
+                  instant={this.state.step >= 2}
                   textStyles={{
                     fontSize: '1.5rem',
                     color: 'white',
@@ -71,7 +73,7 @@ class WelcomeScreen extends Component {
                   doneEvent={() => {
                     console.log('DONE')
                     setTimeout(() => {
-                      this.setState({ step: 2 })
+                      this.setState({ step: this.state.step + 1 })
                       window.scrollTo(0,window.innerHeight)
                     }, 1000)
                   }}
@@ -86,6 +88,7 @@ class WelcomeScreen extends Component {
               <SubtitlesMachine
                   speed={0.25}
                   text={`I'm an A.I. rental agent looking out for your best interests 😊`}
+                  instant={this.state.step >= 3}
                   textStyles={{
                     fontSize: '1.3rem',
                     color: 'white',
@@ -100,7 +103,7 @@ class WelcomeScreen extends Component {
                   doneEvent={() => {
                     console.log('DONE')
                     setTimeout(() => {
-                      this.setState({ step: 3 })
+                      this.setState({ step: this.state.step + 1 })
                       window.scrollTo(0,window.innerHeight)
                     }, 1000)
                   }}
@@ -114,6 +117,7 @@ class WelcomeScreen extends Component {
               <SubtitlesMachine
                   speed={0.25}
                   text={`Tell me what you're looking for and I'll search the entire internet for matching rentals 🔍`}
+                  instant={this.state.step >= 4}
                   textStyles={{
                     fontSize: '1.3rem',
                     color: 'white',
@@ -128,7 +132,7 @@ class WelcomeScreen extends Component {
                   doneEvent={() => {
                     console.log('DONE')
                     setTimeout(() => {
-                      this.setState({ step: 4 })
+                      this.setState({ step: this.state.step + 1 })
                       window.scrollTo(0,window.innerHeight)
                     }, 1200)
                   }}
@@ -142,6 +146,7 @@ class WelcomeScreen extends Component {
               <SubtitlesMachine
                   speed={0.25}
                   text={`F.Y.I. I am currently in beta 😅`}
+                  instant={this.state.step >= 5}
                   textStyles={{
                     fontSize: '1.3rem',
                     color: 'white',
@@ -156,7 +161,7 @@ class WelcomeScreen extends Component {
                   doneEvent={() => {
                     console.log('DONE')
                     setTimeout(() => {
-                      this.setState({ step: 5 })
+                      this.setState({ step: this.state.step + 1 })
                       window.scrollTo(0,window.innerHeight)
                     }, 1000)
                   }}
@@ -215,6 +220,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
+      padding: '50px 0px 0px 0px',
       justifyContent: 'flex-start',
       alignItems: 'center',
 			background: '#00c6ff', /* fallback for old browsers */
@@ -231,7 +237,7 @@ const comStyles = () => {
       alignItems: 'center',
     },
     start_btn: {
-      margin: '100px 0px 0px 20px',
+      margin: '50px 0px 0px 20px',
       fontSize: '1.3rem',
       fontWeight: 'bold',
       color: 'white',
