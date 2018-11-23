@@ -37,7 +37,7 @@ class AppRoot extends Component {
       return (
         <Switch>
           <Route exact path='/' render={WelcomeScreen} />
-          <Route exact path='/preferences' render={UserPreferences} />
+          <Route exact path='/preferences' render={OnboardingTenant} />
           <Route exact path='/login' render={HomePage} />
           <Route exact path='/logout' render={Logout} />
 

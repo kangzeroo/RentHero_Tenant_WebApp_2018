@@ -439,8 +439,8 @@ const mapReduxToProps = (redux) => {
 	return {
     listings: redux.listings.listings,
 		current_listing: redux.listings.current_listing,
-		destination: redux.listings.prefs.destination.address,
-		prefs: redux.listings.prefs,
+		destination: redux.tenant.prefs.destination.address,
+		prefs: redux.tenant.prefs,
 	}
 }
 

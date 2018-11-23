@@ -182,7 +182,7 @@ export default (ComposedComponent) => {
 
 	const mapStateToProps = (redux) => {
 		return {
-			prefs: redux.listings.prefs
+			prefs: redux.tenant.prefs
 		}
 	}
 

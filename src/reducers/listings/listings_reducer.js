@@ -1,22 +1,11 @@
 import {
   SAVE_LISTINGS_TO_REDUX,
   NEXT_LISTING,
-  SAVE_PREFS,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
   listings: [],
   current_listing: null,
-  prefs: {
-    max_beds: 2,
-    max_budget: 3000,
-    destination: {
-      address: "763 Bay St, Toronto, ON M5G 2R3, Canada",
-      place_id: "ChIJC9nc5rU0K4gRgyoVQ0e7q8c",
-      commute_mode: 'transit',
-      gps: { lat: 43.6601025, lng: -79.3850843 }
-    }
-  }
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -42,11 +31,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         current_listing: state.listings[nextListingIndex]
-      }
-    case SAVE_PREFS:
-      return {
-        ...state,
-        prefs: action.payload,
       }
 		default:
 			return {

@@ -15,6 +15,13 @@ import {
 	WhiteSpace,
 	Checkbox,
 } from 'antd-mobile'
+import { savePrefs } from '../../actions/listings/listings_actions'
+import {
+	saveListingsToRedux,
+} from '../../actions/listings/listings_actions'
+import {
+	getListings,
+} from '../../api/listings/listings_api'
 
 
 class OnboardingTenant extends Component {
@@ -91,6 +98,35 @@ class OnboardingTenant extends Component {
 		const marker = new google.maps.Marker({position: destination_coords, map: map});
   }
 
+	submitPrefs() {
+    this.props.savePrefs({
+      max_beds: this.state.people,
+      max_budget: this.state.max_budget_person,
+      destination: {
+        address: this.state.destination_address,
+        place_id: this.state.destination_address_place_id,
+        commute_mode: this.state.commute_mode,
+        gps: { lat: this.state.destination_address_lat, lng: this.state.destination_address_lng }
+      }
+    })
+    getListings({
+      max_beds: this.state.people,
+      max_budget: this.state.max_budget_person,
+      destination: {
+        address: this.state.destination_address,
+        place_id: this.state.destination_address_place_id,
+        commute_mode: this.state.commute_mode,
+        gps: { lat: this.state.destination_address_lat, lng: this.state.destination_address_lng }
+      }
+    })
+    .then((data) => {
+      console.log(data)
+      this.props.saveListingsToRedux(data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
 
 	render() {
 		return (
@@ -219,7 +255,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
-										text={`How would you like me to show your commute times?`}
+										text={`How do you usually get around?`}
 										textStyles={{
 											fontSize: '1.3rem',
 											color: 'white',
@@ -352,7 +388,10 @@ class OnboardingTenant extends Component {
 												value={this.state.max_budget_person}
 												onChange={(v) => this.setState({ max_budget_person: v })}
 											/>
-											<Icon onClick={() => this.clickedCheck('#section_three')} type='check-circle' size='lg' style={comStyles().check} />
+											<Icon onClick={() => {
+												this.submitPrefs()
+												this.clickedCheck('#section_three')}
+											} type='check-circle' size='lg' style={comStyles().check} />
 										</div>
 										:
 										null
@@ -368,7 +407,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										speed={0.25}
 										delay={800}
-										text={`Great! I'll go search the internet for listings that match your preferences. 🔍`}
+										text={`Alright, I'll go search the internet for rentals that match your preferences. 🔍`}
 										textStyles={{
 											fontSize: '1.3rem',
 											color: 'white',
@@ -393,7 +432,7 @@ class OnboardingTenant extends Component {
 										<SubtitlesMachine
 												speed={0.25}
 												delay={800}
-												text={`Let's browse some properties! 😄`}
+												text={`Ready to start your journey? 😄`}
 												textStyles={{
 													fontSize: '1.3rem',
 													color: 'white',
@@ -418,7 +457,7 @@ class OnboardingTenant extends Component {
 									{
 										this.state.step >= 12
 										?
-										<div>
+										<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', width: '100%' }}>
 											<Checkbox.AgreeItem onChange={(e) => this.setState({ agreed_terms: e.target.checked })}>
 						            <span style={{ color: 'white' }}>Agree to </span><a href='https://terms.renthero.com' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Terms of Use and Privacy Policy</a>
 						          </Checkbox.AgreeItem>
@@ -462,6 +501,8 @@ class OnboardingTenant extends Component {
 // defines the types of variables in this.props
 OnboardingTenant.propTypes = {
 	history: PropTypes.object.isRequired,
+  savePrefs: PropTypes.func.isRequired,
+  saveListingsToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -482,7 +523,8 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
+		saveListingsToRedux,
+		savePrefs,
 	})(RadiumHOC)
 )
 
@@ -556,6 +598,7 @@ const comStyles = () => {
 			cursor: 'pointer',
 		},
 		sectional: {
+			position: 'relative',
 			height: '90vh',
 			minHeight: '90vh',
       display: 'flex',
