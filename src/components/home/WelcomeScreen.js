@@ -23,6 +23,7 @@ class InteractiveTemplate extends Component {
 			show_down: true,
 			listeners: [],
 			completed: [],
+			instantChars: false,
 
 			string1: '',
 		}
@@ -33,6 +34,17 @@ class InteractiveTemplate extends Component {
 		if (this.state.listeners.filter(l => l === 'input_field').length === 0 && document.getElementById('input_field')) {
 			this.listenToInputClose('#section_two', 'two', 'input_field')
 		}
+	}
+
+	instantCharClick() {
+		this.setState({
+			instantChars: true
+		})
+		setTimeout(() => {
+			this.setState({
+				instantChars: false
+			})
+		}, 50)
 	}
 
 	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
@@ -65,7 +77,7 @@ class InteractiveTemplate extends Component {
 	render() {
 		return (
 			<div id='InteractiveTemplate' style={comStyles().container}>
-        <div style={comStyles().scroll}>
+        <div onClick={() => this.instantCharClick()} style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
 							this.state.show_up
@@ -78,6 +90,7 @@ class InteractiveTemplate extends Component {
 					<div id='middle_part' style={comStyles().middle_part}>
 						<div id='hello' style={comStyles().sectional}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
 									delay={500}
 									text={`Hello 👋`}
@@ -105,6 +118,7 @@ class InteractiveTemplate extends Component {
 								?
 								<div id='im_renthero' style={comStyles().field_holder}>
 									<SubtitlesMachine
+											instant={this.state.instantChars}
 											speed={0.25}
 											delay={500}
 											text={`My name is RentHero 😇`}
@@ -134,11 +148,12 @@ class InteractiveTemplate extends Component {
 								?
 								<div id='what_i_do' style={comStyles().field_holder}>
 									<SubtitlesMachine
+											instant={this.state.instantChars}
 											speed={0.3}
 											delay={500}
-											text={`I'm an A.I. rental agent looking out for your best interests 💪 . . . I'll help you find homes 🏠 provide expert advice 💡 and prepare your paperwork 📜`}
+											text={`I'm an A.I. rental agent looking out for your best interests . . . I'll help you 🏠 find homes 💡 provide expert advice, and 📜 prepare your paperwork.`}
 											textStyles={{
-												fontSize: '1.3rem',
+												fontSize: '1.1rem',
 												color: 'white',
 												textAlign: 'left',
 											}}
@@ -163,11 +178,12 @@ class InteractiveTemplate extends Component {
 								?
 								<div id='home_hunting' style={comStyles().field_holder}>
 									<SubtitlesMachine
+											instant={this.state.instantChars}
 											speed={0.25}
 											delay={800}
-											text={`Ready to start home hunting? 😄 🎉`}
+											text={`Ready to start home hunting? 😄`}
 											textStyles={{
-												fontSize: '1.3rem',
+												fontSize: '1.1rem',
 												color: 'white',
 												textAlign: 'left',
 											}}
@@ -180,6 +196,9 @@ class InteractiveTemplate extends Component {
 											doneEvent={() => {
 												setTimeout(() => {
 													this.setState({ completed: this.state.completed.concat(['home_hunting']) })
+													$('#middle_part').animate({
+															scrollTop: document.getElementById("middle_part").scrollHeight
+													}, 500);
 												}, 500)
 											}}
 										/>
@@ -282,7 +301,7 @@ const comStyles = () => {
 			alignItems: 'center',
 		},
 		middle_part: {
-      display: 'flex',
+      // display: 'flex',
       flexDirection: 'column',
       height: '90vh',
       width: '100%',
@@ -316,7 +335,7 @@ const comStyles = () => {
 		},
 		sectional: {
 			position: 'relative',
-			height: '90vh',
+			height: 'auto',
 			minHeight: '90vh',
       display: 'flex',
       flexDirection: 'column',
@@ -361,7 +380,7 @@ const inputStyles = () => {
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
     },
     button: {
-      fontSize: '1.3rem',
+      fontSize: '1.1rem',
       fontWeight: 'bold',
       color: 'white',
       border: '1px solid white',
@@ -371,7 +390,7 @@ const inputStyles = () => {
       textAlign: 'center',
       cursor: 'pointer',
 			position: 'absolute',
-			bottom: '8vh'
+			bottom: '10vh',
     },
   }
 }

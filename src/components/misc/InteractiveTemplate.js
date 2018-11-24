@@ -23,6 +23,7 @@ class InteractiveTemplate extends Component {
 			show_down: true,
 			listeners: [],
 			completed: [],
+			instantChars: false,
 
 			string1: '',
 		}
@@ -33,6 +34,18 @@ class InteractiveTemplate extends Component {
 		if (this.state.listeners.filter(l => l === 'input_field').length === 0 && document.getElementById('input_field')) {
 			this.listenToInputClose('#section_two', 'two', 'input_field')
 		}
+	}
+
+	// trigger instant load text from <SubtitleMachine>
+	instantCharClick() {
+		this.setState({
+			instantChars: true
+		})
+		setTimeout(() => {
+			this.setState({
+				instantChars: false
+			})
+		}, 50)
 	}
 
 	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
@@ -65,7 +78,7 @@ class InteractiveTemplate extends Component {
 	render() {
 		return (
 			<div id='InteractiveTemplate' style={comStyles().container}>
-        <div style={comStyles().scroll}>
+        <div onClick={() => this.instantCharClick()} style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
 							this.state.show_up
@@ -78,11 +91,12 @@ class InteractiveTemplate extends Component {
 					<div id='middle_part' style={comStyles().middle_part}>
 						<div id='section_one' style={comStyles().sectional}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
 									delay={500}
 									text={`Ask some questions and click for the next slide 😊`}
 									textStyles={{
-										fontSize: '1.3rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
 									}}
@@ -128,11 +142,12 @@ class InteractiveTemplate extends Component {
 							?
 							<div id='section_two' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`Section Two`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -237,7 +252,7 @@ const comStyles = () => {
 			alignItems: 'center',
 		},
 		middle_part: {
-      display: 'flex',
+      // display: 'flex',
       flexDirection: 'column',
       height: '90vh',
       width: '100%',
@@ -271,7 +286,7 @@ const comStyles = () => {
 		},
 		sectional: {
 			position: 'relative',
-			height: '90vh',
+			height: 'auto',
 			minHeight: '90vh',
       display: 'flex',
       flexDirection: 'column',

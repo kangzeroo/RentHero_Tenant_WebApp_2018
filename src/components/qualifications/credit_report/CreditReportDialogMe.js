@@ -25,6 +25,7 @@ class CreditReportDialogMe extends Component {
 			show_down: true,
 			listeners: [],
 			completed: [],
+			instantChars: false,
 
 			knowWhatCreditReportIs: '',	// 'yes', 'remind', 'no'
 			shouldGrabCreditReport: '',	// 'show', 'remind'
@@ -39,6 +40,18 @@ class CreditReportDialogMe extends Component {
 		if (this.state.listeners.filter(l => l === 'input_field').length === 0 && document.getElementById('input_field')) {
 			this.listenToInputClose('#section_two', 'two', 'input_field')
 		}
+	}
+
+	// trigger instant load text from <SubtitleMachine>
+	instantCharClick() {
+		this.setState({
+			instantChars: true
+		})
+		setTimeout(() => {
+			this.setState({
+				instantChars: false
+			})
+		}, 50)
 	}
 
 	incrementCounter(attr, inc) {
@@ -78,13 +91,14 @@ class CreditReportDialogMe extends Component {
 
 	renderCreditReportRefresherScreen() {
 		return (
-			<div id='credit_report_refresher' style={comStyles().sectional}>
+			<div onClick={() => this.instantCharClick()} id='credit_report_refresher' style={comStyles().sectional}>
 				<SubtitlesMachine
+						instant={this.state.instantChars}
 						speed={0.25}
-						delay={800}
+						delay={300}
 						text={`A credit report is an official government 🏛️ + bank document 📜 that shows how reliably you pay back credit card bills, car loans and debt 😅`}
 						textStyles={{
-							fontSize: '1.3rem',
+							fontSize: '1.1rem',
 							color: 'white',
 							textAlign: 'left',
 						}}
@@ -104,11 +118,12 @@ class CreditReportDialogMe extends Component {
 						?
 						<div id='simple_score_out_of_850' style={comStyles().sectional_section}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
-									delay={800}
+									delay={300}
 									text={`Your credit report is summarized by a simple score out of 850. Only official EQUIFAX reports are accepted.`}
 									textStyles={{
-										fontSize: '1.3rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
 									}}
@@ -133,11 +148,12 @@ class CreditReportDialogMe extends Component {
 						?
 						<div id='learn_how_to_get_report' style={comStyles().sectional_section}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
-									delay={800}
-									text={`Would you like get your EQUIFAX report? It takes 15 minutes and you will need a laptop computer.`}
+									delay={300}
+									text={`Would you like get your EQUIFAX report? It takes 15 minutes and you will need a laptop computer (opens new tab).`}
 									textStyles={{
-										fontSize: '1.3rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
 									}}
@@ -150,6 +166,9 @@ class CreditReportDialogMe extends Component {
 									doneEvent={() => {
 										setTimeout(() => {
 											this.setState({ completed: this.state.completed.concat(['learn_how_to_get_report']) })
+											$('#middle_part').animate({
+													scrollTop: document.getElementById("middle_part").scrollHeight
+											}, 500);
 										}, 300)
 									}}
 								/>
@@ -205,11 +224,12 @@ class CreditReportDialogMe extends Component {
 		return (
 			<div id='input_credit_score_screen' style={comStyles().sectional}>
 				<SubtitlesMachine
+						instant={this.state.instantChars}
 						speed={0.25}
-						delay={800}
+						delay={300}
 						text={`Please enter your EQUIFAX credit score below. Landlords require everyone in your group to do this 👍`}
 						textStyles={{
-							fontSize: '1.3rem',
+							fontSize: '1.1rem',
 							color: 'white',
 							textAlign: 'left',
 						}}
@@ -228,7 +248,7 @@ class CreditReportDialogMe extends Component {
 						this.state.completed.filter(c => c === 'input_credit_score_screen').length > 0
 						?
 						<div style={{ margin: '20px 0px 20px 0px', width: '100%' }}>
-							<a href='https://renthero.fyi/rent-basics/how-to-do-credit-checks-as-tenants' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Click here for a how-to guide</a>
+							<a href='https://renthero.fyi/rent-basics/how-to-do-credit-checks-as-tenants' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Click here for a how-to guide (opens new tab)</a>
 						</div>
 						:
 						null
@@ -275,11 +295,12 @@ class CreditReportDialogMe extends Component {
 		return (
 			<div id='input_credit_report_screen' style={comStyles().sectional}>
 				<SubtitlesMachine
+						instant={this.state.instantChars}
 						speed={0.25}
-						delay={800}
+						delay={300}
 						text={`Please upload your credit report as a PDF 📜 RentHero keeps all your sensitive documents secure with bank level AES-256 bit encryption 🔒`}
 						textStyles={{
-							fontSize: '1.3rem',
+							fontSize: '1.1rem',
 							color: 'white',
 							textAlign: 'left',
 						}}
@@ -294,6 +315,15 @@ class CreditReportDialogMe extends Component {
 							}, 300)
 						}}
 					/>
+					{
+						this.state.completed.filter(c => c === 'input_credit_report_screen').length > 0
+						?
+						<div style={{ margin: '20px 0px 20px 0px', width: '100%' }}>
+							<a href='https://renthero.fyi/rent-basics/how-to-do-credit-checks-as-tenants' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Click here for a how-to guide (opens new tab)</a>
+						</div>
+						:
+						null
+					}
 					{
 						this.state.completed.filter(c => c === 'input_credit_report_screen').length > 0
 						?
@@ -324,11 +354,12 @@ class CreditReportDialogMe extends Component {
 		return (
 			<div id='remind_me_later' style={comStyles().sectional}>
 				<SubtitlesMachine
+						instant={this.state.instantChars}
 						speed={0.25}
-						delay={500}
+						delay={200}
 						text={`Sure 👍 We can do this another time. Remember that all landlords require a credit report, so it's better to get it done earlier rather than later.`}
 						textStyles={{
-							fontSize: '1.3rem',
+							fontSize: '1.1rem',
 							color: 'white',
 							textAlign: 'left',
 						}}
@@ -347,11 +378,12 @@ class CreditReportDialogMe extends Component {
 						this.state.completed.filter(c => c === 'remind_me_later').length > 0
 						?
 						<SubtitlesMachine
+								instant={this.state.instantChars}
 								speed={0.25}
-								delay={500}
+								delay={400}
 								text={`You can always come back to upload your docs by going to Profile > My Documents 🙂`}
 								textStyles={{
-									fontSize: '1.3rem',
+									fontSize: '1.1rem',
 									color: 'white',
 									textAlign: 'left',
 								}}
@@ -364,6 +396,9 @@ class CreditReportDialogMe extends Component {
 								doneEvent={() => {
 									setTimeout(() => {
 										this.setState({ completed: this.state.completed.concat(['profile_my_documents']) })
+										$('#middle_part').animate({
+												scrollTop: document.getElementById("middle_part").scrollHeight
+										}, 500);
 									}, 500)
 								}}
 							/>
@@ -387,11 +422,12 @@ class CreditReportDialogMe extends Component {
 		return (
 			<div id='completion_screen' style={comStyles().sectional}>
 				<SubtitlesMachine
+						instant={this.state.instantChars}
 						speed={0.25}
-						delay={500}
+						delay={200}
 						text={`Congratulations, you did it! 🎉 Your rental application is now more complete 😄`}
 						textStyles={{
-							fontSize: '1.3rem',
+							fontSize: '1.1rem',
 							color: 'white',
 							textAlign: 'left',
 						}}
@@ -399,6 +435,7 @@ class CreditReportDialogMe extends Component {
 							width: '100%',
 							backgroundColor: 'rgba(0,0,0,0)',
 							borderRadius: '20px',
+							margin: '50px 0px 0px 0px'
 						}}
 						doneEvent={() => {
 							setTimeout(() => {
@@ -410,11 +447,12 @@ class CreditReportDialogMe extends Component {
 						this.state.completed.filter(c => c === 'completion_screen').length > 0
 						?
 						<SubtitlesMachine
+								instant={this.state.instantChars}
 								speed={0.25}
-								delay={500}
+								delay={200}
 								text={`Before you go back to browsing properties, share the link below with your roommates so they can be better prepared too 💪 Teamwork!`}
 								textStyles={{
-									fontSize: '1.3rem',
+									fontSize: '1.1rem',
 									color: 'white',
 									textAlign: 'left',
 								}}
@@ -427,6 +465,9 @@ class CreditReportDialogMe extends Component {
 								doneEvent={() => {
 									setTimeout(() => {
 										this.setState({ completed: this.state.completed.concat(['completion_screen_share']) })
+										$('#middle_part').animate({
+												scrollTop: document.getElementById("middle_part").scrollHeight
+										}, 500);
 									}, 500)
 								}}
 							/>
@@ -479,11 +520,12 @@ class CreditReportDialogMe extends Component {
 					<div id='middle_part' style={comStyles().middle_part}>
 						<div id='initial_welcome' style={comStyles().sectional}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={200}
 									text={`I see you've found some cool properties! 😎 Let's briefly talk about paperwork.`}
 									textStyles={{
-										fontSize: '1.3rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
 									}}
@@ -503,11 +545,12 @@ class CreditReportDialogMe extends Component {
 									?
 									<div id='ask_know_what_is_credit_report' style={comStyles().sectional_section}>
 										<SubtitlesMachine
+												instant={this.state.instantChars}
 												speed={0.25}
-												delay={800}
+												delay={200}
 												text={`All landlords in Ontario expect a credit report with your application. Do you know what that is? 🤔`}
 												textStyles={{
-													fontSize: '1.3rem',
+													fontSize: '1.1rem',
 													color: 'white',
 													textAlign: 'left',
 												}}
@@ -684,7 +727,7 @@ const comStyles = () => {
 			alignItems: 'center',
 		},
 		middle_part: {
-      display: 'flex',
+      // display: 'flex',
       flexDirection: 'column',
       height: '90vh',
       width: '100%',
@@ -717,9 +760,10 @@ const comStyles = () => {
 			cursor: 'pointer',
 		},
 		sectional: {
-			height: '90vh',
+			position: 'relative',
+			height: 'auto',
 			minHeight: '90vh',
-      display: 'flex',
+      // display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'center',
@@ -796,7 +840,7 @@ const inputStyles = () => {
 			left: '0px',
 		},
     button: {
-      fontSize: '1.3rem',
+      fontSize: '1.1rem',
       fontWeight: 'bold',
       color: 'white',
       border: '1px solid white',
@@ -806,7 +850,7 @@ const inputStyles = () => {
       textAlign: 'center',
       cursor: 'pointer',
 			position: 'absolute',
-			bottom: '15vh'
+			bottom: '10vh',
     },
 		upload: {
 			margin: '30px 0px 0px 0px',

@@ -12,7 +12,7 @@ const config = {
     publicPath: '/',
     filename: 'bundle.js'
   },
-  devtool: 'source-map',
+  // devtool: 'source-map',
   module: {
     rules: [
       {
@@ -85,12 +85,12 @@ const config = {
       template: './index.html',
       inject: 'body',
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //     compress: {
-    //         drop_console: true
-    //     },
-    //     mangle: false
-    // })
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            drop_console: true
+        },
+        mangle: false
+    })
     // new ManifestPlugin({
     //   gcm_sender_id: '103953800507'
     // })

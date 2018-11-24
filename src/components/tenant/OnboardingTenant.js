@@ -33,6 +33,7 @@ class OnboardingTenant extends Component {
 			show_down: true,
 			listeners: [],
 			completed: [],
+			instantChars: false,
 
 			full_name: '',
 			people: 1,
@@ -53,6 +54,18 @@ class OnboardingTenant extends Component {
 		if (this.state.listeners.filter(l => l === 'full_name').length === 0 && document.getElementById('full_name')) {
 			this.listenToInputClose('#ask_destination', 'gave_name', 'full_name')
 		}
+	}
+
+	// trigger instant load text from <SubtitleMachine>
+	instantCharClick() {
+		this.setState({
+			instantChars: true
+		})
+		setTimeout(() => {
+			this.setState({
+				instantChars: false
+			})
+		}, 50)
 	}
 
 	// pass in the id of the next div to scroll down to, add the id of the section we just finished, and blur any current input with id inputDiv
@@ -164,7 +177,7 @@ class OnboardingTenant extends Component {
 	render() {
 		return (
 			<div id='OnboardingTenant' style={comStyles().container}>
-        <div style={comStyles().scroll}>
+        <div onClick={() => this.instantCharClick()} style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
 							this.state.show_up
@@ -177,11 +190,12 @@ class OnboardingTenant extends Component {
 					<div id='middle_part' style={comStyles().middle_part}>
 						<div id='ask_name' style={comStyles().sectional}>
 							<SubtitlesMachine
+									instant={this.state.instantChars}
 									speed={0.25}
 									delay={500}
 									text={`Let's get to know each other better 😊 What is your name?`}
 									textStyles={{
-										fontSize: '1.3rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
 									}}
@@ -228,11 +242,12 @@ class OnboardingTenant extends Component {
 							?
 							<div id='ask_destination' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`Nice to meet you ${this.state.full_name.split(' ')[0].charAt(0).toUpperCase() + this.state.full_name.split(' ')[0].slice(1)} 🤝 Where do you most frequently commute to? Work, school... etc`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -283,11 +298,12 @@ class OnboardingTenant extends Component {
 							?
 							<div id='asked_commute_mode' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`What is your primary means of transportation?`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -332,11 +348,12 @@ class OnboardingTenant extends Component {
 							?
 							<div id='ask_group_size' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`How many people are in your group?`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -374,11 +391,12 @@ class OnboardingTenant extends Component {
 							?
 							<div id='ask_budget_per_person' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`And what's your max budget per person?`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -429,11 +447,12 @@ class OnboardingTenant extends Component {
 							?
 							<div id='done1' style={comStyles().sectional}>
 								<SubtitlesMachine
+										instant={this.state.instantChars}
 										speed={0.25}
 										delay={800}
 										text={`Alright 😄 I'll search the internet for rentals that match your preferences. 🔍`}
 										textStyles={{
-											fontSize: '1.3rem',
+											fontSize: '1.1rem',
 											color: 'white',
 											textAlign: 'left',
 										}}
@@ -452,11 +471,12 @@ class OnboardingTenant extends Component {
 										this.state.completed.filter(c => c === 'done1').length > 0
 										?
 										<SubtitlesMachine
+												instant={this.state.instantChars}
 												speed={0.25}
 												delay={800}
 												text={`Ready to start your journey? 👀`}
 												textStyles={{
-													fontSize: '1.3rem',
+													fontSize: '1.1rem',
 													color: 'white',
 													textAlign: 'left',
 												}}
@@ -587,7 +607,7 @@ const comStyles = () => {
 			alignItems: 'center',
 		},
 		middle_part: {
-      display: 'flex',
+      // display: 'flex',
       flexDirection: 'column',
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
@@ -620,7 +640,7 @@ const comStyles = () => {
 		},
 		sectional: {
 			position: 'relative',
-			height: '90vh',
+			height: 'auto',
 			minHeight: '90vh',
       display: 'flex',
       flexDirection: 'column',
@@ -674,7 +694,7 @@ const inputStyles = () => {
       padding: '30px'
     },
     button: {
-      fontSize: '1.3rem',
+      fontSize: '1.1rem',
       fontWeight: 'bold',
       color: 'white',
       border: '1px solid white',
@@ -684,7 +704,7 @@ const inputStyles = () => {
       textAlign: 'center',
       cursor: 'pointer',
 			position: 'absolute',
-			bottom: '15vh'
+			bottom: '10vh',
     },
   }
 }

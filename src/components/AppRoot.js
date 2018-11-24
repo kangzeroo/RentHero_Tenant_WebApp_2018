@@ -15,6 +15,12 @@ import {
 import 'font-awesome/css/font-awesome.css'
 import 'antd-mobile/dist/antd-mobile.css'
 import 'antd/dist/antd.css'
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import {
+  LocaleProvider,
+} from 'antd-mobile'
+import enUS from 'antd-mobile/lib/locale-provider/en_US'
 import AppRootMechanics from './AppRootMechanics'
 import AppRoutes from './AppRoutes'
 import HomePage from './pages/HomePage'
@@ -27,6 +33,7 @@ import OnboardingTenant from './tenant/OnboardingTenant'
 import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
+import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 
@@ -36,21 +43,24 @@ class AppRoot extends Component {
 	render() {
     if (this.props.authentication_loaded) {
       return (
-        <Switch>
-          <Route exact path='/' render={WelcomeScreen} />
-          <Route exact path='/onboarding' render={OnboardingTenant} />
-          <Route exact path='/login' render={HomePage} />
-          <Route exact path='/logout' render={Logout} />
+        <LocaleProvider locale={enUS}>
+          <Switch>
 
-          <Route path='/app/*' component={AppRoutes} />
+            <Route exact path='/' render={WelcomeScreen} />
+            <Route exact path='/onboarding' render={OnboardingTenant} />
+            <Route exact path='/login' render={HomePage} />
+            <Route exact path='/logout' render={Logout} />
 
-          <Route exact path='/notes' render={NoteToTester} />
-          <Route exact path='/matches' render={SwipeList} />
-          <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
-          <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-          <Route exact path='/sandbox' render={MoveInPrefs} />
+            <Route path='/app/*' component={AppRoutes} />
 
-        </Switch>
+            <Route exact path='/notes' render={NoteToTester} />
+            <Route exact path='/matches' render={SwipeList} />
+            <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
+            <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
+            <Route exact path='/sandbox' render={AdvisorUITemplate} />
+
+          </Switch>
+        </LocaleProvider>
       )
     } else {
       return (

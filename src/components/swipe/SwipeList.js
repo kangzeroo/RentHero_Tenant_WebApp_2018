@@ -86,11 +86,16 @@ class SwipeList extends Component {
 		this.props.nextListing(judgement)
 		this.props.incrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
 		// this.props.decrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
-		if (this.props.likes.length === 4) {
+		if (this.props.likes.length === 3) {
+			this.props.history.push('/dialog/moveinprefs/me')
+		}
+		if (this.props.likes.length === 6) {
 			this.props.history.push('/dialog/credit_report/me')
 		}
-		if (this.props.likes.length > 4 && this.props.likes.concat(this.props.dislikes).length > 6) {
-			window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
+		if (this.props.likes.length > 8 && this.props.likes.concat(this.props.dislikes).length > 18) {
+			if (1 - Math.random() <= 0.1) {
+				window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
+			}
 		}
 		window.scrollTo(0,0)
 	}
