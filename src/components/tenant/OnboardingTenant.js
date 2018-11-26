@@ -112,11 +112,12 @@ class OnboardingTenant extends Component {
               //   new google.maps.LatLng(-80.671519, 43.522913),
               //   new google.maps.LatLng(-80.344067, 43.436979)
               // )
+							componentRestrictions: {country: "ca"}
             }
           );
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
-    this.autocomplete.addListener('place_changed', this.fillInAddress.bind(this));
+    this.autocomplete.addListener('place_changed', this.fillInAddress.bind(this))
   }
 
   fillInAddress() {
@@ -192,7 +193,7 @@ class OnboardingTenant extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={this.state.instantChars ? 0 : 500}
 									text={`Let's get to know each other better 😊 What is your name?`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -244,8 +245,8 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
-										text={`Nice to meet you ${this.state.full_name.split(' ')[0].charAt(0).toUpperCase() + this.state.full_name.split(' ')[0].slice(1)} 🤝 Where do you most frequently commute to? Work, school... etc`}
+										delay={this.state.instantChars ? 0 : 800}
+										text={`Nice to meet you ${this.state.full_name.split(' ')[0].charAt(0).toUpperCase() + this.state.full_name.split(' ')[0].slice(1)} 🤝 Where do you most frequently commute to?`}
 										textStyles={{
 											fontSize: '1.1rem',
 											color: 'white',
@@ -260,6 +261,7 @@ class OnboardingTenant extends Component {
 											setTimeout(() => {
 												this.setState({ completed: this.state.completed.concat(['ask_destination']) })
 												this.startAutocomplete()
+												document.getElementById('destination_address').focus()
 											}, 300)
 										}}
 									/>
@@ -300,7 +302,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
+										delay={this.state.instantChars ? 0 : 800}
 										text={`What is your primary means of transportation?`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -350,8 +352,8 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
-										text={`How many people are in your group?`}
+										delay={this.state.instantChars ? 0 : 800}
+										text={`How many people are in your group? It's ok if this changes.`}
 										textStyles={{
 											fontSize: '1.1rem',
 											color: 'white',
@@ -393,7 +395,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
+										delay={this.state.instantChars ? 0 : 800}
 										text={`And what's your max budget per person?`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -449,7 +451,7 @@ class OnboardingTenant extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
+										delay={this.state.instantChars ? 0 : 800}
 										text={`Alright 😄 I'll search the internet for rentals that match your preferences. 🔍`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -473,7 +475,7 @@ class OnboardingTenant extends Component {
 										<SubtitlesMachine
 												instant={this.state.instantChars}
 												speed={0.25}
-												delay={800}
+												delay={this.state.instantChars ? 0 : 800}
 												text={`Ready to start your journey? 👀`}
 												textStyles={{
 													fontSize: '1.1rem',
@@ -500,7 +502,7 @@ class OnboardingTenant extends Component {
 										?
 										<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', width: '100%', margin: '30px 0px 0px 0px' }}>
 											<Checkbox.AgreeItem onChange={(e) => this.setState({ agreed_terms: e.target.checked })}>
-						            <span style={{ color: 'white' }}>Agree to </span><a href='https://terms.renthero.com' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>Terms of Use and Privacy Policy</a>
+						            <span style={{ color: 'white' }}>Agree to Terms of Use and Privacy Policy. To view click </span><a href='https://terms.renthero.com' target='_blank' style={{ textDecoration: 'none', color: 'white' }}>here</a>
 						          </Checkbox.AgreeItem>
 										</div>
 										:

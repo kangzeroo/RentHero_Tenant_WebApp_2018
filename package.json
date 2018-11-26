@@ -40,6 +40,7 @@
     "webpack-webfont": "0.0.1-alpha.7"
   },
   "dependencies": {
+    "@google/maps": "^0.5.5",
     "amazon-cognito-identity-js": "1.19.0",
     "amazon-cognito-js": "1.1.0",
     "antd": "^3.6.4",

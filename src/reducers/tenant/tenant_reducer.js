@@ -2,11 +2,14 @@ import {
   INCREMENT_LIKES,
   DECREMENT_LIKES,
   SAVE_PREFS,
+  CHANGE_COMMUTE_MODE,
+  CHANGE_CARD_SECTION_SHOWN,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
   likes: [],
   dislikes: [],
+  card_section_shown: 'commute',
   prefs: {
     max_beds: 2,
     max_budget: 3000,
@@ -35,6 +38,22 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         prefs: action.payload,
+      }
+    case CHANGE_COMMUTE_MODE:
+      return {
+        ...state,
+        prefs: {
+          ...state.prefs,
+          destination: {
+            ...state.prefs.destination,
+            commute_mode: action.payload
+          }
+        }
+      }
+    case CHANGE_CARD_SECTION_SHOWN:
+      return  {
+        ...state,
+        card_section_shown: action.payload
       }
     default:
       return {
