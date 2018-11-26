@@ -93,7 +93,7 @@ class InteractiveTemplate extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={this.state.instantChars ? 0 : 500}
 									text={`Ask some questions and click for the next slide 😊`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -144,7 +144,7 @@ class InteractiveTemplate extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
+										delay={this.state.instantChars ? 0 : 800}
 										text={`Section Two`}
 										textStyles={{
 											fontSize: '1.1rem',

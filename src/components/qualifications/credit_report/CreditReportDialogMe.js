@@ -95,7 +95,7 @@ class CreditReportDialogMe extends Component {
 				<SubtitlesMachine
 						instant={this.state.instantChars}
 						speed={0.25}
-						delay={300}
+						delay={this.state.instantChars ? 0 : 300}
 						text={`A credit report is an official government 🏛️ + bank document 📜 that shows how reliably you pay back credit card bills, car loans and debt 😅`}
 						textStyles={{
 							fontSize: '1.1rem',
@@ -120,7 +120,7 @@ class CreditReportDialogMe extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={300}
+									delay={this.state.instantChars ? 0 : 300}
 									text={`Your credit report is summarized by a simple score out of 850. Only official EQUIFAX reports are accepted.`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -150,7 +150,7 @@ class CreditReportDialogMe extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={300}
+									delay={this.state.instantChars ? 0 : 300}
 									text={`Would you like get your EQUIFAX report? It takes 15 minutes and you will need a laptop computer (opens new tab).`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -226,7 +226,7 @@ class CreditReportDialogMe extends Component {
 				<SubtitlesMachine
 						instant={this.state.instantChars}
 						speed={0.25}
-						delay={300}
+						delay={this.state.instantChars ? 0 : 300}
 						text={`Please enter your EQUIFAX credit score below. Landlords require everyone in your group to do this 👍`}
 						textStyles={{
 							fontSize: '1.1rem',
@@ -297,7 +297,7 @@ class CreditReportDialogMe extends Component {
 				<SubtitlesMachine
 						instant={this.state.instantChars}
 						speed={0.25}
-						delay={300}
+						delay={this.state.instantChars ? 0 : 300}
 						text={`Please upload your credit report as a PDF 📜 RentHero keeps all your sensitive documents secure with bank level AES-256 bit encryption 🔒`}
 						textStyles={{
 							fontSize: '1.1rem',
@@ -356,7 +356,7 @@ class CreditReportDialogMe extends Component {
 				<SubtitlesMachine
 						instant={this.state.instantChars}
 						speed={0.25}
-						delay={200}
+						delay={this.state.instantChars ? 0 : 200}
 						text={`Sure 👍 We can do this another time. Remember that all landlords require a credit report, so it's better to get it done earlier rather than later.`}
 						textStyles={{
 							fontSize: '1.1rem',
@@ -380,7 +380,7 @@ class CreditReportDialogMe extends Component {
 						<SubtitlesMachine
 								instant={this.state.instantChars}
 								speed={0.25}
-								delay={400}
+								delay={this.state.instantChars ? 0 : 400}
 								text={`You can always come back to upload your docs by going to Profile > My Documents 🙂`}
 								textStyles={{
 									fontSize: '1.1rem',
@@ -424,7 +424,7 @@ class CreditReportDialogMe extends Component {
 				<SubtitlesMachine
 						instant={this.state.instantChars}
 						speed={0.25}
-						delay={200}
+						delay={this.state.instantChars ? 0 : 200}
 						text={`Congratulations, you did it! 🎉 Your rental application is now more complete 😄`}
 						textStyles={{
 							fontSize: '1.1rem',
@@ -449,7 +449,7 @@ class CreditReportDialogMe extends Component {
 						<SubtitlesMachine
 								instant={this.state.instantChars}
 								speed={0.25}
-								delay={200}
+								delay={this.state.instantChars ? 0 : 200}
 								text={`Before you go back to browsing properties, share the link below with your roommates so they can be better prepared too 💪 Teamwork!`}
 								textStyles={{
 									fontSize: '1.1rem',
@@ -522,7 +522,7 @@ class CreditReportDialogMe extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={200}
+									delay={this.state.instantChars ? 0 : 200}
 									text={`I see you've found some cool properties! 😎 Let's briefly talk about paperwork.`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -547,7 +547,7 @@ class CreditReportDialogMe extends Component {
 										<SubtitlesMachine
 												instant={this.state.instantChars}
 												speed={0.25}
-												delay={200}
+												delay={this.state.instantChars ? 0 : 200}
 												text={`All landlords in Ontario expect a credit report with your application. Do you know what that is? 🤔`}
 												textStyles={{
 													fontSize: '1.1rem',

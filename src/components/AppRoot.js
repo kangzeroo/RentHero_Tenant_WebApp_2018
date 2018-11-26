@@ -19,6 +19,8 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import {
   LocaleProvider,
+  List,
+  Drawer,
 } from 'antd-mobile'
 import enUS from 'antd-mobile/lib/locale-provider/en_US'
 import AppRootMechanics from './AppRootMechanics'
@@ -36,11 +38,22 @@ import CreditReportDialogMe from './qualifications/credit_report/CreditReportDia
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
+import { triggerDrawerNav } from '../actions/app/app_actions'
 
 
 class AppRoot extends Component {
 
+  clickedDrawerOption(path) {
+    this.props.triggerDrawerNav(false)
+    this.props.history.push(path)
+  }
+
 	render() {
+    const sidebar = [
+      <List.Item key={1} onClick={() => this.clickedDrawerOption('/')}>Profile</List.Item>,
+      <List.Item key={2} onClick={() => this.clickedDrawerOption('/matches')}>Browse</List.Item>,
+      <List.Item key={3} onClick={() => this.clickedDrawerOption('/')}>Favorites</List.Item>,
+    ]
     if (this.props.authentication_loaded) {
       return (
         <LocaleProvider locale={enUS}>
@@ -53,12 +66,22 @@ class AppRoot extends Component {
 
             <Route path='/app/*' component={AppRoutes} />
 
-            <Route exact path='/notes' render={NoteToTester} />
-            <Route exact path='/matches' render={SwipeList} />
-            <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
-            <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-            <Route exact path='/sandbox' render={AdvisorUITemplate} />
-
+            <Drawer
+              className="main-navigation"
+              style={{ minHeight: document.documentElement.clientHeight }}
+              enableDragHandle={false}
+              sidebarStyle={{ zIndex: '99', width: '35vw', backgroundColor: 'white' }}
+              contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
+              overlayStyle={{ zIndex: '10' }}
+              sidebar={sidebar}
+              open={this.props.drawer_nav_open}
+              onOpenChange={() => this.props.triggerDrawerNav(false)}
+            >
+              <Route exact path='/matches' render={SwipeList} />
+              <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
+              <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
+              <Route exact path='/sandbox' render={AdvisorUITemplate} />
+            </Drawer>
           </Switch>
         </LocaleProvider>
       )
@@ -82,6 +105,8 @@ class AppRoot extends Component {
 AppRoot.propTypes = {
 	history: PropTypes.object.isRequired,
   authentication_loaded: PropTypes.bool.isRequired,
+  triggerDrawerNav: PropTypes.func.isRequired,
+  drawer_nav_open: PropTypes.bool,
 }
 
 // for all optional props, define a default value
@@ -96,12 +121,14 @@ const RadiumHOC = Radium(AppRoot)
 const mapReduxToProps = (redux) => {
 	return {
     authentication_loaded: redux.auth.authentication_loaded,
+    drawer_nav_open: redux.app.drawer_nav_open,
 	}
 }
 
 // Connect together the Redux store with this React component
 const AppRootKernal =  withRouter(
 	connect(mapReduxToProps, {
+    triggerDrawerNav,
 	})(RadiumHOC)
 )
 

@@ -10,7 +10,7 @@ import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import $ from 'jquery'
 import SubtitlesMachine from '../modules/SubtitlesMachine'
-import { Calendar, DateRangePicker } from 'react-date-range'
+import { Calendar, DateRange } from 'react-date-range'
 import {
 	Icon,
 	Toast,
@@ -29,6 +29,13 @@ class MoveInPrefs extends Component {
 			instantChars: false,
 
 			date: new Date(),
+			dateRange: {
+        selection: {
+          startDate: new Date(),
+          endDate: null,
+          key: 'selection',
+        },
+      },
 			movein_rush: '',		// 'must', 'flexible', 'browsing'
 			lease_situation: '',
 			moving_reason: '',
@@ -99,7 +106,7 @@ class MoveInPrefs extends Component {
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={this.state.instantChars ? 0 : 500}
 									text={`Let's talk about move-in dates. Are you in a rush to move-in? 📅`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -140,7 +147,7 @@ class MoveInPrefs extends Component {
 								<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={this.state.instantChars ? 0 : 500}
 									text={`What is the reason for your desired move?`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -155,7 +162,9 @@ class MoveInPrefs extends Component {
 									doneEvent={() => {
 										console.log('DONE')
 										setTimeout(() => {
-											this.setState({ completed: this.state.completed.concat(['moving_reason']) })
+											this.setState({ completed: this.state.completed.concat(['moving_reason']) }, () => {
+												// document.getElementById('moving_reason_text').focus()
+											})
 										}, 500)
 									}}
 								/>
@@ -196,7 +205,7 @@ class MoveInPrefs extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={500}
+										delay={this.state.instantChars ? 0 : 500}
 										text={`When is your ideal move-in date? 🏆`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -218,10 +227,12 @@ class MoveInPrefs extends Component {
 								{
 									this.state.completed.filter(c => c === 'ideal_movein').length > 0
 									?
-									<div id='ideal_movein_date' style={comStyles().field_holder}>
+									<div id='ideal_movein_date' style={{ ...comStyles().field_holder, width: 'auto' }}>
 										<Calendar
 											date={this.state.date}
+											showMonthArrow={false}
 											minDate={new Date()}
+											scroll={{enabled: true}}
 											onChange={date => this.setState({ date }, () => console.log(this.state))}
 										/>
 										{
@@ -253,7 +264,7 @@ class MoveInPrefs extends Component {
 								<SubtitlesMachine
 										instant={this.state.instantChars}
 										speed={0.25}
-										delay={800}
+										delay={this.state.instantChars ? 0 : 800}
 										text={`🤔 Flexible move-in dates gives you more options 😏 What's your range?`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -276,20 +287,15 @@ class MoveInPrefs extends Component {
 									{
 										this.state.completed.filter(c => c === 'acceptable_movein_range').length > 0
 										?
-										<div id='chosen_movein_range'>
-											<DateRangePicker
-												ranges={[{
-													startDate: new Date(),
-													endDate: new Date(),
-													key: 'selection',
-												}]}
-												showDateDisplay={false}
-												moveRangeOnFirstSelection={false}
-												className={'PreviewArea'}
+										<div id='chosen_movein_range' style={{ ...comStyles().field_holder, width: 'auto' }}>
+											<DateRange
 												minDate={new Date()}
-												onChange={(ranges) => {
-													console.log(ranges)
-												}}
+												showMonthArrow={false}
+												scroll={{enabled: true}}
+												onChange={(selection) => this.setState({ dateRange: selection })}
+												moveRangeOnFirstSelection={false}
+												ranges={[this.state.dateRange.selection]}
+												className={'PreviewArea'}
 											/>
 											{/*
 												moment(this.state.date).diff(moment(), 'hours') < 0
@@ -298,14 +304,14 @@ class MoveInPrefs extends Component {
 												:
 												null
 											*/}
-											{
-												// moment(this.state.date).diff(moment(), 'hours') > 0
-												true
-												?
-												<Icon onClick={() => this.clickedCheck('#existing-lease', 'chosen_movein_range')} type='check-circle' size='lg' style={comStyles().check} />
-												:
-												null
-											}
+												{
+													// moment(this.state.date).diff(moment(), 'hours') > 0
+													true
+													?
+													<Icon onClick={() => this.clickedCheck('#existing-lease', 'chosen_movein_range')} type='check-circle' size='lg' style={comStyles().check} />
+													:
+													null
+												}
 										</div>
 										:
 										null
@@ -321,7 +327,7 @@ class MoveInPrefs extends Component {
 								<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
+									delay={this.state.instantChars ? 0 : 500}
 									text={`Have you been leasing your current place for more than 1 year? 💼`}
 									textStyles={{
 										fontSize: '1.1rem',
@@ -347,7 +353,7 @@ class MoveInPrefs extends Component {
 										instant={this.state.instantChars}
 										id='notice'
 										speed={0.25}
-										delay={500}
+										delay={this.state.instantChars ? 0 : 500}
 										text={`You legally must give 2 months notice to your landlord before exiting your current lease 🌮`}
 										textStyles={{
 											fontSize: '1.1rem',
@@ -392,7 +398,7 @@ class MoveInPrefs extends Component {
 										<SubtitlesMachine
 												instant={this.state.instantChars}
 												speed={0.25}
-												delay={500}
+												delay={this.state.instantChars ? 0 : 500}
 												text={`We found 88 matching rentals for your time range. Check out the distribution.`}
 												textStyles={{
 													fontSize: '1.1rem',

@@ -2,12 +2,14 @@ import {
   CHANGE_LANGUAGE,
   CHANGE_TAB,
   LOADING_COMPLETE,
+  TOGGLE_DRAWER_NAV,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
   selected_language: 'en',
   selected_tab: 'home',
   loading_complete: false,
+  drawer_nav_open: false,
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -26,6 +28,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading_complete: true,
+      }
+    case TOGGLE_DRAWER_NAV:
+      return {
+        ...state,
+        drawer_nav_open: action.payload
       }
 		default:
 			return {

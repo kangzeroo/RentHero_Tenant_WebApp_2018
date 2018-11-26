@@ -2,6 +2,7 @@ import {
   CHANGE_LANGUAGE,
   CHANGE_TAB,
   LOADING_COMPLETE,
+  TOGGLE_DRAWER_NAV,
 } from '../action_types'
 
 // change the language of the app
@@ -30,6 +31,16 @@ export const saveLoadingCompleteToRedux = () => {
     dispatch({
       type: LOADING_COMPLETE,
       payload: true,
+    })
+  }
+}
+
+
+export const triggerDrawerNav = (bool) => {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_DRAWER_NAV,
+      payload: bool,
     })
   }
 }

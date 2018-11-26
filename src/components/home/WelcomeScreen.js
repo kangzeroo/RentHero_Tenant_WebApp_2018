@@ -29,6 +29,10 @@ class InteractiveTemplate extends Component {
 		}
 	}
 
+	componentDidMount() {
+		mixpanel.track('Loaded Welcome Screen')
+	}
+
 	componentDidUpdate() {
 		// repeat this for each HTML input field you need to auto-close on enter key press
 		if (this.state.listeners.filter(l => l === 'input_field').length === 0 && document.getElementById('input_field')) {
@@ -72,6 +76,11 @@ class InteractiveTemplate extends Component {
 		this.setState({
 			listeners: this.state.listeners.concat([inputDiv])
 		})
+	}
+
+	beginAdventure() {
+		this.props.history.push('/onboarding')
+		mixpanel.track('Began Adventure')
 	}
 
 	render() {
@@ -151,7 +160,7 @@ class InteractiveTemplate extends Component {
 											instant={this.state.instantChars}
 											speed={0.3}
 											delay={500}
-											text={`I'm an A.I. rental agent looking out for your best interests . . . I'll help you 🏠 find homes 💡 provide expert advice, and 📜 prepare your paperwork.`}
+											text={`I'm an A.I. rental agent looking out for your best interests . . . I'll help you find homes 🏠 provide expert advice 💡 and prepare your paperwork 📜`}
 											textStyles={{
 												fontSize: '1.1rem',
 												color: 'white',
@@ -209,7 +218,7 @@ class InteractiveTemplate extends Component {
 							{
 								this.state.completed.filter(c => c === 'home_hunting').length > 0
 								?
-								<div onClick={() => this.props.history.push('/onboarding')} style={inputStyles().button}>
+								<div onClick={() => this.beginAdventure()} style={inputStyles().button}>
 									BEGIN ADVENTURE
 								</div>
 								:

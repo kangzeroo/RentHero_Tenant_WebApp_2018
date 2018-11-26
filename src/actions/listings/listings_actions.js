@@ -4,6 +4,8 @@ import {
   SAVE_PREFS,
   INCREMENT_LIKES,
   DECREMENT_LIKES,
+  CHANGE_COMMUTE_MODE,
+  CHANGE_CARD_SECTION_SHOWN,
 } from '../action_types'
 
 // change the language of the app
@@ -32,6 +34,24 @@ export const savePrefs = (prefs) => {
     dispatch({
       type: SAVE_PREFS,
       payload: prefs
+    })
+  }
+}
+
+export const changeCommuteMode = (mode) => {
+  return (dispatch) => {
+    dispatch({
+      type: CHANGE_COMMUTE_MODE,
+      payload: mode
+    })
+  }
+}
+
+export const changeShownSectionCards = (section) => {
+  return (dispatch) => {
+    dispatch({
+      type: CHANGE_CARD_SECTION_SHOWN,
+      payload: section
     })
   }
 }
