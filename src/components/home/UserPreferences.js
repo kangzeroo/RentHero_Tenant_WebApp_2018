@@ -114,8 +114,12 @@ class UserPreferences extends Component {
     })
       .then((data) => {
         console.log(data)
-        this.props.saveListingsToRedux(data)
-        this.props.history.push('/notes')
+        if (data && data.length > 0) {
+          this.props.saveListingsToRedux(data)
+          this.props.history.push('/notes')
+        } else {
+          this.props.history.push('/noresults')
+        }
       })
       .catch((err) => {
         console.log(err)
