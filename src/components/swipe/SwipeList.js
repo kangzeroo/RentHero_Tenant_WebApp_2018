@@ -143,9 +143,9 @@ class SwipeList extends Component {
 			}
 			return (
 				<div id='SwipeList' style={comStyles().container}>
-					<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: '4' }}>
+					{/*<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: '4' }}>
 						<Icon type='ellipsis' size='lg' />
-					</div>
+					</div>*/}
 					<Modal
 						visible={this.state.show_images_modal}
 						transparent
