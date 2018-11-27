@@ -36,6 +36,7 @@ import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
+import NoResults from './modules/NoResults'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -63,6 +64,7 @@ class AppRoot extends Component {
             <Route exact path='/onboarding' render={OnboardingTenant} />
             <Route exact path='/login' render={HomePage} />
             <Route exact path='/logout' render={Logout} />
+            <Route exact path='/noresults' render={NoResults} />
 
             <Route path='/app/*' component={AppRoutes} />
 

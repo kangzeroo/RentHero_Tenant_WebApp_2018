@@ -57,8 +57,12 @@ export default (ComposedComponent) => {
 	      }
 	    })
 				.then((data) => {
-					console.log(data)
-					this.props.saveListingsToRedux(data)
+					if (data && data.length > 0) {
+						console.log(data)
+						this.props.saveListingsToRedux(data)
+					} else {
+						this.props.history.push('/noresults')
+					}
 				})
 				.catch((err) => {
 					console.log(err)
