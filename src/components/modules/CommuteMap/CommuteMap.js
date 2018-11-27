@@ -13,7 +13,7 @@ import {
 } from '../../../actions/listings/listings_actions'
 import {
   Button,
-} from 'antd-mobile'
+} from 'antd'
 
 
 class CommuteMap extends Component {
@@ -127,7 +127,7 @@ class CommuteMap extends Component {
   			<div id='CommuteMap' style={comStyles().container}>
           <div id='controls' style={comStyles().controls}>
             <div id='options' style={comStyles().options}>
-              <Button onClick={() => this.setCommuteMode('DRIVING')} type={this.props.commute_mode.toUpperCase() === 'DRIVING' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>
+              <Button onClick={() => this.setCommuteMode('DRIVING')} type={this.props.commute_mode.toUpperCase() === 'DRIVING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
                 {
                   this.props.commute_mode.toUpperCase() === 'DRIVING'
                   ?
@@ -136,7 +136,7 @@ class CommuteMap extends Component {
                   'DRIVING'
                 }
               </Button>
-              <Button onClick={() => this.setCommuteMode('TRANSIT')} type={this.props.commute_mode.toUpperCase() === 'TRANSIT' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>
+              <Button onClick={() => this.setCommuteMode('TRANSIT')} type={this.props.commute_mode.toUpperCase() === 'TRANSIT' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
                 {
                   this.props.commute_mode.toUpperCase() === 'TRANSIT'
                   ?
@@ -145,7 +145,7 @@ class CommuteMap extends Component {
                   'TRANSIT'
                 }
               </Button>
-              <Button onClick={() => this.setCommuteMode('WALKING')} type={this.props.commute_mode.toUpperCase() === 'WALKING' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>
+              <Button onClick={() => this.setCommuteMode('WALKING')} type={this.props.commute_mode.toUpperCase() === 'WALKING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
                 {
                   this.props.commute_mode.toUpperCase() === 'WALKING'
                   ?
@@ -154,7 +154,7 @@ class CommuteMap extends Component {
                   'WALKING'
                 }
               </Button>
-              <Button onClick={() => this.setCommuteMode('BICYCLING')} type={this.props.commute_mode.toUpperCase() === 'BICYCLING' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>
+              <Button onClick={() => this.setCommuteMode('BICYCLING')} type={this.props.commute_mode.toUpperCase() === 'BICYCLING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
                 {
                   this.props.commute_mode.toUpperCase() === 'BICYCLING'
                   ?
@@ -227,7 +227,7 @@ const comStyles = () => {
       flexDirection: 'column',
       justifyContent: 'space-around',
       alignItems: 'center',
-      height: '200px',
+      height: '100px',
       textAlign: 'center',
     },
 		map: {
