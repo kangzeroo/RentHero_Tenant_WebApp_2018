@@ -165,13 +165,13 @@ class SwipeList extends Component {
 								{this.props.current_listing.listing.IMAGES.map((url, index) => (
 									<a
 										key={url}
-										style={{ display: 'inline-block', width: '100%', minHeight: '500px', height: '100%' }}
+										style={{ display: 'inline-block', width: '100%', height: '100%' }}
 									>
 										<img
 											id="img_carousel"
 											src={url}
 											alt=""
-											style={{ width: '100%', minHeight: '500px', height: '100%', verticalAlign: 'top' }}
+											style={{ width: '100%', height: '100%', verticalAlign: 'top' }}
 											onLoad={() => {
 												// fire window resize event to change height
 												// window.dispatchEvent(new Event('resize'));
