@@ -12,6 +12,9 @@ import {
   Carousel,
   Button,
 } from 'antd-mobile'
+import {
+  Select,
+} from 'antd'
 
 
 class NearbyLocations extends Component {
@@ -138,18 +141,43 @@ class NearbyLocations extends Component {
     if (this.props.card_section_shown === 'nearby') {
   		return (
   			<div id='NearbyLocations' style={comStyles().container}>
-          <div id='controls' style={comStyles().controls}>
-            <Button onClick={() => this.selectedNearby('cafes')} type={this.state.nearbys_string === 'cafes' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Cafés</Button>
-            <Button onClick={() => this.selectedNearby('groceries')} type={this.state.nearbys_string === 'groceries' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Groceries</Button>
-            <Button onClick={() => this.selectedNearby('stores')} type={this.state.nearbys_string === 'stores' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Stores</Button>
-            <Button onClick={() => this.selectedNearby('resturants')} type={this.state.nearbys_string === 'resturants' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Resturants</Button>
-            <Button onClick={() => this.selectedNearby('bars')} type={this.state.nearbys_string === 'bars' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bars</Button>
-            <Button onClick={() => this.selectedNearby('banks')} type={this.state.nearbys_string === 'banks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Banks</Button>
-            <Button onClick={() => this.selectedNearby('bus')} type={this.state.nearbys_string === 'bus' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bus Stops</Button>
-            <Button onClick={() => this.selectedNearby('subway')} type={this.state.nearbys_string === 'subway' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Subway</Button>
-            <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parking</Button>
-            <Button onClick={() => this.selectedNearby('daycare')} type={this.state.nearbys_string === 'daycare' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Daycare</Button>
-            <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parks</Button>
+          {
+            // <div id='controls' style={comStyles().controls}>
+            //   <Button onClick={() => this.selectedNearby('cafes')} type={this.state.nearbys_string === 'cafes' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Cafés</Button>
+            //   <Button onClick={() => this.selectedNearby('groceries')} type={this.state.nearbys_string === 'groceries' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Groceries</Button>
+            //   <Button onClick={() => this.selectedNearby('stores')} type={this.state.nearbys_string === 'stores' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Stores</Button>
+            //   <Button onClick={() => this.selectedNearby('resturants')} type={this.state.nearbys_string === 'resturants' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Resturants</Button>
+            //   <Button onClick={() => this.selectedNearby('bars')} type={this.state.nearbys_string === 'bars' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bars</Button>
+            //   <Button onClick={() => this.selectedNearby('banks')} type={this.state.nearbys_string === 'banks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Banks</Button>
+            //   <Button onClick={() => this.selectedNearby('bus')} type={this.state.nearbys_string === 'bus' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bus Stops</Button>
+            //   <Button onClick={() => this.selectedNearby('subway')} type={this.state.nearbys_string === 'subway' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Subway</Button>
+            //   <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parking</Button>
+            //   <Button onClick={() => this.selectedNearby('daycare')} type={this.state.nearbys_string === 'daycare' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Daycare</Button>
+            //   <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parks</Button>
+            // </div>
+          }
+          <div id='controls' style={{ width: '100%', padding: '10px' }}>
+            <p style={{ fontWeight: 'bold' }}>Show Nearby...</p>
+            <Select
+              showSearch
+              placeholder='Show Nearby...'
+              size='large'
+              style={{ width: '100%', }}
+              onChange={(a) => this.selectedNearby(a)}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              <Select.Option key='cafes' value='cafes'>Cafes</Select.Option>
+              <Select.Option key='groceries' value='groceries'>Groceries</Select.Option>
+              <Select.Option key='stores' value='stores'>Stores</Select.Option>
+              <Select.Option key='restaurants' value='restaurants'>Restaurants</Select.Option>
+              <Select.Option key='bars' value='bars'>Bars</Select.Option>
+              <Select.Option key='banks' value='banks'>Banks</Select.Option>
+              <Select.Option key='bus' value='bus'>Bus Station</Select.Option>
+              <Select.Option key='subway' value='subway'>Subway Station</Select.Option>
+              <Select.Option key='parking' value='parking'>Parking Lots</Select.Option>
+              <Select.Option key='daycare' value='daycare'>Day Care</Select.Option>
+              <Select.Option key='parks' value='parks'>Parks</Select.Option>
+            </Select>
           </div>
   				<div id='map' style={comStyles().map}></div>
           {
