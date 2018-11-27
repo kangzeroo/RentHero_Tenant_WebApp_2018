@@ -49,7 +49,8 @@ let myPrefs = {
     { address: '123 Main St', place_id: 'abcdef', commute_mode: 'transit', gps: { lat: 46.7846426, lng: -68.4352647 } }
   ],
   posted_in_last_x_days: 10,
-  include_missing_matched: true
+  include_missing_matched: true,
+  radius: 20000
 }
 
 export const getListings = (prefs) => {
@@ -60,6 +61,15 @@ export const getListings = (prefs) => {
   myPrefs.budget.ideal_per_person = prefs.max_budget
   myPrefs.budget.max_per_person = prefs.max_budget
   myPrefs.destinations = [prefs.destination]
+  if (prefs.destination.commute_mode === 'driving') {
+    myPrefs.radius = 30000
+  } else if (prefs.destination.commute_mode === 'transit') {
+    myPrefs.radius = 20000
+  } else if (prefs.destination.commute_mode === 'bicycling') {
+    myPrefs.radius = 5000
+  } else if (prefs.destination.commute_mode === 'walking') {
+    myPrefs.radius = 2000
+  }
 	const p = new Promise((res, rej) => {
 		axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings', myPrefs)
 			.then((data) => {

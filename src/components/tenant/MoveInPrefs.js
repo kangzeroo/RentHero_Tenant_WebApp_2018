@@ -180,7 +180,7 @@ class MoveInPrefs extends Component {
 			                  console.log(e.target.value)
 			                  this.setState({ moving_reason: e.target.value })
 			                }}
-			                placeholder="🌃"
+			                placeholder="3 sentences is ideal"
 			                style={inputStyles().textarea}
 			              ></textarea>
 										{
@@ -225,9 +225,17 @@ class MoveInPrefs extends Component {
 										}}
 									/>
 								{
-									this.state.completed.filter(c => c === 'ideal_movein').length > 0
+									// this.state.completed.filter(c => c === 'ideal_movein').length > 0
+									true
 									?
-									<div id='ideal_movein_date' style={{ ...comStyles().field_holder, width: 'auto' }}>
+									<div id='ideal_movein_date' style={{ ...comStyles().field_holder, width: 'auto', padding: '60px 0px 0px 0px' }}>
+										{
+											moment(this.state.date).diff(moment(), 'hours') > 0
+											?
+											<Icon onClick={() => this.clickedCheck('#acceptable_movein_range', 'ideal_movein_date')} type='check-circle' size='lg' style={comStyles().top_check} />
+											:
+											null
+										}
 										<Calendar
 											date={this.state.date}
 											showMonthArrow={false}
@@ -239,13 +247,6 @@ class MoveInPrefs extends Component {
 											moment(this.state.date).diff(moment(), 'hours') < 0
 											?
 											Toast.fail('Move-in date cannot be in the past', 2)
-											:
-											null
-										}
-										{
-											moment(this.state.date).diff(moment(), 'hours') > 0
-											?
-											<Icon onClick={() => this.clickedCheck('#acceptable_movein_range', 'ideal_movein_date')} type='check-circle' size='lg' style={comStyles().check} />
 											:
 											null
 										}
@@ -285,9 +286,18 @@ class MoveInPrefs extends Component {
 										}}
 									/>
 									{
-										this.state.completed.filter(c => c === 'acceptable_movein_range').length > 0
+										// this.state.completed.filter(c => c === 'acceptable_movein_range').length > 0
+										true
 										?
-										<div id='chosen_movein_range' style={{ ...comStyles().field_holder, width: 'auto' }}>
+										<div id='chosen_movein_range' style={{ ...comStyles().field_holder, width: 'auto', padding: '60px 0px 0px 0px' }}>
+											{
+												// moment(this.state.date).diff(moment(), 'hours') > 0
+												true
+												?
+												<Icon onClick={() => this.clickedCheck('#existing-lease', 'chosen_movein_range')} type='check-circle' size='lg' style={comStyles().top_check} />
+												:
+												null
+											}
 											<DateRange
 												minDate={new Date()}
 												showMonthArrow={false}
@@ -304,14 +314,6 @@ class MoveInPrefs extends Component {
 												:
 												null
 											*/}
-												{
-													// moment(this.state.date).diff(moment(), 'hours') > 0
-													true
-													?
-													<Icon onClick={() => this.clickedCheck('#existing-lease', 'chosen_movein_range')} type='check-circle' size='lg' style={comStyles().check} />
-													:
-													null
-												}
 										</div>
 										:
 										null
@@ -577,6 +579,15 @@ const comStyles = () => {
 			margin: '15px 0px 0px 0px',
 			position: 'absolute',
 			bottom: '0px',
+			right: '0px',
+		},
+		top_check: {
+			color: 'white',
+			fontWeight: 'bold',
+			cursor: 'pointer',
+			margin: '15px 0px 0px 0px',
+			position: 'absolute',
+			top: '0px',
 			right: '0px',
 		}
 	}
