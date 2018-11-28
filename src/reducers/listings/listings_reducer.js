@@ -1,6 +1,7 @@
 import {
   SAVE_LISTINGS_TO_REDUX,
   NEXT_LISTING,
+  SET_CURRENT_LISTING,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -11,10 +12,16 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE, action) => {
 	switch (action.type) {
     case SAVE_LISTINGS_TO_REDUX:
+      console.log(action.payload)
       return {
         ...state,
         listings: action.payload,
         current_listing: action.payload[0]
+      }
+    case SET_CURRENT_LISTING:
+      return {
+        ...state,
+        current_listing: action.payload,
       }
     case NEXT_LISTING:
       let nextListingIndex = 0

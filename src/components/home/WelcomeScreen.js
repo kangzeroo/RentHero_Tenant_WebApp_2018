@@ -29,6 +29,13 @@ class InteractiveTemplate extends Component {
 		}
 	}
 
+	componentWillMount() {
+		const already_logged_in = localStorage.getItem('user_session')
+		if (already_logged_in) {
+			this.props.history.push('/matches')
+		}
+	}
+
 	componentDidMount() {
 		mixpanel.track('Loaded Welcome Screen')
 	}

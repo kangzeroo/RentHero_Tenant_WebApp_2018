@@ -66,9 +66,9 @@ export const getListings = (prefs) => {
   } else if (prefs.destination.commute_mode === 'transit') {
     myPrefs.radius = 20000
   } else if (prefs.destination.commute_mode === 'bicycling') {
-    myPrefs.radius = 5000
+    myPrefs.radius = 20000
   } else if (prefs.destination.commute_mode === 'walking') {
-    myPrefs.radius = 2000
+    myPrefs.radius = 20000
   }
 	const p = new Promise((res, rej) => {
 		axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings', myPrefs)
@@ -82,4 +82,20 @@ export const getListings = (prefs) => {
 			})
 	})
 	return p
+}
+
+export const getCurrentListingByReference = (ref_id) => {
+  const p = new Promise((res, rej) => {
+    axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings-by-ref', { ref_id: ref_id })
+      .then((data) => {
+        res({
+          listing: data.data.data
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        rej(err)
+      })
+  })
+  return p
 }
