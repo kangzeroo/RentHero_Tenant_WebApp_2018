@@ -1,4 +1,4 @@
-// Compt for copying as a InteractiveTemplate
+// Compt for copying as a ContinueSession
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -12,9 +12,12 @@ import SubtitlesMachine from '../modules/SubtitlesMachine'
 import {
 	Icon,
 } from 'antd-mobile'
+import {
+	restartSearch,
+} from '../../actions/listings/listings_actions'
 
 
-class InteractiveTemplate extends Component {
+class ContinueSession extends Component {
 
 	constructor() {
 		super()
@@ -24,22 +27,7 @@ class InteractiveTemplate extends Component {
 			listeners: [],
 			completed: [],
 			instantChars: false,
-
-			string1: '',
-		}
-	}
-
-	componentWillMount() {
-		const already_logged_in = localStorage.getItem('user_session')
-		if (already_logged_in) {
-			this.props.history.push('/matches')
-		}
-	}
-
-	componentDidMount() {
-		mixpanel.track('Loaded Welcome Screen')
-		if (this.props.name) {
-			this.props.history.push('/existing_session')
+      session_choice: '',
 		}
 	}
 
@@ -50,6 +38,7 @@ class InteractiveTemplate extends Component {
 		}
 	}
 
+	// trigger instant load text from <SubtitleMachine>
 	instantCharClick() {
 		this.setState({
 			instantChars: true
@@ -88,14 +77,20 @@ class InteractiveTemplate extends Component {
 		})
 	}
 
-	beginAdventure() {
-		this.props.history.push('/onboarding')
-		mixpanel.track('Began Adventure')
-	}
+  clickedChoice(choice) {
+    this.setState({ session_choice: choice })
+    if (choice === 'resume') {
+      this.props.history.push('/matches')
+    } else if (choice === 'restart') {
+  		localStorage.setItem('acct_details', null)
+      this.props.restartSearch()     
+      this.props.history.push('/')
+    }
+  }
 
 	render() {
 		return (
-			<div id='InteractiveTemplate' style={comStyles().container}>
+			<div id='ContinueSession' style={comStyles().container}>
         <div onClick={() => this.instantCharClick()} style={comStyles().scroll}>
 					{/*<div style={comStyles().up_part}>
 						{
@@ -107,17 +102,16 @@ class InteractiveTemplate extends Component {
 						}
 					</div>*/}
 					<div id='middle_part' style={comStyles().middle_part}>
-						<div id='hello' style={comStyles().sectional}>
+						<div id='section_one' style={comStyles().sectional}>
 							<SubtitlesMachine
 									instant={this.state.instantChars}
 									speed={0.25}
-									delay={500}
-									text={`Hello 👋`}
+									delay={this.state.instantChars ? 0 : 500}
+									text={`It looks like you already had a previous RentHero interaction 😊 Would you like to resume or restart?`}
 									textStyles={{
-										fontSize: '1.5rem',
+										fontSize: '1.1rem',
 										color: 'white',
 										textAlign: 'left',
-		                fontWeight: 'bold'
 									}}
 									containerStyles={{
 										width: '100%',
@@ -125,111 +119,19 @@ class InteractiveTemplate extends Component {
 										borderRadius: '20px',
 									}}
 									doneEvent={() => {
-										console.log('DONE')
 										setTimeout(() => {
-											this.setState({ completed: this.state.completed.concat(['hello']) })
-											// console.log('DONE')
+											this.setState({ completed: this.state.completed.concat(['one']) })
 										}, 500)
 									}}
 								/>
 							{
-								this.state.completed.filter(c => c === 'hello').length > 0
+								this.state.completed.filter(c => c === 'one').length > 0
 								?
-								<div id='im_renthero' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											instant={this.state.instantChars}
-											speed={0.25}
-											delay={500}
-											text={`My name is RentHero 😇`}
-											textStyles={{
-												fontSize: '1.5rem',
-												color: 'white',
-												textAlign: 'left',
-												fontWeight: 'bold'
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['im_renthero']) })
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'im_renthero').length > 0
-								?
-								<div id='what_i_do' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											instant={this.state.instantChars}
-											speed={0.3}
-											delay={500}
-											text={`I'm an A.I. rental agent looking out for your best interests . . . I'll help you find homes 🏠 provide expert advice 💡 and prepare your paperwork 📜`}
-											textStyles={{
-												fontSize: '1.1rem',
-												color: 'white',
-												textAlign: 'left',
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-												margin: '50px 0px 0px 0px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['what_i_do']) })
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'what_i_do').length > 0
-								?
-								<div id='home_hunting' style={comStyles().field_holder}>
-									<SubtitlesMachine
-											instant={this.state.instantChars}
-											speed={0.25}
-											delay={800}
-											text={`Ready to start home hunting? 😄`}
-											textStyles={{
-												fontSize: '1.1rem',
-												color: 'white',
-												textAlign: 'left',
-											}}
-											containerStyles={{
-												width: '100%',
-												backgroundColor: 'rgba(0,0,0,0)',
-												borderRadius: '20px',
-												margin: '50px 0px 0px 0px',
-											}}
-											doneEvent={() => {
-												setTimeout(() => {
-													this.setState({ completed: this.state.completed.concat(['home_hunting']) })
-													$('#middle_part').animate({
-															scrollTop: document.getElementById("middle_part").scrollHeight
-													}, 500);
-												}, 500)
-											}}
-										/>
-								</div>
-								:
-								null
-							}
-							{
-								this.state.completed.filter(c => c === 'home_hunting').length > 0
-								?
-								<div onClick={() => this.beginAdventure()} style={inputStyles().button}>
-									BEGIN ADVENTURE
+								<div style={comStyles().field_holder}>
+                  <div style={sessionStyles().listDiv}>
+                    <div onClick={() => this.clickedChoice('resume')} style={sessionStyles(this.state.session_choice).resume}>RESUME SESSION</div>
+                    <div onClick={() => this.clickedChoice('restart')} style={sessionStyles(this.state.session_choice).restart}>START OVER</div>
+                  </div>
 								</div>
 								:
 								null
@@ -237,7 +139,7 @@ class InteractiveTemplate extends Component {
 						</div>
 					</div>
 					<div style={comStyles().down_part}>
-						{/*
+						{
 							this.state.show_down
 							?
 							<Icon onClick={() => {
@@ -247,7 +149,7 @@ class InteractiveTemplate extends Component {
 							}} type='down' size='lg' style={comStyles().down} />
 							:
 							null
-						*/}
+						}
 					</div>
 				</div>
 			</div>
@@ -256,30 +158,30 @@ class InteractiveTemplate extends Component {
 }
 
 // defines the types of variables in this.props
-InteractiveTemplate.propTypes = {
+ContinueSession.propTypes = {
 	history: PropTypes.object.isRequired,
-	name: PropTypes.string.isRequired,
+  restartSearch: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
-InteractiveTemplate.defaultProps = {
+ContinueSession.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(InteractiveTemplate)
+const RadiumHOC = Radium(ContinueSession)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-		name: redux.tenant.name,
+
 	}
 }
 
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
+    restartSearch,
 	})(RadiumHOC)
 )
 
@@ -369,6 +271,7 @@ const comStyles = () => {
 			flexDirection: 'column',
 			width: '100%',
 			position: 'relative',
+			padding: '20px 0px 70px 0px'
 		},
 		check: {
 			color: 'white',
@@ -398,19 +301,53 @@ const inputStyles = () => {
       color: '#ffffff',
       webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    },
-    button: {
-      fontSize: '1.1rem',
-      fontWeight: 'bold',
-      color: 'white',
-      border: '1px solid white',
-      padding: '15px',
-      width: '100%',
-      borderRadius: '15px',
-      textAlign: 'center',
-      cursor: 'pointer',
-			position: 'absolute',
-			bottom: '10vh',
-    },
+    }
   }
+}
+
+
+const sessionStyles = (mode) => {
+	let listOptions = {
+		padding: '10px',
+		fontSize: '0.8rem',
+		color: 'white',
+		border: '1px solid white',
+		borderRadius: '15px',
+		margin: '10px',
+		cursor: 'pointer',
+		minWidth: '100px',
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+	}
+	let resumeStyles = {}
+	let restartStyles = {}
+	if (mode === 'resume') {
+		resumeStyles.color = '#009cff'
+		resumeStyles.backgroundColor = 'white'
+	}
+	if (mode === 'restart') {
+		restartStyles.color = '#009cff'
+		restartStyles.backgroundColor = 'white'
+	}
+	return {
+		listDiv: {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'center',
+			alignItems: 'center',
+			flexWrap: 'wrap',
+			width: '100%',
+			padding: '30px'
+		},
+		resume: {
+			...listOptions,
+			...resumeStyles,
+		},
+		restart: {
+			...listOptions,
+			...restartStyles,
+		}
+	}
 }

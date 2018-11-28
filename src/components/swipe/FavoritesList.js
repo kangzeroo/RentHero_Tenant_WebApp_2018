@@ -10,12 +10,15 @@ import { withRouter } from 'react-router-dom'
 import {
 	Button,
 } from 'antd-mobile'
+import {
+	restartSearch,
+} from '../../actions/listings/listings_actions'
 
 
 class FavoritesList extends Component {
 
 	startOver() {
-		localStorage.setItem('acct_details', null)
+		this.props.restartSearch()
 		this.props.history.push('/')
 	}
 
@@ -52,6 +55,7 @@ FavoritesList.propTypes = {
 	name: PropTypes.string,
 	likes: PropTypes.array.isRequired,
 	dislikes: PropTypes.array.isRequired,
+	restartSearch: PropTypes.func.isRequired,
 
 }
 
@@ -75,7 +79,7 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
+		restartSearch,
 	})(RadiumHOC)
 )
 

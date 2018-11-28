@@ -6,6 +6,7 @@ import {
   CHANGE_CARD_SECTION_SHOWN,
   SET_NAME,
   LOAD_LOCAL_STORAGE_ACCOUNT,
+  RESTART_SEARCH,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -34,6 +35,14 @@ export default (state = INITIAL_STATE, action) => {
         return JSON.parse(acct_details)
       } else {
         return state
+      }
+    case RESTART_SEARCH:
+      localStorage.setItem('acct_details', null)
+      return {
+        ...state,
+        name: '',
+        likes: [],
+        dislikes: []
       }
     case SET_NAME:
       new_state = {

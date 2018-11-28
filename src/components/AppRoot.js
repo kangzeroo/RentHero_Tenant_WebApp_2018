@@ -36,6 +36,7 @@ import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
 import FavoritesList from './swipe/FavoritesList'
+import ContinueSession from './tenant/ContinueSession'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import NoResults from './modules/NoResults'
 import TweenOne from 'rc-tween-one'
@@ -66,6 +67,7 @@ class AppRoot extends Component {
             <Route exact path='/login' render={HomePage} />
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />
+            <Route exact path='/existing_session' render={ContinueSession} />
 
             <Route path='/app/*' component={AppRoutes} />
 

@@ -9,6 +9,7 @@ import {
   SET_CURRENT_LISTING,
   SET_NAME,
   LOAD_LOCAL_STORAGE_ACCOUNT,
+  RESTART_SEARCH,
 } from '../action_types'
 
 
@@ -16,6 +17,14 @@ export const loadLocalStorageAccount = () => {
   return (dispatch) => {
     dispatch({
       type: LOAD_LOCAL_STORAGE_ACCOUNT
+    })
+  }
+}
+
+export const restartSearch = () => {
+  return (dispatch) => {
+    dispatch({
+      type: RESTART_SEARCH
     })
   }
 }
