@@ -4,14 +4,17 @@ import {
   SAVE_PREFS,
   CHANGE_COMMUTE_MODE,
   CHANGE_CARD_SECTION_SHOWN,
+  SET_NAME,
+  LOAD_LOCAL_STORAGE_ACCOUNT,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
+  name: '',
   likes: [],
   dislikes: [],
   card_section_shown: 'commute',
   prefs: {
-    max_beds: 2,
+    max_beds: 1,
     max_budget: 3000,
     destination: {
       address: "763 Bay St, Toronto, ON M5G 2R3, Canada",
@@ -23,24 +26,45 @@ const INITIAL_STATE = {
 }
 
 export default (state = INITIAL_STATE, action) => {
+  let new_state = state
   switch (action.type) {
+    case LOAD_LOCAL_STORAGE_ACCOUNT:
+      const acct_details = localStorage.getItem('acct_details')
+      if (acct_details) {
+        return JSON.parse(acct_details)
+      } else {
+        return state
+      }
+    case SET_NAME:
+      new_state = {
+        ...state,
+        name: action.payload
+      }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     case INCREMENT_LIKES:
-      return {
+      new_state = {
         ...state,
         [action.payload.judgement]: state[action.payload.judgement].concat(action.payload.id)
       }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     case DECREMENT_LIKES:
-      return {
+      new_state = {
         ...state,
         [action.payload.judgement]: state[action.payload.judgement].filter(id => id !== action.payload.id)
       }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     case SAVE_PREFS:
-      return {
+      new_state = {
         ...state,
         prefs: action.payload,
       }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     case CHANGE_COMMUTE_MODE:
-      return {
+      new_state = {
         ...state,
         prefs: {
           ...state.prefs,
@@ -50,11 +74,15 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
       }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     case CHANGE_CARD_SECTION_SHOWN:
-      return  {
+      new_state = {
         ...state,
         card_section_shown: action.payload
       }
+      localStorage.setItem('acct_details', JSON.stringify(new_state))
+      return new_state
     default:
       return {
         ...state,

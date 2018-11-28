@@ -18,6 +18,7 @@ import {
 import { savePrefs } from '../../actions/listings/listings_actions'
 import {
 	saveListingsToRedux,
+	saveNameToRedux,
 } from '../../actions/listings/listings_actions'
 import {
 	getListings,
@@ -88,6 +89,9 @@ class OnboardingTenant extends Component {
 		document.getElementById(inputDiv).addEventListener('keyup', (e) => {
 			if (e.keyCode === 13) {
 				this.clickedCheck(nextDiv, justFinished, inputDiv, 500)
+				if (justFinished === 'gave_name') {
+					this.props.saveNameToRedux(this.state.full_name)
+				}
 			}
 		})
 		this.setState({
@@ -167,7 +171,7 @@ class OnboardingTenant extends Component {
       }
     })
     .then((data) => {
-			if (data && data.lehngth > 0) {
+			if (data && data.length > 0) {
 				console.log(data)
 				this.props.saveListingsToRedux(data)
 			} else {
@@ -233,7 +237,7 @@ class OnboardingTenant extends Component {
 									{
 										this.state.full_name
 										?
-										<Icon onClick={() => this.clickedCheck('#ask_destination', 'gave_name', 'full_name')} type='check-circle' size='lg' style={comStyles().check} />
+										<Icon onClick={() => {this.props.saveNameToRedux(this.state.full_name); this.clickedCheck('#ask_destination', 'gave_name', 'full_name')}} type='check-circle' size='lg' style={comStyles().check} />
 										:
 										null
 									}
@@ -429,7 +433,7 @@ class OnboardingTenant extends Component {
 											<WhiteSpace size="lg" />
 											<Slider
 												style={{ }}
-												defaultValue={700}
+												defaultValue={1800}
 												min={300}
 												max={2500}
 												step={25}
@@ -550,6 +554,7 @@ OnboardingTenant.propTypes = {
 	history: PropTypes.object.isRequired,
   savePrefs: PropTypes.func.isRequired,
   saveListingsToRedux: PropTypes.func.isRequired,
+	saveNameToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -572,6 +577,7 @@ export default withRouter(
 	connect(mapReduxToProps, {
 		saveListingsToRedux,
 		savePrefs,
+		saveNameToRedux,
 	})(RadiumHOC)
 )
 

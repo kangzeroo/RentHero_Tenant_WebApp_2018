@@ -21,7 +21,8 @@ import {
 	Modal,
 } from 'antd-mobile'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
-import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards } from '../../actions/listings/listings_actions'
+import { getCurrentListingByReference } from '../../api/listings/listings_api'
+import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, setCurrentListing } from '../../actions/listings/listings_actions'
 import CommuteMap from '../modules/CommuteMap/CommuteMap'
 import NearbyLocations from '../modules/NearbyLocations/NearbyLocations'
 import StreetView from '../modules/StreetView/StreetView'
@@ -60,11 +61,28 @@ class SwipeList extends Component {
       history.pushState(null, null, `${this.props.location.pathname}`)
       this.setState({ show_images_modal: false })
     }
+		console.log(this.props.location)
+		if (this.props.location.search.indexOf('ref=') > -1) {
+			const ref_id = this.props.location.search.slice(this.props.location.search.indexOf('ref=') + 'ref='.length)
+			console.log('ref_id: ', ref_id)
+			getCurrentListingByReference(ref_id)
+				.then((data) => {
+					this.props.setCurrentListing(data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+		} else {
+			if (this.props.current_listing && this.props.current_listing.listing) {
+				history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.listing.REFERENCE_ID}`)
+			}
+		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing.listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
+			history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.listing.REFERENCE_ID}`)
 		}
 	}
 
@@ -76,8 +94,13 @@ class SwipeList extends Component {
 
 	clickedJudgement(judgement) {
 		this.props.nextListing(judgement)
-		this.props.incrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
-		// this.props.decrementLikes(judgement, this.props.current_listing.listing.ITEM_ID)
+		if (judgement === 'likes') {
+			this.props.incrementLikes('likes', this.props.current_listing.listing.REFERENCE_ID)
+			this.props.decrementLikes('dislikes', this.props.current_listing.listing.REFERENCE_ID)
+		} else if (judgement === 'dislikes') {
+			this.props.incrementLikes('dislikes', this.props.current_listing.listing.REFERENCE_ID)
+			this.props.decrementLikes('likes', this.props.current_listing.listing.REFERENCE_ID)
+		}
 		if (this.props.likes.length === 3) {
 			this.props.history.push('/dialog/moveinprefs/me')
 		}
@@ -549,6 +572,7 @@ SwipeList.propTypes = {
 	dislikes: PropTypes.array.isRequired,
 	card_section_shown: PropTypes.string.isRequired,
 	triggerDrawerNav: PropTypes.func.isRequired,
+	setCurrentListing: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -580,6 +604,7 @@ export default withRouter(
 		decrementLikes,
 		changeShownSectionCards,
 		triggerDrawerNav,
+		setCurrentListing,
 	})(RadiumHOC)
 )
 

@@ -16,6 +16,7 @@ import {
 import { saveLoadingCompleteToRedux } from '../actions/app/app_actions'
 import {
 	saveListingsToRedux,
+	loadLocalStorageAccount,
 } from '../actions/listings/listings_actions'
 import {
 	redirectPath,
@@ -37,7 +38,10 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
     componentWillMount() {
-			this.grabListings()
+			this.props.loadLocalStorageAccount()
+			setTimeout(() => {
+				this.grabListings()
+			}, 100)
 			// check if staff is already authenticated
 			this.checkIfStaffLoggedIn()
 
@@ -57,12 +61,12 @@ export default (ComposedComponent) => {
 	      }
 	    })
 				.then((data) => {
-					if (data && data.length > 0) {
-						console.log(data)
+					// if (data && data.length > 0) {
+					// 	console.log(data)
 						this.props.saveListingsToRedux(data)
-					} else {
-						this.props.history.push('/noresults')
-					}
+					// } else {
+					// 	this.props.history.push('/noresults')
+					// }
 				})
 				.catch((err) => {
 					console.log(err)
@@ -177,6 +181,7 @@ export default (ComposedComponent) => {
 		authenticationLoaded: PropTypes.func.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
+		loadLocalStorageAccount: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -202,6 +207,7 @@ export default (ComposedComponent) => {
 			saveLoadingCompleteToRedux,
 			authenticationLoaded,
 			saveListingsToRedux,
+			loadLocalStorageAccount,
     })(AppRootMechanics)
 	)
 }

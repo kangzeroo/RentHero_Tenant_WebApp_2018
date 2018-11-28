@@ -35,6 +35,7 @@ import OnboardingTenant from './tenant/OnboardingTenant'
 import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
+import FavoritesList from './swipe/FavoritesList'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import NoResults from './modules/NoResults'
 import TweenOne from 'rc-tween-one'
@@ -82,7 +83,7 @@ class AppRoot extends Component {
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={AdvisorUITemplate} />
+              <Route exact path='/sandbox' render={FavoritesList} />
             </Drawer>
           </Switch>
         </LocaleProvider>
