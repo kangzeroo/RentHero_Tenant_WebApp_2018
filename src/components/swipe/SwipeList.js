@@ -73,16 +73,16 @@ class SwipeList extends Component {
 					console.log(err)
 				})
 		} else {
-			if (this.props.current_listing && this.props.current_listing.listing) {
-				history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.listing.REFERENCE_ID}`)
+			if (this.props.current_listing && this.props.current_listing) {
+				history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
 			}
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.current_listing.listing && prevProps.current_listing !== this.props.current_listing) {
+		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
-			history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.listing.REFERENCE_ID}`)
+			history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
 		}
 	}
 
@@ -93,21 +93,21 @@ class SwipeList extends Component {
 	}
 
 	clickedJudgement(judgement) {
-		this.props.nextListing(judgement)
 		if (judgement === 'likes') {
-			this.props.incrementLikes('likes', this.props.current_listing.listing.REFERENCE_ID)
-			this.props.decrementLikes('dislikes', this.props.current_listing.listing.REFERENCE_ID)
+			this.props.incrementLikes('likes', this.props.current_listing)
+			this.props.decrementLikes('dislikes', this.props.current_listing)
 		} else if (judgement === 'dislikes') {
-			this.props.incrementLikes('dislikes', this.props.current_listing.listing.REFERENCE_ID)
-			this.props.decrementLikes('likes', this.props.current_listing.listing.REFERENCE_ID)
+			this.props.incrementLikes('dislikes', this.props.current_listing)
+			this.props.decrementLikes('likes', this.props.current_listing)
 		}
-		if (this.props.likes.length === 3) {
+		this.props.nextListing(judgement)
+		if (judgement === 'likes' && this.props.likes.length === 3) {
 			this.props.history.push('/dialog/moveinprefs/me')
 		}
-		if (this.props.likes.length === 6) {
+		if (judgement === 'likes' && this.props.likes.length === 6) {
 			this.props.history.push('/dialog/credit_report/me')
 		}
-		if (this.props.likes.length > 8 && this.props.likes.concat(this.props.dislikes).length > 18) {
+		if (judgement === 'likes' && this.props.likes.length > 8 && this.props.likes.concat(this.props.dislikes).length > 18) {
 			if (1 - Math.random() <= 0.1) {
 				window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')
 			}
@@ -132,8 +132,8 @@ class SwipeList extends Component {
 	turnImageCarousel(amount) {
 		let nextIndex = this.state.imageCarouselSelectedIndex
 		if (this.state.imageCarouselSelectedIndex + amount < 0) {
-			nextIndex = this.props.current_listing.listing.IMAGES.length - 1
-		} else if (this.state.imageCarouselSelectedIndex + amount > this.props.current_listing.listing.IMAGES.length - 1) {
+			nextIndex = this.props.current_listing.IMAGES.length - 1
+		} else if (this.state.imageCarouselSelectedIndex + amount > this.props.current_listing.IMAGES.length - 1) {
 			nextIndex = 0
 		} else {
 			nextIndex = this.state.imageCarouselSelectedIndex + amount
@@ -144,7 +144,7 @@ class SwipeList extends Component {
 	}
 
 	render() {
-		if (this.props.current_listing) {
+		if (this.props.current_listing && this.props.current_listing.REFERENCE_ID && this.props.current_listing !== undefined) {
 			const location_tabs = []
 			if (this.state.commute_state.commute_time) {
 				location_tabs.push({
@@ -166,9 +166,9 @@ class SwipeList extends Component {
 			}
 			return (
 				<div id='SwipeList' style={comStyles().container}>
-					{/*<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: '4' }}>
+					<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: '4' }}>
 						<Icon type='ellipsis' size='lg' />
-					</div>*/}
+					</div>
 					<Modal
 						visible={this.state.show_images_modal}
 						transparent
@@ -185,7 +185,7 @@ class SwipeList extends Component {
 									swipeSpeed={3}
 									selectedIndex={this.state.imageCarouselSelectedIndex}
 								>
-								{this.props.current_listing.listing.IMAGES.map((url, index) => (
+								{this.props.current_listing.IMAGES.map((url, index) => (
 									<a
 										key={url}
 										style={{ display: 'inline-block', width: '100%', height: '100%' }}
@@ -211,7 +211,7 @@ class SwipeList extends Component {
 					</Modal>
 					<div style={comStyles().inner_container}>
 							{
-								this.props.current_listing.listing.IMAGES.length > 0
+								this.props.current_listing.IMAGES.length > 0
 								?
 								<div style={{ position: 'relative' }}>
 									<div onClick={() => this.turnImageCarousel(-1)} style={{ position: 'absolute', left: '0px', top: '37%', zIndex: '3', backgroundColor: 'rgba(256,256,256,0.5)', borderRadius: '0% 30% 30% 0%' }}>
@@ -223,7 +223,7 @@ class SwipeList extends Component {
 											swipeSpeed={3}
 											selectedIndex={this.state.imageCarouselSelectedIndex}
 						        >
-					          {this.props.current_listing.listing.IMAGES.map((url, index) => (
+					          {this.props.current_listing.IMAGES.map((url, index) => (
 					            <a
 					              key={url}
 					              style={{ display: 'inline-block', width: '100%', height: '40vh' }}
@@ -282,19 +282,19 @@ class SwipeList extends Component {
 							}
 							<div style={priceStyle(this.state.priceHeight).priceDiv}>
 								<Badge text={
-									this.props.current_listing.listing.PRICE === 0
+									this.props.current_listing.PRICE === 0
 									?
 									'contact'
 									:
-									`$${this.props.current_listing.listing.PRICE}`
+									`$${this.props.current_listing.PRICE}`
 								} size='large' style={priceStyle().price} />
 							</div>
 							<div style={comStyles().titleDiv}>
 								<div style={comStyles().title}>
-									{this.props.current_listing.listing.TITLE}
+									{this.props.current_listing.TITLE}
 								</div>
 								<div style={comStyles().bednbath}>
-									{this.props.current_listing.listing.BEDS} BED • {this.props.current_listing.listing.BATHS} BATH
+									{this.props.current_listing.BEDS} BED • {this.props.current_listing.BATHS} BATH
 								</div>
 							</div>
 
@@ -316,9 +316,9 @@ class SwipeList extends Component {
 								{
 									this.state.commute_state.commute_time
 									?
-									<div onClick={() => document.getElementById("property_info").scrollIntoView()} style={pStats(this.props.current_listing.listing.UTILITIES.length/7).pStats_container}>
+									<div onClick={() => document.getElementById("property_info").scrollIntoView()} style={pStats(this.props.current_listing.UTILITIES.length/7).pStats_container}>
 										<div style={pStats().pStats_top}>
-											<div style={pStats().pStats_val}>{(this.props.current_listing.listing.UTILITIES.length/7*100).toFixed(0)}</div>
+											<div style={pStats().pStats_val}>{(this.props.current_listing.UTILITIES.length/7*100).toFixed(0)}</div>
 											<div style={pStats().pStats_unit}>%</div>
 										</div>
 										<div style={pStats().pStats_label}>INCLUSIVE</div>
@@ -329,10 +329,10 @@ class SwipeList extends Component {
 								{
 									this.state.commute_state.commute_time
 									?
-									<div onClick={() => document.getElementById("availability_info").scrollIntoView()} style={pStats(1-(moment(this.props.current_listing.listing.DATE_POSTED).diff(moment(), 'hours')/120)).pStats_container}>
+									<div onClick={() => document.getElementById("availability_info").scrollIntoView()} style={pStats(1-(moment(this.props.current_listing.DATE_POSTED).diff(moment(), 'hours')/120)).pStats_container}>
 										<div style={pStats().pStats_top}>
-											<div style={pStats().pStats_val}>{moment(this.props.current_listing.listing.DATE_POSTED).fromNow().split(' ')[0]}</div>
-											<div style={pStats().pStats_unit}>{moment(this.props.current_listing.listing.DATE_POSTED).fromNow().split(' ')[1]}</div>
+											<div style={pStats().pStats_val}>{moment(this.props.current_listing.DATE_POSTED).fromNow().split(' ')[0]}</div>
+											<div style={pStats().pStats_unit}>{moment(this.props.current_listing.DATE_POSTED).fromNow().split(' ')[1]}</div>
 										</div>
 										<div style={pStats().pStats_label}>AGO</div>
 									</div>
@@ -371,19 +371,19 @@ class SwipeList extends Component {
 											}}
 								    >
 											<CommuteMap
-												current_listing={this.props.current_listing.listing}
+												current_listing={this.props.current_listing}
 												commute_mode={this.props.prefs.destination.commute_mode}
 												destination={this.props.destination}
 												card_section_shown={this.props.card_section_shown}
 												setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
 											/>
 											<NearbyLocations
-												current_listing={this.props.current_listing.listing}
+												current_listing={this.props.current_listing}
 												card_section_shown={this.props.card_section_shown}
 												setNearbyState={(nearby_state) => this.setState({ nearby_state: nearby_state })}
 											/>
 											<StreetView
-												current_listing={this.props.current_listing.listing}
+												current_listing={this.props.current_listing}
 												card_section_shown={this.props.card_section_shown}
 											/>
 			    					</Tabs>
@@ -412,96 +412,96 @@ class SwipeList extends Component {
 									>
 										<div id='price_rooms' style={comStyles().about_stats}>
 											{
-												this.props.current_listing.listing.ADDRESS
+												this.props.current_listing.ADDRESS
 												?
-												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.listing.ADDRESS.split(',').slice(0,3).join(',')}</Button>
+												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.ADDRESS.split(',').slice(0,3).join(',')}</Button>
 												:
 												null
 											}
 											{
-												this.props.current_listing.listing.SELLER
+												this.props.current_listing.SELLER
 												?
-												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>By Seller: {this.props.current_listing.listing.SELLER}</Button>
+												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>By Seller: {this.props.current_listing.SELLER}</Button>
 												:
 												null
 											}
 											{
-												this.props.current_listing.listing.MOVEIN == {}
+												this.props.current_listing.MOVEIN == {}
 												?
 												null
 												:
-												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{`Move In ${moment(this.props.current_listing.listing.MOVEIN).format('MMM DD')}`.toUpperCase()}</Button>
+												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{`Move In ${moment(this.props.current_listing.MOVEIN).format('MMM DD')}`.toUpperCase()}</Button>
 											}
 											{
-												this.props.current_listing.listing.PRICE === 0
+												this.props.current_listing.PRICE === 0
 												?
 												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>CONTACT FOR PRICE</Button>
 												:
 
-												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{`$${this.props.current_listing.listing.PRICE}`}</Button>
+												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{`$${this.props.current_listing.PRICE}`}</Button>
 											}
-											<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.listing.BEDS} BEDS</Button>
-											<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.listing.BATHS} BATHS</Button>
+											<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.BEDS} BEDS</Button>
+											<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.BATHS} BATHS</Button>
 											{
-												this.props.current_listing.listing.SQFT === 0
+												this.props.current_listing.SQFT === 0
 												?
 												null
 												:
-												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.listing.SQFT} SQFT</Button>
+												<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>{this.props.current_listing.SQFT} SQFT</Button>
 											}
 										</div>
 										<div id='amenities' style={comStyles().about_stats}>
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('electricity') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('electricity') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Electric Incl.</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Electric Extra</Button>
 												}
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('water') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('water') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Water Incl.</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Water Extra</Button>
 												}
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('heating') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('heating') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Heating Incl.</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Heating Extra</Button>
 												}
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('internet') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('internet') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Internet Incl.</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Internet Extra</Button>
 												}
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('ac') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('ac') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>A/C</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>A/C Unknown</Button>
 												}
 												{
-													this.props.current_listing.listing.UTILITIES.filter(ut => ut.indexOf('insurance') > -1).length > 0
+													this.props.current_listing.UTILITIES.filter(ut => ut.indexOf('insurance') > -1).length > 0
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Insurance Incl.</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Insurance Extra</Button>
 												}
 												{
-													this.props.current_listing.listing.PARKING
+													this.props.current_listing.PARKING
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Parking Available</Button>
 													:
 													<Button type="ghost" disabled inline size="small" style={{ margin: '3px', width: '100%' }}>Parking Unknown</Button>
 												}
 												{
-													this.props.current_listing.listing.FURNISHED
+													this.props.current_listing.FURNISHED
 													?
 													<Button type="ghost" inline size="small" style={{ margin: '3px', width: '100%' }}>Furnished Unit</Button>
 													:
@@ -510,9 +510,9 @@ class SwipeList extends Component {
 										</div>
 										<div id='restrictions' style={comStyles().about_stats}>
 											<div>
-												<div>{this.props.current_listing.listing.DESCRIPTION}</div>
+												<div>{this.props.current_listing.DESCRIPTION}</div>
 												<br/>
-												<a href={this.props.current_listing.listing.URL} target='_blank'><Button type="ghost" size="large" style={{ margin: '3px', width: '100%' }}>See Original</Button></a>
+												<a href={this.props.current_listing.URL} target='_blank'><Button type="ghost" size="large" style={{ margin: '3px', width: '100%' }}>See Original</Button></a>
 											</div>
 										</div>
 									</Tabs>
@@ -552,7 +552,12 @@ class SwipeList extends Component {
 			)
 		} else {
 			return (
-				<div>loading</div>
+				<div>
+					loading
+					{
+						this.props.history.push(this.props.empty_listings_stack_redirect)
+					}
+				</div>
 			)
 		}
 	}
@@ -573,6 +578,7 @@ SwipeList.propTypes = {
 	card_section_shown: PropTypes.string.isRequired,
 	triggerDrawerNav: PropTypes.func.isRequired,
 	setCurrentListing: PropTypes.func.isRequired,
+	empty_listings_stack_redirect: PropTypes.string.isRequired,
 }
 
 // for all optional props, define a default value
@@ -586,13 +592,13 @@ const RadiumHOC = Radium(SwipeList)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-    listings: redux.listings.listings,
 		current_listing: redux.listings.current_listing,
 		destination: redux.tenant.prefs.destination.address,
 		prefs: redux.tenant.prefs,
 		likes: redux.tenant.likes,
 		dislikes: redux.tenant.dislikes,
 		card_section_shown: redux.tenant.card_section_shown,
+		empty_listings_stack_redirect: redux.listings.empty_listings_stack_redirect,
 	}
 }
 

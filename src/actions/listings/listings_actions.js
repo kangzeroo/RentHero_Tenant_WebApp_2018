@@ -10,6 +10,7 @@ import {
   SET_NAME,
   LOAD_LOCAL_STORAGE_ACCOUNT,
   RESTART_SEARCH,
+  SET_CURRENT_LISTINGS_STACK,
 } from '../action_types'
 
 
@@ -47,6 +48,19 @@ export const saveListingsToRedux = (listings) => {
     dispatch({
       type: SAVE_LISTINGS_TO_REDUX,
       payload: listings,
+    })
+  }
+}
+
+export const setCurrentListingsStack = (urlRedirect, listings) => {
+  // dispatch lets you send actions to Redux
+  return (dispatch) => {
+    dispatch({
+      type: SET_CURRENT_LISTINGS_STACK,
+      payload: {
+        urlRedirect: urlRedirect,
+        stack: listings
+      },
     })
   }
 }
@@ -97,27 +111,38 @@ export const changeShownSectionCards = (section) => {
   }
 }
 
-export const incrementLikes = (judgement, id) => {
+export const incrementLikes = (judgement, listing) => {
   // dispatch lets you send actions to Redux
   return (dispatch) => {
     dispatch({
       type: INCREMENT_LIKES,
       payload: {
         judgement,
-        id,
+        REFERENCE_ID: listing.REFERENCE_ID,
+        ADDRESS: listing.ADDRESS,
+        BEDS: listing.BEDS,
+        BATHS: listing.BATHS,
+        DATE_POSTED_UNIX: listing.DATE_POSTED_UNIX,
+        PRICE: listing.PRICE,
+        THUMBNAIL: listing.IMAGES[0] || 'https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/rSpYilaDliykdxju6/videoblocks-smoke-in-corner-of-black-screen-perfect-for-smoke-detector-advert-recorded-against-a-black-background-and-intended-as-a-stand-alone-shot-or-for-compositing-with-graphics-or-using-a-blending-mode-looping-clip_bgvjbtv9e_thumbnail-full01.png'
       }
     })
   }
 }
 
-export const decrementLikes = (judgement, id) => {
+export const decrementLikes = (judgement, listing) => {
   // dispatch lets you send actions to Redux
   return (dispatch) => {
     dispatch({
       type: DECREMENT_LIKES,
       payload: {
         judgement,
-        id,
+        REFERENCE_ID: listing.REFERENCE_ID,
+        ADDRESS: listing.ADDRESS,
+        BEDS: listing.BEDS,
+        BATHS: listing.BATHS,
+        DATE_POSTED_UNIX: listing.DATE_POSTED_UNIX,
+        PRICE: listing.PRICE,
       }
     })
   }
