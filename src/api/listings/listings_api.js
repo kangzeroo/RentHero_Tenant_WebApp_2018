@@ -1,6 +1,8 @@
 import moment from 'moment'
 import axios from 'axios'
-
+const GET_LISTINGS_ENDPOINT = require('../API_URLS').GET_LISTINGS_ENDPOINT
+const GET_LISTING_BY_REF_ENDPOINT = require('../API_URLS').GET_LISTING_BY_REF_ENDPOINT
+const GET_LISTING_BY_REFS_ENDPOINT = require('../API_URLS').GET_LISTING_BY_REFS_ENDPOINT
 
 let myPrefs = {
   rooms: {
@@ -71,7 +73,7 @@ export const getListings = (prefs) => {
     myPrefs.radius = 20000
   }
 	const p = new Promise((res, rej) => {
-		axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings', myPrefs)
+		axios.post(GET_LISTINGS_ENDPOINT, myPrefs)
 			.then((data) => {
 				console.log(data)
 				res(data.data.data)
@@ -86,11 +88,23 @@ export const getListings = (prefs) => {
 
 export const getCurrentListingByReference = (ref_id) => {
   const p = new Promise((res, rej) => {
-    axios.post('https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/production/get-listings-by-ref', { ref_id: ref_id })
+    axios.post(GET_LISTING_BY_REF_ENDPOINT, { ref_id: ref_id })
       .then((data) => {
-        res({
-          listing: data.data.data
-        })
+        res(data.data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+        rej(err)
+      })
+  })
+  return p
+}
+
+export const getAdsByRefs = (ref_ids) => {
+  const p = new Promise((res, rej) => {
+    axios.post(GET_LISTING_BY_REFS_ENDPOINT, { ref_ids: ref_ids })
+      .then((data) => {
+        res(data.data.data)
       })
       .catch((err) => {
         console.log(err)

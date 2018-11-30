@@ -39,6 +39,7 @@ import FavoritesList from './swipe/FavoritesList'
 import ContinueSession from './tenant/ContinueSession'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import NoResults from './modules/NoResults'
+import SearchPrefs from './tenant/SearchPrefs'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -53,9 +54,9 @@ class AppRoot extends Component {
 
 	render() {
     const sidebar = [
-      <List.Item key={1} onClick={() => this.clickedDrawerOption('/')}>Profile</List.Item>,
-      <List.Item key={2} onClick={() => this.clickedDrawerOption('/matches')}>Browse</List.Item>,
-      <List.Item key={3} onClick={() => this.clickedDrawerOption('/')}>Favorites</List.Item>,
+      <List.Item key={1} onClick={() => this.clickedDrawerOption('/matches')}>Browse</List.Item>,
+      <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')}>Preferences</List.Item>,
+      <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')}>Favorites</List.Item>,
     ]
     if (this.props.authentication_loaded) {
       return (
@@ -83,9 +84,11 @@ class AppRoot extends Component {
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
               <Route exact path='/matches' render={SwipeList} />
+              <Route exact path='/prefs' render={SearchPrefs} />
+              <Route exact path='/favourites' render={FavoritesList} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={FavoritesList} />
+              {/*<Route exact path='/sandbox' render={SearchPrefs} />*/}
             </Drawer>
           </Switch>
         </LocaleProvider>

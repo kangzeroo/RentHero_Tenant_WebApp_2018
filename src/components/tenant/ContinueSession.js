@@ -83,7 +83,7 @@ class ContinueSession extends Component {
       this.props.history.push('/matches')
     } else if (choice === 'restart') {
   		localStorage.setItem('acct_details', null)
-      this.props.restartSearch()     
+      this.props.restartSearch()
       this.props.history.push('/')
     }
   }
@@ -107,7 +107,7 @@ class ContinueSession extends Component {
 									instant={this.state.instantChars}
 									speed={0.25}
 									delay={this.state.instantChars ? 0 : 500}
-									text={`It looks like you already had a previous RentHero interaction 😊 Would you like to resume or restart?`}
+									text={`Hello ${this.props.name}, it looks like you had a previous RentHero session 😊 Would you like to resume or restart?`}
 									textStyles={{
 										fontSize: '1.1rem',
 										color: 'white',
@@ -161,6 +161,7 @@ class ContinueSession extends Component {
 ContinueSession.propTypes = {
 	history: PropTypes.object.isRequired,
   restartSearch: PropTypes.func.isRequired,
+	name: PropTypes.string.isRequired,
 }
 
 // for all optional props, define a default value
@@ -174,7 +175,7 @@ const RadiumHOC = Radium(ContinueSession)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+		name: redux.tenant.name
 	}
 }
 

@@ -31,6 +31,7 @@ export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOAD_LOCAL_STORAGE_ACCOUNT:
       const acct_details = localStorage.getItem('acct_details')
+      console.log(acct_details)
       if (acct_details) {
         return JSON.parse(acct_details)
       } else {
@@ -41,6 +42,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         name: '',
+        card_section_shown: 'commute',
         likes: [],
         dislikes: []
       }
@@ -54,14 +56,14 @@ export default (state = INITIAL_STATE, action) => {
     case INCREMENT_LIKES:
       new_state = {
         ...state,
-        [action.payload.judgement]: state[action.payload.judgement].concat(action.payload.id)
+        [action.payload.judgement]: state[action.payload.judgement].filter(summ => summ.REFERENCE_ID !== action.payload.REFERENCE_ID).concat(action.payload)
       }
       localStorage.setItem('acct_details', JSON.stringify(new_state))
       return new_state
     case DECREMENT_LIKES:
       new_state = {
         ...state,
-        [action.payload.judgement]: state[action.payload.judgement].filter(id => id !== action.payload.id)
+        [action.payload.judgement]: state[action.payload.judgement].filter(summ => summ.REFERENCE_ID !== action.payload.REFERENCE_ID)
       }
       localStorage.setItem('acct_details', JSON.stringify(new_state))
       return new_state
