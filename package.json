@@ -48,6 +48,7 @@
     "aws-sdk": "2.80.0",
     "axios": "0.16.2",
     "browser-locale": "1.0.2",
+    "chart.js": "^2.7.3",
     "express": "4.15.3",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",

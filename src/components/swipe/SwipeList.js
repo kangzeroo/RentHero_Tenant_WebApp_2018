@@ -97,12 +97,12 @@ class SwipeList extends Component {
 			this.props.decrementLikes('likes', this.props.current_listing)
 		}
 		this.props.nextListing(judgement)
-		if (judgement === 'likes' && this.props.likes.length === 3) {
-			this.props.history.push('/dialog/moveinprefs/me')
-		}
-		if (judgement === 'likes' && this.props.likes.length === 6) {
-			this.props.history.push('/dialog/credit_report/me')
-		}
+		// if (judgement === 'likes' && this.props.likes.length === 10) {
+		// 	this.props.history.push('/dialog/moveinprefs/me')
+		// }
+		// if (judgement === 'likes' && this.props.likes.length === 20) {
+		// 	this.props.history.push('/dialog/credit_report/me')
+		// }
 		if (judgement === 'likes' && this.props.likes.length > 8 && this.props.likes.concat(this.props.dislikes).length > 18) {
 			if (1 - Math.random() <= 0.1) {
 				window.open('https://renthero-ai.typeform.com/to/Wrmvfe', '_blank')

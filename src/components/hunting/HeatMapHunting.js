@@ -12,6 +12,7 @@ import Ionicon from 'react-ionicons'
 import {
   Icon,
 } from 'antd-mobile'
+import PolarGraph from './PolarGraph'
 import { calculateNearbyStats } from '../../api/analytics/analytics_api'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
 import { getHeatMapDist } from '../../api/analytics/analytics_api'
@@ -25,7 +26,10 @@ class HeatMapHunting extends Component {
       ads: [],
       heat_points: [],
       clicked_point: null,
-      nearby_stats: {},
+      nearby_stats: {
+        matches: [],
+        avg_price_per_bed: 0,
+      },
       show_filter: true,
     }
     this.map = null
@@ -75,7 +79,7 @@ class HeatMapHunting extends Component {
           position: google.maps.ControlPosition.TOP_RIGHT
       }
     });
-    // DRAWING MAP POLYGONS
+    // SETUP POLYGON DRAWING
     var drawingManager = new google.maps.drawing.DrawingManager({
       drawingMode: null,
       drawingControl: true,
@@ -89,6 +93,7 @@ class HeatMapHunting extends Component {
       }
     })
     drawingManager.setMap(this.map)
+    // POLYGON DRAWN
     google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
       drawingManager.setDrawingMode(null)
       console.log('POLYGON PATHS: ', polygon.getPaths())
@@ -103,12 +108,14 @@ class HeatMapHunting extends Component {
         nearby_stats: {},
         show_filter: false,
       })
+      // POLYGON CLICKED
       google.maps.event.addListener(polygon, 'click', function(e) {
         polygon.setOptions({ fillColor: '#F06767', strokeColor: '#F06767' })
         self.setState({
           deletablePolygon: true,
           clicked_point: null,
           nearby_stats: {},
+          show_filter: false,
         })
       })
     });
@@ -117,6 +124,7 @@ class HeatMapHunting extends Component {
       data: this.state.heat_points,
       map: this.map
     });
+    // HEAT MAP ONCLICK
     this.map.addListener('click', function(e) {
       const point = {
         lat: e.latLng.lat(),
@@ -148,24 +156,24 @@ class HeatMapHunting extends Component {
     if (this.state.show_filter) {
       return (
         <div style={searchStyles().searchDiv}>
-          <div style={searchStyles().filterSearch}>
+          <div onClick={() => this.props.history.push('/matches')} style={searchStyles().filterSearch}>
             &nbsp;
-            <Ionicon icon="md-search" color='black' fontSize='2rem' />
-            <div style={{ width: '100%', textAlign: 'center' }}>SEARCH</div>
+            <Ionicon icon="md-search" color='white' fontSize='2rem' />
+            <div style={{ width: '100%', textAlign: 'center' }}>EXPLORE</div>
           </div>
-          <div style={searchStyles().playSearch}>
-            <Ionicon icon="md-play" color='black' fontSize='2rem' />
-          </div>
+          {/*<div style={searchStyles().playSearch}>
+            <Ionicon icon="md-play" color='white' fontSize='2rem' />
+          </div>*/}
         </div>
       )
     } else if (this.state.deletablePolygon && this.current_polygon) {
       return (
         <div style={searchStyles().searchDiv}>
-          <div style={searchStyles().filterSearch}>
+          <div style={searchStyles().applyFilter}>
             <div style={{ width: '100%', textAlign: 'center' }}>APPLY FILTER</div>
           </div>
           <div onClick={() => this.deletePolygon(this.current_polygon)} style={searchStyles().deleteFilter}>
-            <Ionicon icon="md-trash" color='#F06767' fontSize='2rem' />
+            <Ionicon icon="md-trash" color='white' fontSize='2rem' />
           </div>
         </div>
       )
@@ -182,18 +190,22 @@ class HeatMapHunting extends Component {
         </div>
         <div id="map" style={comStyles().map}></div>
         {
-          this.state.nearby_stats.nearby_count
+          this.state.nearby_stats.matches && this.state.nearby_stats.matches.length
           ?
           <div style={statStyles().popup}>
             <div style={statStyles().pop_container}>
               <div onClick={() => this.setState({ nearby_stats: {} })} style={comStyles().exit}>X</div>
+              <PolarGraph
+                ads={this.state.nearby_stats.matches}
+                style={{ width: '400px', height: 'auto' }}
+              />
               <span style={{ fontSize: '1rem', color: 'black' }}>
                 Average
                 <span style={{ fontSize: '2rem', color: 'black' }}> ${this.state.nearby_stats.avg_price_per_bed} </span>
                 per Room
               </span>
               <span style={{ fontSize: '1rem', color: 'black' }}>
-                From {this.state.nearby_stats.nearby_count} recent rentals
+                From {this.state.nearby_stats.matches.length} recent rentals
               </span>
             </div>
           </div>
@@ -272,7 +284,8 @@ const statStyles = () => {
   return {
     popup: {
       width: '95vw',
-      height: '25vh',
+      height: '40vh',
+      minHeight: '300px',
       backgroundColor: 'white',
       position: 'absolute',
       bottom: '0px',
@@ -282,7 +295,7 @@ const statStyles = () => {
     pop_container: {
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'space-around',
       alignItems: 'center',
       color: 'white',
       position: 'relative',
@@ -306,11 +319,10 @@ const searchStyles = () => {
       bottom: '5vh',
     },
     filterSearch: {
-        border: '2px solid white',
-        borderRadius: '30px',
-        color: 'black',
+        borderRadius: '10px',
+        color: 'white',
         fontSize: '1.5rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'rgb(17, 123, 199, 0.7)',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -318,28 +330,41 @@ const searchStyles = () => {
         margin: '0px 5px',
         padding: '10px',
         width: '100%',
+        cursor: 'pointer',
+    },
+    applyFilter: {
+        borderRadius: '10px',
+        color: 'white',
+        fontSize: '1.5rem',
+        backgroundColor: '#F06767',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        margin: '0px 5px',
+        padding: '10px',
+        width: '100%',
+        cursor: 'pointer',
     },
     playSearch: {
-        border: '2px solid white',
         borderRadius: '50%',
-        color: 'black',
+        color: 'white',
         fontSize: '2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'rgb(17, 123, 199, 0.7)',
         margin: '0px 5px',
-        padding: '10px 5px 10px 15px',
+        padding: '10px 10px 10px 12px',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },
     deleteFilter: {
-        border: '2px solid white',
         borderRadius: '50%',
-        color: '#F06767',
+        color: 'white',
         fontSize: '2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: '#F06767',
         margin: '0px 5px',
-        padding: '10px 5px 10px 15px',
+        padding: '10px 10px 10px 10px',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
