@@ -7,7 +7,7 @@ import {
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
-  empty_listings_stack_redirect: '/favourites',
+  empty_listings_stack_redirect: '',
   current_listings_stack: [],
   all_listings: [],
   current_listing: null,

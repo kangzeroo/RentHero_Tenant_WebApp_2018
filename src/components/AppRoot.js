@@ -36,8 +36,11 @@ import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
 import FavoritesList from './swipe/FavoritesList'
+import NoMoreListings from './swipe/NoMoreListings'
 import ContinueSession from './tenant/ContinueSession'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
+import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
+import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
 import TweenOne from 'rc-tween-one'
@@ -54,9 +57,10 @@ class AppRoot extends Component {
 
 	render() {
     const sidebar = [
-      <List.Item key={1} onClick={() => this.clickedDrawerOption('/matches')}>Browse</List.Item>,
-      <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')}>Preferences</List.Item>,
-      <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')}>Favorites</List.Item>,
+      <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Browse</span></List.Item>,
+      <List.Item key={1} onClick={() => this.clickedDrawerOption('/heatmap')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Heat Map</span></List.Item>,
+      <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Search Options</span></List.Item>,
+      <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Favorites</span></List.Item>,
     ]
     if (this.props.authentication_loaded) {
       return (
@@ -76,19 +80,28 @@ class AppRoot extends Component {
               className="main-navigation"
               style={{ minHeight: document.documentElement.clientHeight }}
               enableDragHandle={false}
-              sidebarStyle={{ zIndex: '99', width: '35vw', backgroundColor: 'white' }}
+              sidebarStyle={{
+                zIndex: '99',
+                width: '40vw',
+                background: 'rgba',
+          			background: '#00c6ff', /* fallback for old browsers */
+          		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
+          		  background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+              }}
               contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
-              overlayStyle={{ zIndex: '10' }}
+              overlayStyle={{ zIndex: '10', backgroundColor: 'rgba(0,0,0,0.5)' }}
               sidebar={sidebar}
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
+              <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/prefs' render={SearchPrefs} />
               <Route exact path='/favourites' render={FavoritesList} />
+              <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              {/*<Route exact path='/sandbox' render={SearchPrefs} />*/}
+              <Route exact path='/sandbox' render={AdvisorUI} />
             </Drawer>
           </Switch>
         </LocaleProvider>
