@@ -1,4 +1,4 @@
-// Compt for copying as a CounterSegment
+// Compt for copying as a Segment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -17,7 +17,7 @@ import {
 
 
 /*
-  <CounterSegment
+  <Segment
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -25,17 +25,13 @@ import {
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
-    slider
-    sliderOptions={{ min: 10, max: 100, step: 5 }}
-    incrementerOptions={{ max: 100, min: 10, step: 5 }}
   />
 */
 
 
 
-class CounterSegment extends Component {
+class Segment extends Component {
 
   constructor() {
     super()
@@ -43,7 +39,7 @@ class CounterSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        count: 0,
+        value: false,
       }
     }
   }
@@ -53,7 +49,6 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -80,18 +75,6 @@ class CounterSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedIncrementer(amount, direction) {
-    const x = amount * direction
-    console.log(this.state.data.count + x)
-    if (this.state.data.count + x < this.props.incrementerOptions.min) {
-      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
-    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
-      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
-    } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -144,7 +127,7 @@ class CounterSegment extends Component {
 
 	render() {
 		return (
-			<div id='CounterSegment' style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id='Segment' style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         <div style={{ padding: '20px' }}>
           <span style={{ fontSize: '2rem', color: 'white' }}>{`SEGMENT ${this.props.schema.id}`}</span>
         </div>
@@ -192,26 +175,7 @@ class CounterSegment extends Component {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>-</span>
-                <span style={{ fontSize: '3rem', color: 'white', margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>+</span>
-              </div>
-              {
-                this.props.slider && this.props.sliderOptions
-                ?
-                <div style={{ width: '80%', alignSelf: 'center' }}>
-                  <Slider
-                    value={this.state.data.count}
-                    min={this.props.sliderOptions.min}
-                    max={this.props.sliderOptions.max}
-                    step={this.props.sliderOptions.step}
-                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
-                  />
-                </div>
-                :
-                null
-              }
+              <h1 onClick={() => this.setState({ data: { ...this.state.data, value: true } })} style={{ color: 'white' }}>{`Input Form ${this.state.data.value} - Click Me`}</h1>
             </div>
             :
             null
@@ -219,7 +183,7 @@ class CounterSegment extends Component {
         </div>
         <div style={{ padding: '20px', height: '50px' }}>
           {
-            this.state.data.count && this.shouldDisplayInput()
+            this.state.data.value && this.shouldDisplayInput()
             ?
             <span onClick={(e) => this.nextSegment(e)} style={{ fontSize: '0.8rem', color: 'white', margin: '5px' }}>Done</span>
             :
@@ -232,7 +196,7 @@ class CounterSegment extends Component {
 }
 
 // defines the types of variables in this.props
-CounterSegment.propTypes = {
+Segment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
 	history: PropTypes.object.isRequired,
   instant_chars_segment_id: PropTypes.string.isRequired, // passed in, determines if this.state.instantChars = true
@@ -256,36 +220,17 @@ CounterSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
-  /*
-    incrementerOptions = { max: 5, min: 1 }
-  */
-  slider: PropTypes.bool,                   // passed in, should the slider appear?
-  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
-  /*
-    // see here for full options: https://github.com/react-component/slider
-    sliderOptions = {
-      min: 0,
-      max: 100,
-      step: 5,
-      vertical: false,
-    }
-  */
-  renderCountValue: PropTypes.func,
 }
 
 // for all optional props, define a default value
-CounterSegment.defaultProps = {
-  initialData: {},
-  slider: false,
-  sliderOptions: {},
-  segmentStyles: {},
+Segment.defaultProps = {
   texts: [],
-  renderCountValue: (count) => { return count}
+  initialData: {},
+  segmentStyles: {},
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CounterSegment)
+const RadiumHOC = Radium(Segment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

@@ -3,6 +3,7 @@ import {
   CHANGE_TAB,
   LOADING_COMPLETE,
   TOGGLE_DRAWER_NAV,
+  TOGGLE_INSTANT_CHARS,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -10,6 +11,7 @@ const INITIAL_STATE = {
   selected_tab: 'home',
   loading_complete: false,
   drawer_nav_open: false,
+  instant_chars_segment_id: '',
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -33,6 +35,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         drawer_nav_open: action.payload
+      }
+    case TOGGLE_INSTANT_CHARS:
+      return {
+        ...state,
+        instant_chars_segment_id: action.payload
       }
 		default:
 			return {

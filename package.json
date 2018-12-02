@@ -58,6 +58,7 @@
     "prop-types": "15.5.10",
     "radium": "0.19.1",
     "rc-queue-anim": "^1.6.4",
+    "rc-slider": "^8.6.3",
     "rc-tween-one": "^2.0.11",
     "react": "^15.5.4",
     "react-date-range": "^1.0.0-beta",

@@ -3,6 +3,7 @@ import {
   CHANGE_TAB,
   LOADING_COMPLETE,
   TOGGLE_DRAWER_NAV,
+  TOGGLE_INSTANT_CHARS,
 } from '../action_types'
 
 // change the language of the app
@@ -16,6 +17,16 @@ export const changeAppLanguage = (languageCode) => {
     })
   }
 }
+
+export const toggleInstantCharsSegmentID = (id) => {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_INSTANT_CHARS,
+      payload: id,
+    })
+  }
+}
+
 
 export const changeSelectedTab = (tab) => {
   return (dispatch) => {
