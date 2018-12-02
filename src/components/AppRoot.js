@@ -85,6 +85,7 @@ class AppRoot extends Component {
               sidebarStyle={{
                 zIndex: '99',
                 width: '40vw',
+                minWidth: '250px',
                 background: 'rgba',
           			background: '#00c6ff', /* fallback for old browsers */
           		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
