@@ -12,6 +12,7 @@ import {
   withRouter,
   Redirect,
 } from 'react-router-dom'
+import '../styles/app.css'
 import 'font-awesome/css/font-awesome.css'
 import 'antd-mobile/dist/antd-mobile.css'
 import 'antd/dist/antd.css'
@@ -61,6 +62,7 @@ class AppRoot extends Component {
       <List.Item key={1} onClick={() => this.clickedDrawerOption('/heatmap')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Heat Map</span></List.Item>,
       <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Search Options</span></List.Item>,
       <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Favorites</span></List.Item>,
+      <List.Item key={3} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Sandbox</span></List.Item>,
     ]
     if (this.props.authentication_loaded) {
       return (

@@ -1,4 +1,4 @@
-// Compt for copying as a CounterSegment
+// Compt for copying as a DateRangeSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -6,10 +6,10 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
+import moment from 'moment'
 import { withRouter } from 'react-router-dom'
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import SubtitlesMachine from './SubtitlesMachine'
+import { DateRange } from 'react-date-range'
 import {
   Toast,
   Icon,
@@ -18,8 +18,8 @@ import {
 
 
 /*
-  <CounterSegment
-    title='Counter Segment'
+  <DateRangeSegment
+    title='DateRange Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -27,19 +27,15 @@ import {
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    slider
-    sliderOptions={{ min: 10, max: 100, step: 5 }}
-    incrementerOptions={{ max: 100, min: 10, step: 5 }}
   />
 */
 
 
 
-class CounterSegment extends Component {
+class DateRangeSegment extends Component {
 
   constructor() {
     super()
@@ -47,7 +43,13 @@ class CounterSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        count: 0,
+  			dateRange: {
+          selection: {
+            startDate: new Date(),
+            endDate: null,
+            key: 'selection',
+          },
+        },
       }
     }
   }
@@ -57,7 +59,6 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -84,18 +85,6 @@ class CounterSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedIncrementer(amount, direction) {
-    const x = amount * direction
-    console.log(this.state.data.count + x)
-    if (this.state.data.count + x < this.props.incrementerOptions.min) {
-      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
-    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
-      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
-    } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -150,7 +139,7 @@ class CounterSegment extends Component {
 
 	render() {
 		return (
-			<div id={`CounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`DateRangeSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
@@ -199,31 +188,19 @@ class CounterSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px' }}>
+        <div style={{ margin: '30px 0px 0px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>-</span>
-                <span style={{ fontSize: '3rem', color: 'white', margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>+</span>
-              </div>
-              {
-                this.props.slider && this.props.sliderOptions
-                ?
-                <div style={{ width: '80%', alignSelf: 'center' }}>
-                  <Slider
-                    value={this.state.data.count}
-                    min={this.props.sliderOptions.min}
-                    max={this.props.sliderOptions.max}
-                    step={this.props.sliderOptions.step}
-                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
-                  />
-                </div>
-                :
-                null
-              }
+              <DateRange
+                minDate={new Date()}
+                showMonthArrow={false}
+                scroll={{enabled: true}}
+                onChange={(selection) => this.setState({ data: { ...this.state.data, dateRange: selection } })}
+                moveRangeOnFirstSelection={false}
+                ranges={[this.state.data.dateRange.selection]}
+              />
             </div>
             :
             null
@@ -241,7 +218,7 @@ class CounterSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.count && this.shouldDisplayInput()
+              moment(this.state.data.dateRange.startDate) && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -263,7 +240,7 @@ class CounterSegment extends Component {
 }
 
 // defines the types of variables in this.props
-CounterSegment.propTypes = {
+DateRangeSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -290,39 +267,20 @@ CounterSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
-  /*
-    incrementerOptions = { max: 5, min: 1 }
-  */
-  slider: PropTypes.bool,                   // passed in, should the slider appear?
-  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
-  /*
-    // see here for full options: https://github.com/react-component/slider
-    sliderOptions = {
-      min: 0,
-      max: 100,
-      step: 5,
-      vertical: false,
-    }
-  */
-  renderCountValue: PropTypes.func,
 }
 
 // for all optional props, define a default value
-CounterSegment.defaultProps = {
+DateRangeSegment.defaultProps = {
   title: '',
+  texts: [],
   initialData: {},
-  slider: false,
-  sliderOptions: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  texts: [],
-  renderCountValue: (count) => { return count}
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CounterSegment)
+const RadiumHOC = Radium(DateRangeSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -346,7 +304,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '100px 0px 20px 0px'
 		},
     skip: {
       padding: '5px',

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd-mobile'
-import AdvisorUI from '../modules/AdvisorUI/AdvisorUI'
+import AdvisorUI from '../modules/AdvisorUI_v1/AdvisorUI'
 
 
 class AdvisorUITemplate extends Component {

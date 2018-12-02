@@ -1,4 +1,4 @@
-// Compt for copying as a CounterSegment
+// Compt for copying as a InputSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -7,8 +7,6 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import SubtitlesMachine from './SubtitlesMachine'
 import {
   Toast,
@@ -18,8 +16,8 @@ import {
 
 
 /*
-  <CounterSegment
-    title='Counter Segment'
+  <InputSegment
+    title='Input Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -27,19 +25,18 @@ import {
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    slider
-    sliderOptions={{ min: 10, max: 100, step: 5 }}
-    incrementerOptions={{ max: 100, min: 10, step: 5 }}
+    inputType={'text', 'textarea', 'number', 'tel', 'email', 'url'}
+    stringInputPlaceholder={'Type something'}
+    numberInputPlaceholder={0}
   />
 */
 
 
 
-class CounterSegment extends Component {
+class InputSegment extends Component {
 
   constructor() {
     super()
@@ -47,7 +44,7 @@ class CounterSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        count: 0,
+        input_string: '',
       }
     }
   }
@@ -57,7 +54,6 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -84,18 +80,6 @@ class CounterSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedIncrementer(amount, direction) {
-    const x = amount * direction
-    console.log(this.state.data.count + x)
-    if (this.state.data.count + x < this.props.incrementerOptions.min) {
-      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
-    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
-      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
-    } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -150,7 +134,7 @@ class CounterSegment extends Component {
 
 	render() {
 		return (
-			<div id={`CounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`InputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
@@ -188,6 +172,19 @@ class CounterSegment extends Component {
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                         this.props.triggerScrollDown(null, 1000)
+                        if (this.shouldDisplayInput() || this.state.instantChars) {
+                          if (this.props.inputType === 'textarea') {
+                            // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
+                          } else {
+                            document.getElementById(`input_field--${this.props.schema.id}`).focus()
+                            document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
+                        			if (e.keyCode === 13) {
+                                document.getElementById(`input_field--${this.props.schema.id}`).blur()
+                                this.nextSegment()
+                        			}
+                        		})
+                          }
+                        }
                       })
     								}}
     							/>
@@ -204,25 +201,36 @@ class CounterSegment extends Component {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>-</span>
-                <span style={{ fontSize: '3rem', color: 'white', margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>+</span>
-              </div>
               {
-                this.props.slider && this.props.sliderOptions
+                this.props.inputType === 'textarea'
                 ?
-                <div style={{ width: '80%', alignSelf: 'center' }}>
-                  <Slider
-                    value={this.state.data.count}
-                    min={this.props.sliderOptions.min}
-                    max={this.props.sliderOptions.max}
-                    step={this.props.sliderOptions.step}
-                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
-                  />
+                <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
+                  <textarea
+                    id={`textarea_field--${this.props.schema.id}`}
+                    rows={4}
+                    value={this.state.data.input_string}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                    }}
+                    onFocus={() => document.getElementById(`textarea_field--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
+                    placeholder={this.props.stringInputPlaceholder}
+                    style={comStyles().textarea}
+                  ></textarea>
                 </div>
                 :
-                null
+                <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
+                  <input
+                    id={`input_field--${this.props.schema.id}`}
+                    type={this.props.inputType}
+                    value={this.state.data.input_string}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                    }}
+                    onFocus={() => document.getElementById(`input_field--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
+                    placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
+                    style={comStyles().text}
+                  ></input>
+                </div>
               }
             </div>
             :
@@ -241,7 +249,7 @@ class CounterSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.count && this.shouldDisplayInput()
+              this.state.data.input_string && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -263,7 +271,7 @@ class CounterSegment extends Component {
 }
 
 // defines the types of variables in this.props
-CounterSegment.propTypes = {
+InputSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -290,39 +298,24 @@ CounterSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
-  /*
-    incrementerOptions = { max: 5, min: 1 }
-  */
-  slider: PropTypes.bool,                   // passed in, should the slider appear?
-  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
-  /*
-    // see here for full options: https://github.com/react-component/slider
-    sliderOptions = {
-      min: 0,
-      max: 100,
-      step: 5,
-      vertical: false,
-    }
-  */
-  renderCountValue: PropTypes.func,
+  stringInputPlaceholder: PropTypes.string,
+  numberInputPlaceholder: PropTypes.number,
 }
 
 // for all optional props, define a default value
-CounterSegment.defaultProps = {
+InputSegment.defaultProps = {
   title: '',
+  texts: [],
   initialData: {},
-  slider: false,
-  sliderOptions: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  texts: [],
-  renderCountValue: (count) => { return count}
+  stringInputPlaceholder: '',
+  numberInputPlaceholder: 0,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CounterSegment)
+const RadiumHOC = Radium(InputSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -346,8 +339,36 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '100px 0px 20px 0px'
 		},
+    text: {
+      background: 'rgba(255,255,255,0.2)',
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: '#ffffff',
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+    },
+    textarea: {
+      background: 'rgba(255,255,255,0.2)',
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: 'auto',
+      borderRadius: '10px',
+      padding: '20px',
+      color: '#ffffff',
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+    },
     skip: {
       padding: '5px',
       minWidth: '50px',
