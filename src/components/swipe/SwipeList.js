@@ -72,10 +72,6 @@ class SwipeList extends Component {
 				.catch((err) => {
 					console.log(err)
 				})
-		} else {
-			if (this.props.current_listing && this.props.current_listing) {
-				history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
-			}
 		}
 	}
 
@@ -222,6 +218,7 @@ class SwipeList extends Component {
 						          infinite
 											swipeSpeed={3}
 											selectedIndex={this.state.imageCarouselSelectedIndex}
+											style={{ height: '40vh', overflow: 'hidden' }}
 						        >
 					          {this.props.current_listing.IMAGES.map((url, index) => (
 					            <a
@@ -555,7 +552,18 @@ class SwipeList extends Component {
 				<div>
 					loading
 					{
+						this.props.empty_listings_stack_redirect
+						?
 						this.props.history.push(this.props.empty_listings_stack_redirect)
+						:
+						null
+					}
+					{
+						this.props.location.search.indexOf('ref=undefined') > -1
+						?
+						this.props.history.push('/no_more')
+						:
+						null
 					}
 				</div>
 			)

@@ -64,7 +64,7 @@ class SearchPrefs extends Component {
     this.setState({
       people: this.props.prefs.max_beds,
       max_budget_person: this.props.prefs.max_budget,
-      commute_mode: this.props.card_section_shown,
+      commute_mode: this.props.prefs.destination.commute_mode,
       destination_address: this.props.prefs.destination.address,
       destination_address_lat: this.props.prefs.destination.gps.lat,
       destination_address_lng: this.props.prefs.destination.gps.lng,
@@ -77,7 +77,7 @@ class SearchPrefs extends Component {
       this.setState({
         people: this.props.prefs.max_beds,
         max_budget_person: this.props.prefs.max_budget,
-        commute_mode: this.props.card_section_shown,
+	      commute_mode: this.props.prefs.destination.commute_mode,
         destination_address: this.props.prefs.destination.address,
         destination_address_lat: this.props.prefs.destination.gps.lat,
         destination_address_lng: this.props.prefs.destination.gps.lng,
@@ -150,18 +150,13 @@ class SearchPrefs extends Component {
         destination_address: place.formatted_address,
       }, () => {
   			document.getElementById('destination_address').blur()
-  			setTimeout(() => {
-  				$('#middle_part').animate({
-  						scrollTop: document.getElementById("middle_part").scrollHeight - $('#ask_destination').position().top
-  				}, 200);
-  				const destination_coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
-  				const map = new google.maps.Map(document.getElementById('destination-map'), {
-  					center: destination_coords,
-  					zoom: 13,
-  					disableDefaultUI: true,
-  				})
-  				const marker = new google.maps.Marker({position: destination_coords, map: map})
-  			}, 500)
+				const destination_coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
+				const map = new google.maps.Map(document.getElementById('destination-map'), {
+					center: destination_coords,
+					zoom: 13,
+					disableDefaultUI: true,
+				})
+				const marker = new google.maps.Marker({position: destination_coords, map: map})
   		})
     }
 
