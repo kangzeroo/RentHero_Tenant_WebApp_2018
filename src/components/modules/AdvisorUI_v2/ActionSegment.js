@@ -1,4 +1,4 @@
-// Compt for copying as a CounterSegment
+// Compt for copying as a ActionSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -7,8 +7,6 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import SubtitlesMachine from './SubtitlesMachine'
 import {
   Toast,
@@ -18,28 +16,28 @@ import {
 
 
 /*
-  <CounterSegment
-    title='Counter Segment'
-    schema={{ id: '1', endpoint: '2' }}
+  <ActionSegment
+    title='Plain ActionSegment'
+    schema={{
+      id: '1',
+      endpoint: '2',
+      choices: [
+        { id: 'view_matches', text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
+      ]
+    }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
       { id: '1-2', text: 'The next string to display!' }
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
-    skippable={false}
-    skipEndpoint=''
-    slider
-    sliderOptions={{ min: 10, max: 100, step: 5 }}
-    incrementerOptions={{ max: 100, min: 10, step: 5 }}
   />
 */
 
 
 
-class CounterSegment extends Component {
+class ActionSegment extends Component {
 
   constructor() {
     super()
@@ -47,7 +45,7 @@ class CounterSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        count: 0,
+        selected_choices: [],
       }
     }
   }
@@ -57,7 +55,6 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -84,18 +81,6 @@ class CounterSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedIncrementer(amount, direction) {
-    const x = amount * direction
-    console.log(this.state.data.count + x)
-    if (this.state.data.count + x < this.props.incrementerOptions.min) {
-      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
-    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
-      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
-    } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -148,9 +133,54 @@ class CounterSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+
+  clickedChoice(choice) {
+    let already_selected = false
+    this.state.data.selected_choices.forEach((c) => {
+      if (c.id === choice.id) {
+        already_selected = true
+      }
+    })
+    if (this.props.multi) {
+      if (already_selected) {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
+          }
+        })
+      } else {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.concat([choice])
+          }
+        })
+      }
+    } else {
+      if (already_selected) {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
+          }
+        })
+      } else {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.concat([choice])
+          }
+        }, () => {
+          this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+        })
+      }
+    }
+  }
+
 	render() {
 		return (
-			<div id={`CounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`ActionSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
@@ -199,63 +229,14 @@ class CounterSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px' }}>
-          {
-            this.shouldDisplayInput() || this.state.instantChars
-            ?
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>-</span>
-                <span style={{ fontSize: '3rem', color: 'white', margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>+</span>
-              </div>
-              {
-                this.props.slider && this.props.sliderOptions
-                ?
-                <div style={{ width: '80%', alignSelf: 'center' }}>
-                  <Slider
-                    value={this.state.data.count}
-                    min={this.props.sliderOptions.min}
-                    max={this.props.sliderOptions.max}
-                    step={this.props.sliderOptions.step}
-                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
-                  />
-                </div>
-                :
-                null
-              }
-            </div>
-            :
-            null
-          }
-        </div>
-        <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '50px 0px 0px 0px' }}>
             {
-              this.props.skippable && this.props.skipEndpoint && this.shouldDisplayInput()
-              ?
-              <div id={`skip--${this.props.schema.id}`} onClick={(e) => this.nextSegment(e, this.props.skipEndpoint)} style={comStyles().skip}>Skip</div>
-              :
-              null
+              this.props.schema.choices.map((choice) => {
+                return (
+                  <div key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).action}>{choice.text}</div>
+                )
+              })
             }
-          </div>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
-            {
-              this.state.data.count && this.shouldDisplayInput()
-              ?
-              <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
-              :
-              <div>
-                {
-                  this.shouldDisplayInput()
-                  ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
-                  :
-                  null
-                }
-              </div>
-            }
-          </div>
         </div>
 			</div>
 		)
@@ -263,7 +244,7 @@ class CounterSegment extends Component {
 }
 
 // defines the types of variables in this.props
-CounterSegment.propTypes = {
+ActionSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -271,8 +252,6 @@ CounterSegment.propTypes = {
   triggerScrollDown: PropTypes.func.isRequired, // passed in
   initialData: PropTypes.object,            // passed in, allows us to configure inputs to whats already given
   onDone: PropTypes.func.isRequired,        // passed in
-  skippable: PropTypes.bool,                // passed in
-  skipEndpoint: PropTypes.string,           // passed in
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
@@ -290,39 +269,19 @@ CounterSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
-  /*
-    incrementerOptions = { max: 5, min: 1 }
-  */
-  slider: PropTypes.bool,                   // passed in, should the slider appear?
-  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
-  /*
-    // see here for full options: https://github.com/react-component/slider
-    sliderOptions = {
-      min: 0,
-      max: 100,
-      step: 5,
-      vertical: false,
-    }
-  */
-  renderCountValue: PropTypes.func,
 }
 
 // for all optional props, define a default value
-CounterSegment.defaultProps = {
-  title: '',
+ActionSegment.defaultProps = {
+  texts: [],
   initialData: {},
-  slider: false,
-  sliderOptions: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  texts: [],
-  renderCountValue: (count) => { return count}
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CounterSegment)
+const RadiumHOC = Radium(ActionSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -373,4 +332,33 @@ const comStyles = () => {
 			right: '0px',
 		}
 	}
+}
+
+
+const choiceStyles = (selected_choices, choice) => {
+  let selectedStyle = {}
+  selected_choices.forEach((c) => {
+    if (c.id === choice.id) {
+      selectedStyle.backgroundColor = 'white',
+      selectedStyle.color = '#009cfe'
+    }
+  })
+  return {
+    action: {
+      width: '100%',
+      borderRadius: '10px',
+      border: '1px solid white',
+      color: 'white',
+      padding: '10px 0px 10px 0px',
+      backgroundColor: 'rgba(0,0,0,0)',
+      fontSize: '1rem',
+      margin: '10px 0px 10px 0px',
+      cursor: 'pointer',
+      ...selectedStyle,
+      ":hover": {
+        backgroundColor: 'rgba(256,256,256,1)',
+        color: '#009cfe'
+      }
+    }
+  }
 }

@@ -9,18 +9,19 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
 import {
-
+  Icon,
 } from 'antd-mobile'
 
 /*
   <MultiOptionsSegment
+    title='MultiOptions Segment'
     schema={{
       id: '2',
       endpoint: '3',
       choices: [
-        { id: '2-0', text: 'Option A', endpoint: '3' },
-        { id: '2-1', text: 'Option B', endpoint: '4' },
-        { id: '2-2', text: 'Option C', endpoint: '5' }
+        { id: '2-0', text: 'Option A', value: 'A', endpoint: '3' },
+        { id: '2-1', text: 'Option B', value: 'B', endpoint: '4' },
+        { id: '2-2', text: 'Option C', value: 'C', endpoint: '5' }
       ]
     }}
     texts={[
@@ -31,6 +32,8 @@ import {
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
     segmentStyles={{ padding: '100px 0px 100px 0px' }}
+    skippable={false}
+    skipEndpoint=''
     multi
   />
 */
@@ -87,15 +90,15 @@ class MultiOptionsSegment extends Component {
   }
 
   clickedChoice(choice) {
-    console.log(this.state)
-    console.log(choice)
     let already_selected = false
     this.state.data.selected_choices.forEach((c) => {
       if (c.id === choice.id) {
         already_selected = true
       }
     })
+    // MULTI SELECT
     if (this.props.multi) {
+      // UNSELECT
       if (already_selected) {
         this.setState({
           data: {
@@ -103,6 +106,7 @@ class MultiOptionsSegment extends Component {
             selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
           }
         })
+      // SELECT
       } else {
         this.setState({
           data: {
@@ -111,7 +115,9 @@ class MultiOptionsSegment extends Component {
           }
         })
       }
+    // SINGLE SELECT
     } else {
+      // UNSELECT
       if (already_selected) {
         this.setState({
           data: {
@@ -119,24 +125,65 @@ class MultiOptionsSegment extends Component {
             selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
           }
         })
+      // SELECT
       } else {
-        this.setState({
-          data: {
-            ...this.state.data,
-            selected_choices: this.state.data.selected_choices.concat([choice])
+        // OTHER ENABLED
+        if (this.props.other) {
+          // OTHER ALREADY OPENED
+          if (this.state.show_other_input) {
+            this.setState({
+              show_other_input: false,
+              data: {
+                ...this.state.data,
+                selected_choices: [choice],
+                other_choice: '',
+              }
+            }, () => {
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+            })
+          // OTHER ALREADY CLOSED
+          } else {
+            this.setState({
+              show_other_input: false,
+              data: {
+                ...this.state.data,
+                selected_choices: [choice],
+                other_choice: '',
+              }
+            }, () => {
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+            })
           }
-        }, () => {
-          this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
-        })
+        // OTHER DISABLED
+        } else {
+          this.setState({
+            data: {
+              ...this.state.data,
+              selected_choices: [choice]
+            }
+          }, () => {
+            this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+          })
+        }
       }
     }
   }
 
   clickedOther(bool) {
     if (bool) {
-      this.setState({
-        show_other_input: bool
-      })
+      if (this.props.multi) {
+        this.setState({
+          show_other_input: bool,
+        })
+      } else {
+        this.setState({
+          show_other_input: bool,
+          data: {
+            ...this.state.data,
+            selected_choices: []
+          }
+        })
+      }
     } else {
       this.setState({
         show_other_input: bool,
@@ -191,17 +238,25 @@ class MultiOptionsSegment extends Component {
       }
     }
 
-    nextSegment(e) {
-      e.stopPropagation()
-      this.props.onDone(this.props.schema.id, this.props.schema.endpoint, this.state.data)
+    nextSegment(e, endpoint = this.props.schema.endpoint) {
+      if (e) {
+        e.stopPropagation()
+      }
+      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
     }
 
 	render() {
 		return (
-			<div id='MultiOptionsSegment' style={{ ...comStyles().container, ...this.props.segmentStyles }}>
-        <div style={{ padding: '20px' }}>
-          <span style={{ fontSize: '2rem', color: 'white' }}>{`SEGMENT ${this.props.schema.id}`}</span>
-        </div>
+			<div id={`MultiOptionsSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+        {
+          this.props.title
+          ?
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
+            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          </div>
+          :
+          null
+        }
         <div>
         {
           this.props.texts.map((text, txtIndex) => {
@@ -211,7 +266,7 @@ class MultiOptionsSegment extends Component {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
                   <SubtitlesMachine
-                    id={text.id}
+                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
                     key={`${text.id}_${txtIndex}`}
     								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
     								speed={0.25}
@@ -241,60 +296,67 @@ class MultiOptionsSegment extends Component {
           })
         }
         </div>
-        {
-          this.shouldDisplayInput()
-          ?
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-              {
-                this.props.schema.choices.map((choice) => {
-                  return (
-                    <div>
-                      <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.props.givenChoiceStyles, this.state.data.selected_choices, choice).choice}>{choice.text}</span>
-                    </div>
-                  )
-                })
-              }
-              {
-                this.props.other
-                ?
-                <div>
-                  {
-                    this.state.show_other_input
-                    ?
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <input
-                        id="other_input"
-                        value={this.state.data.other_choice}
-                        onChange={(e) => {
-                          this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
-                        }}
-                        placeholder="Enter your choice"
-                        style={comStyles().text}
-                      ></input>
-                      <span onClick={() => this.clickedOther(false)} style={{ margin: '5px', padding: '5px' }}>X</span>
-                    </div>
-                    :
-                    <span key='other' onClick={() => this.clickedOther(true)} style={choiceStyles(this.props.givenChoiceStyles, this.state.data.selected_choices, { id: 'other' }).choice}>Other</span>
-                  }
-                </div>
-                :
-                null
-              }
-            </div>
-          </div>
-          :
-          null
-        }
-        <div style={{ padding: '20px', height: '50px' }}>
+        <div style={{ margin: '30px 0px 0px 0px' }}>
           {
-            this.props.multi && this.shouldDisplayInput()
+            this.shouldDisplayInput()
             ?
-            <div style={{ padding: '20px', height: '50px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', padding: '10px', color: 'rgba(256,256,256,0.4)' }}>
+                {
+                  this.props.multi
+                  ?
+                  'SELECT MULTIPLE'
+                  :
+                  'SELECT ONE'
+                }
+              </div>
+              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+                {
+                  this.props.schema.choices.map((choice) => {
+                    return (
+                      <div style={{ margin: '10px 5px 10px 5px' }}>
+                        <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}</span>
+                      </div>
+                    )
+                  })
+                }
+                {
+                  this.props.other
+                  ?
+                  <div>
+                    {
+                      this.state.show_other_input
+                      ?
+                      null
+                      :
+                      <span key='other' onClick={() => this.clickedOther(true)} style={choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice}>Other</span>
+                    }
+                  </div>
+                  :
+                  null
+                }
+              </div>
               {
-                (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.state.show_other_input && this.state.data.other_choice)
+                this.props.other && this.state.show_other_input
                 ?
-                <span onClick={(e) => this.nextSegment(e)} style={{ fontSize: '0.8rem', color: 'white', margin: '5px' }}>Done {this.state.data.selected_choices.length}</span>
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <input
+                    id={`other_input--${this.props.schema.id}`}
+                    value={this.state.data.other_choice}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
+                    }}
+                    placeholder="Enter your choice"
+                    onFocus={() => document.getElementById(`other_input--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) {
+                        document.getElementById(`other_input--${this.props.schema.id}`).blur()
+                      }
+                    }}
+                    style={comStyles().text}
+                  ></input>
+                  <span onClick={() => this.clickedOther(false)} style={{ margin: '5px', padding: '5px' }}>X</span>
+                </div>
                 :
                 null
               }
@@ -302,6 +364,42 @@ class MultiOptionsSegment extends Component {
             :
             null
           }
+        </div>
+        <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
+          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
+            {
+              this.props.skippable && this.props.skipEndpoint && this.shouldDisplayInput()
+              ?
+              <div id={`skip--${this.props.schema.id}`} onClick={(e) => this.nextSegment(e, this.props.skipEndpoint)} style={comStyles().skip}>Skip</div>
+              :
+              null
+            }
+          </div>
+          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
+            {
+              (this.props.multi ? this.props.multi && this.shouldDisplayInput() : this.shouldDisplayInput())
+              ?
+              <div>
+                {
+                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : true)
+                  ?
+                  <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
+                  :
+                  null
+                }
+              </div>
+              :
+              <div>
+                {
+                  this.shouldDisplayInput()
+                  ?
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  :
+                  null
+                }
+              </div>
+            }
+          </div>
         </div>
 			</div>
 		)
@@ -311,11 +409,14 @@ class MultiOptionsSegment extends Component {
 // defines the types of variables in this.props
 MultiOptionsSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
+  title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
   instant_chars_segment_id: PropTypes.string, // passed in, determines if this.state.instantChars = true
   triggerScrollDown: PropTypes.func.isRequired, // passed in
   onDone: PropTypes.func.isRequired,        // passed in, function to call at very end
   initialData: PropTypes.object,            // passed in, allows us to configure inputs to whats already given
+  skippable: PropTypes.bool,                // passed in
+  skipEndpoint: PropTypes.string,           // passed in
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
@@ -328,26 +429,24 @@ MultiOptionsSegment.propTypes = {
     schema.id = 'abc'
     schema.endpoint = 'xyz'
     schema.choices = [
-      { id: 'parentID-choiceID', text: 'Something to show', endpoint: 'targetID'  }
+      { id: 'parentID-choiceID', value: 'X', text: 'Something to show', endpoint: 'targetID'  }
     ]
   */
 
   // UNIQUE PROPS FOR COMPONENT
   multi: PropTypes.bool,                    // passed in, can there be multiple input choices?
   other: PropTypes.bool,                    // passed in, can there be an "other" option for text input?
-  givenChoiceStyles: PropTypes.object,      // passed in, determines the styling for choices
 }
 
 // for all optional props, define a default value
 MultiOptionsSegment.defaultProps = {
+  title: '',
   initialData: null,
   instant_chars_segment_id: '',
   multi: false,
   other: false,
-  givenChoiceStyles: {
-    unselected: {},
-    selected: {},
-  },
+  skippable: false,
+  skipEndpoint: '',
   segmentStyles: {},
   texts: []
 }
@@ -377,6 +476,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+      padding: '100px 0px 20px 0px'
 		},
     text: {
       background: 'rgba(255,255,255,0.2)',
@@ -391,16 +491,40 @@ const comStyles = () => {
       color: '#ffffff',
       webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    }
+    },
+    skip: {
+      padding: '5px',
+      minWidth: '50px',
+      border: '1px solid white',
+      borderRadius: '5px',
+      fontSize: '0.8rem',
+      color: 'white',
+      cursor: 'pointer',
+      position: 'absolute',
+      bottom: '20px',
+      left: '0px',
+      ":hover": {
+        opacity: 0.5
+      }
+    },
+		check: {
+			color: 'white',
+			fontWeight: 'bold',
+			cursor: 'pointer',
+			margin: '15px 0px 0px 0px',
+			position: 'absolute',
+			bottom: '20px',
+			right: '0px',
+		}
 	}
 }
 
-const choiceStyles = (givenChoiceStyles, selected_choices, choice) => {
+const choiceStyles = (selected_choices, choice) => {
   let selectedStyle = {}
   selected_choices.forEach((c) => {
     if (c.id === choice.id) {
-      selectedStyle.backgroundColor = givenChoiceStyles.selected.backgroundColor || 'white',
-      selectedStyle.color = givenChoiceStyles.selected.color || 'black'
+      selectedStyle.backgroundColor = 'white',
+      selectedStyle.color = '#009cfe'
     }
   })
   return {
@@ -412,9 +536,7 @@ const choiceStyles = (givenChoiceStyles, selected_choices, choice) => {
       padding: '5px',
       backgroundColor: 'rgba(0,0,0,0)',
       fontSize: '1rem',
-      margin: '5px',
       cursor: 'pointer',
-      ...givenChoiceStyles,
       ...selectedStyle,
       ":hover": {
         opacity: 0.5

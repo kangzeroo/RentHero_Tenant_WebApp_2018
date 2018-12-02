@@ -47,6 +47,9 @@ class SubtitlesMachine extends Component {
       // console.log('OBSERVABLE NEXT')
       let waitTime = 70 * this.props.speed
       if (this.props.instant) {
+        this.setState({
+          text: this.props.text
+        })
         obs.complete()
       } else {
         if (count === lex.length + 1) {
