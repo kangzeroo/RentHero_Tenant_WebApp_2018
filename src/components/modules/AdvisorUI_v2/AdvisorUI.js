@@ -47,22 +47,45 @@ class AdvisorUI extends Component {
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
-                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This component library ℹ️id[abc-123] is great for making beautiful & customizable conversational interfaces 😍' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This component library is great for making beautiful & customizable conversational interfaces 😍 And yes, you can insert images and custom components!' },
+                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
+                                 { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
                                ]}
                                skippable
-                               skipEndpoint='z'
+                               skipEndpoint='y'
                              />) },
       { id: 'y', component: (<SegmentTemplate
                                title='Template Segment'
-                               schema={{ id: 'y', endpoint: 'a' }}
+                               schema={{ id: 'y', endpoint: 'xxx' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'The AdvisorUI is made of Segments, of which there are many kinds.' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This particular Segment is a Segment Template. Just copy it whenever you need to make a new custom Segment.' },
+                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
-                               skipEndpoint='a'
+                               skipEndpoint='xxx'
+                             />) },
+      { id: 'xxx', component: (<MultiOptionsSegment
+                                title='Multi Select'
+                                schema={{
+                                  id: 'xxx',
+                                  endpoint: 'a',
+                                  choices: [
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: 'a', tooltip: (<p>Tooltip A</p>) },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: 'a' },
+                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: 'a' }
+                                  ]
+                                }}
+                                texts={[
+                                  { id: '2-1', text: 'This Segment lets you select multiple choices. ℹ️id[abc-999]', tooltips: [{ id: 'abc-999', tooltip: (<div>Info</div>) }] },
+                                ]}
+                                skippable
+                                skipEndpoint='a'
+                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                multi
                              />) },
      { id: 'a', component: (<DatePickerSegment
                                title='Single Date Selection'

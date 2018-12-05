@@ -8,12 +8,13 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
-import MobileDetect from 'mobile-detect'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
@@ -69,7 +70,7 @@ class InputSegment extends Component {
   }
 
   componentDidMount() {
-    this.mobile = MobileDetect.mobile()
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -145,6 +146,15 @@ class InputSegment extends Component {
     }
   }
 
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
+  }
+
 	render() {
 		return (
 			<div id={`InputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
@@ -165,47 +175,56 @@ class InputSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: FONT_COLOR,
-    									textAlign: 'left',
-                      ...text.textStyles,
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        if (this.shouldDisplayInput()) {
-                          this.props.triggerScrollDown(null, 1000)
-                        }
-                        if (this.shouldDisplayInput() || this.state.instantChars) {
-                          if (this.props.inputType === 'textarea') {
-                            // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
-                          } else {
-                            if (this.mobile) {
-                              document.getElementById(`input_field--${this.props.schema.id}`).focus()
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              this.props.triggerScrollDown(null, 1000)
                             }
-                            document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
-                        			if (e.keyCode === 13) {
-                                document.getElementById(`input_field--${this.props.schema.id}`).blur()
-                                this.nextSegment()
-                        			}
-                        		})
-                          }
-                        }
-                      })
-    								}}
-    							/>
+                            if (this.shouldDisplayInput() || this.state.instantChars) {
+                              if (this.props.inputType === 'textarea') {
+                                // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
+                              } else {
+                                if (this.mobile) {
+                                  document.getElementById(`input_field--${this.props.schema.id}`).focus()
+                                }
+                                document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
+                            			if (e.keyCode === 13) {
+                                    document.getElementById(`input_field--${this.props.schema.id}`).blur()
+                                    this.nextSegment()
+                            			}
+                            		})
+                              }
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
