@@ -1,4 +1,4 @@
-// Compt for copying as a CounterSegment
+// Compt for copying as a ShareUrlSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -7,19 +7,18 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
 import SubtitlesMachine from './SubtitlesMachine'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <CounterSegment
-    title='Counter Segment'
+  <ShareUrlSegment
+    title='Plain ShareUrlSegment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -27,19 +26,15 @@ import {
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    slider
-    sliderOptions={{ min: 10, max: 100, step: 5 }}
-    incrementerOptions={{ max: 100, min: 10, step: 5 }}
   />
 */
 
 
 
-class CounterSegment extends Component {
+class ShareUrlSegment extends Component {
 
   constructor() {
     super()
@@ -47,7 +42,7 @@ class CounterSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        count: 0,
+        value: false,
       }
     }
   }
@@ -57,7 +52,6 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -84,18 +78,6 @@ class CounterSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedIncrementer(amount, direction) {
-    const x = amount * direction
-    console.log(this.state.data.count + x)
-    if (this.state.data.count + x < this.props.incrementerOptions.min) {
-      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
-    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
-      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
-    } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -150,12 +132,12 @@ class CounterSegment extends Component {
 
 	render() {
 		return (
-			<div id={`CounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`ShareUrlSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -177,8 +159,9 @@ class CounterSegment extends Component {
     								text={text.text}
     								textStyles={{
     									fontSize: '1.1rem',
-    									color: 'white',
+    									color: FONT_COLOR,
     									textAlign: 'left',
+                      ...text.textStyles,
     								}}
     								containerStyles={{
     									width: '100%',
@@ -187,7 +170,9 @@ class CounterSegment extends Component {
     								}}
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
+                        if (this.shouldDisplayInput()) {
+                          this.props.triggerScrollDown(null, 1000)
+                        }
                       })
     								}}
     							/>
@@ -203,30 +188,21 @@ class CounterSegment extends Component {
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>-</span>
-                <span style={{ fontSize: '3rem', color: 'white', margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: 'white', margin: '5px' }}>+</span>
-              </div>
-              {
-                this.props.slider && this.props.sliderOptions
-                ?
-                <div style={{ width: '80%', alignSelf: 'center' }}>
-                  <Slider
-                    value={this.state.data.count}
-                    min={this.props.sliderOptions.min}
-                    max={this.props.sliderOptions.max}
-                    step={this.props.sliderOptions.step}
-                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
-                  />
-                </div>
-                :
-                null
-              }
-            </div>
+						<div style={comStyles().share}>
+							<input
+								id={`share_link--${this.props.schema.id}`}
+								onClick={() => {
+									document.getElementById(`share_link--${this.props.schema.id}`).select()
+									document.execCommand("copy")
+                  Toast.info('URL copied to clipboard', 1)
+                  document.getElementById(`share_link--${this.props.schema.id}`).blur()
+								}}
+								value={this.props.url}
+								style={comStyles().text}
+							></input>
+						</div>
             :
-            null
+            <div style={{ width: '100%', height: '100px' }}></div>
           }
         </div>
         <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
@@ -241,7 +217,7 @@ class CounterSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.count && this.shouldDisplayInput()
+              this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -249,7 +225,7 @@ class CounterSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -263,7 +239,7 @@ class CounterSegment extends Component {
 }
 
 // defines the types of variables in this.props
-CounterSegment.propTypes = {
+ShareUrlSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -290,39 +266,20 @@ CounterSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
-  /*
-    incrementerOptions = { max: 5, min: 1 }
-  */
-  slider: PropTypes.bool,                   // passed in, should the slider appear?
-  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
-  /*
-    // see here for full options: https://github.com/react-component/slider
-    sliderOptions = {
-      min: 0,
-      max: 100,
-      step: 5,
-      vertical: false,
-    }
-  */
-  renderCountValue: PropTypes.func,
+  url: PropTypes.string.isRequired,         // passed in
 }
 
 // for all optional props, define a default value
-CounterSegment.defaultProps = {
-  title: '',
+ShareUrlSegment.defaultProps = {
+  texts: [],
   initialData: {},
-  slider: false,
-  sliderOptions: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  texts: [],
-  renderCountValue: (count) => { return count}
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(CounterSegment)
+const RadiumHOC = Radium(ShareUrlSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -346,15 +303,31 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
+    text: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+			cursor: 'pointer',
+    },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -364,13 +337,21 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
 			position: 'absolute',
 			bottom: '20px',
 			right: '0px',
-		}
+		},
+		share: {
+			width: '100%',
+			margin: '30px 0px 0px 0px',
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'center',
+			alignItems: 'center',
+		},
 	}
 }

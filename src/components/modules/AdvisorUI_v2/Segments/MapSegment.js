@@ -1,4 +1,4 @@
-// Compt for copying as a SegmentTemplate
+// Compt for copying as a MapSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -8,16 +8,18 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
+import MobileDetect from 'mobile-detect'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <SegmentTemplate
-    title='Plain SegmentTemplate'
+  <MapSegment
+    title='Map Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -33,7 +35,7 @@ import {
 
 
 
-class SegmentTemplate extends Component {
+class MapSegment extends Component {
 
   constructor() {
     super()
@@ -41,9 +43,14 @@ class SegmentTemplate extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        value: false,
+        address_components: [],
+        address_lat: 0,
+        address_lng: 0,
+        address_place_id: '',
+        address: '',
       }
     }
+    this.mobile = false
   }
 
   componentWillMount() {
@@ -60,6 +67,13 @@ class SegmentTemplate extends Component {
         instantChars: true
       })
     }
+  }
+
+  componentDidMount() {
+    if (this.state.instantChars) {
+      this.startAutocomplete()
+    }
+    this.mobile = MobileDetect.mobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -129,14 +143,65 @@ class SegmentTemplate extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+  startAutocomplete() {
+    this.autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById(`address--${this.props.schema.id}`)),
+            {
+              // types: ['address', 'establishment'],
+              // bounds: new google.maps.LatLngBounds(
+              //   new google.maps.LatLng(-80.671519, 43.522913),
+              //   new google.maps.LatLng(-80.344067, 43.436979)
+              // )
+							componentRestrictions: {country: "ca"}
+            }
+          );
+    // When the user selects an address from the dropdown, populate the address
+    // fields in the form.
+    this.autocomplete.addListener('place_changed', () => this.fillInAddress())
+    document.getElementById(`address--${this.props.schema.id}`).focus()
+  }
+
+  fillInAddress() {
+    const place = this.autocomplete.getPlace()
+    this.setState({
+      data: {
+        ...this.state.data,
+        address_components: place.address_components,
+        address_lat: place.geometry.location.lat().toFixed(7),
+        address_lng: place.geometry.location.lng().toFixed(7),
+        address_place_id: place.place_id,
+        address: place.formatted_address,
+      }
+    }, () => {
+			document.getElementById(`address--${this.props.schema.id}`).blur()
+			setTimeout(() => {
+        document.getElementById(`map--${this.props.schema.id}`).style.height = '250px'
+				const coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
+				const map = new google.maps.Map(document.getElementById(`map--${this.props.schema.id}`), {
+					center: coords,
+					zoom: 13,
+					disableDefaultUI: true,
+				})
+				const marker = new google.maps.Marker({position: coords, map: map})
+        document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "center" })
+			}, 500)
+		})
+  }
+
+  focusedInput(id) {
+    if (this.mobile) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }
+
 	render() {
 		return (
-			<div id={`SegmentTemplate--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`MapSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -158,8 +223,9 @@ class SegmentTemplate extends Component {
     								text={text.text}
     								textStyles={{
     									fontSize: '1.1rem',
-    									color: 'white',
+    									color: FONT_COLOR,
     									textAlign: 'left',
+                      ...text.textStyles,
     								}}
     								containerStyles={{
     									width: '100%',
@@ -168,7 +234,12 @@ class SegmentTemplate extends Component {
     								}}
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
+                        if (this.shouldDisplayInput()) {
+                          this.props.triggerScrollDown(null, 1000)
+                        }
+                        if (this.shouldDisplayInput() || this.state.instantChars) {
+                          this.startAutocomplete()
+                        }
                       })
     								}}
     							/>
@@ -184,11 +255,21 @@ class SegmentTemplate extends Component {
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
-            <div onClick={() => this.setState({ data: { ...this.state.data, value: true } })} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', cursor: 'pointer', backgroundColor: 'rgba(256,256,256,0.3)', borderRadius: '10px', padding: '20px', minHeight: '100px' }}>
-              <h5 style={{ color: 'white' }}>{`Click Here to Proceed - ${this.state.data.value}`}</h5>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <input
+                id={`address--${this.props.schema.id}`}
+                value={this.state.data.address}
+                onChange={(e) => {
+                  this.setState({ data: { ...this.state.data, address: e.target.value } })
+                }}
+                onFocus={() => this.focusedInput(`address--${this.props.schema.id}`)}
+                placeholder="Enter Location"
+                style={comStyles().text}
+              ></input>
+              <div id={`map--${this.props.schema.id}`} style={{ height: '10px', borderRadius: '10px', margin: '10px 0px 0px 0px' }}></div>
             </div>
             :
-            <div style={{ width: '100%', height: '100px' }}></div>
+            null
           }
         </div>
         <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
@@ -203,7 +284,7 @@ class SegmentTemplate extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.value && this.shouldDisplayInput()
+              this.state.data.address_place_id && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -211,7 +292,7 @@ class SegmentTemplate extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -225,7 +306,7 @@ class SegmentTemplate extends Component {
 }
 
 // defines the types of variables in this.props
-SegmentTemplate.propTypes = {
+MapSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -255,7 +336,8 @@ SegmentTemplate.propTypes = {
 }
 
 // for all optional props, define a default value
-SegmentTemplate.defaultProps = {
+MapSegment.defaultProps = {
+  title: '',
   texts: [],
   initialData: {},
   segmentStyles: {},
@@ -264,7 +346,7 @@ SegmentTemplate.defaultProps = {
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(SegmentTemplate)
+const RadiumHOC = Radium(MapSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -288,15 +370,36 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
+    text: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
+    },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -306,7 +409,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'rgba(256,256,256,1',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',

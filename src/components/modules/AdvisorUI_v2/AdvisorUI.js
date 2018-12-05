@@ -13,17 +13,18 @@ import {
   Icon,
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
-import SegmentTemplate from './SegmentTemplate'
-import MapSegment from './MapSegment'
-import CounterSegment from './CounterSegment'
-import MultiOptionsSegment from './MultiOptionsSegment'
-import DatePickerSegment from './DatePickerSegment'
-import DateRangeSegment from './DateRangeSegment'
-import InputSegment from './InputSegment'
-import MessageSegment from './MessageSegment'
-import ActionSegment from './ActionSegment'
-import FileUploadSegment from './FileUploadSegment'
-import ShareUrlSegment from './ShareUrlSegment'
+import SegmentTemplate from './Segments/SegmentTemplate'
+import MapSegment from './Segments/MapSegment'
+import CounterSegment from './Segments/CounterSegment'
+import MultiOptionsSegment from './Segments/MultiOptionsSegment'
+import DatePickerSegment from './Segments/DatePickerSegment'
+import DateRangeSegment from './Segments/DateRangeSegment'
+import InputSegment from './Segments/InputSegment'
+import MessageSegment from './Segments/MessageSegment'
+import ActionSegment from './Segments/ActionSegment'
+import FileUploadSegment from './Segments/FileUploadSegment'
+import ShareUrlSegment from './Segments/ShareUrlSegment'
+import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from './styles/advisor_ui_styles'
 
 
 class AdvisorUI extends Component {
@@ -42,11 +43,11 @@ class AdvisorUI extends Component {
       { id: 'x', component: (<MessageSegment
                                title='Introduction'
                                schema={{ id: 'x', endpoint: 'y' }}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
-                                 { id: '0-2', text: 'This component library is great for making beautiful & customizable conversational interfaces 😍' },
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This component library ℹ️id[abc-123] is great for making beautiful & customizable conversational interfaces 😍' },
                                ]}
                                skippable
                                skipEndpoint='z'
@@ -54,11 +55,11 @@ class AdvisorUI extends Component {
       { id: 'y', component: (<SegmentTemplate
                                title='Template Segment'
                                schema={{ id: 'y', endpoint: 'a' }}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', text: 'The AdvisorUI is made of Segments, of which there are many kinds.' },
-                                 { id: '0-2', text: 'This particular Segment is a Segment Template. Just copy it whenever you need to make a new custom Segment.' },
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'The AdvisorUI is made of Segments, of which there are many kinds.' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This particular Segment is a Segment Template. Just copy it whenever you need to make a new custom Segment.' },
                                ]}
                                skippable
                                skipEndpoint='a'
@@ -66,10 +67,10 @@ class AdvisorUI extends Component {
      { id: 'a', component: (<DatePickerSegment
                                title='Single Date Selection'
                                schema={{ id: 'a', endpoint: 'z' }}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', text: 'This Segment lets you select a single date.' }
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you select a single date.' }
                                ]}
                                skippable
                                skipEndpoint='z'
@@ -77,20 +78,20 @@ class AdvisorUI extends Component {
       { id: 'z', component: (<DateRangeSegment
                                 title='Date Range'
                                 schema={{ id: 'z', endpoint: 'b' }}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', text: 'This Segment allows you to select a date range.' },
-                                  { id: '0-2', text: 'Also notice that you cannot skip this Segment like the other ones.' },
+                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment allows you to select a date range.' },
+                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
                                 ]}
                              /> )},
       { id: 'b', component: (<InputSegment
                                 title='Html Inputs'
                                 schema={{ id: 'b', endpoint: 'c' }}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', text: 'Below is a simple text input' },
+                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Below is a simple text input' },
                                 ]}
                                 skippable
                                 skipEndpoint='c'
@@ -99,11 +100,11 @@ class AdvisorUI extends Component {
                              /> )},
      { id: 'c', component: (<InputSegment
                                schema={{ id: 'c', endpoint: 'd' }}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', text: 'Here is a textarea input for more text.' },
-                                 { id: '0-2', text: 'Also notice the lack of a title unlike the previous Segment.' },
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a textarea input for more text.' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice the lack of a title unlike the previous Segment.' },
                                ]}
                                skippable
                                skipEndpoint='d'
@@ -112,20 +113,22 @@ class AdvisorUI extends Component {
                             /> )},
     { id: 'd', component: (<InputSegment
                               schema={{ id: 'd', endpoint: 'e' }}
-                              triggerScrollDown={() => this.triggerScrollDown()}
+                              triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                               texts={[
-                                { id: '0-1', text: 'Number input' },
+                                { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Number input' },
                               ]}
+                              skippable
+                              skipEndpoint='e'
                               inputType={'number'}
                               numberInputPlaceholder={10}
                            /> )},
      { id: 'e', component: (<InputSegment
                                schema={{ id: 'e', endpoint: 'f' }}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', text: 'Enter a phone number' },
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a phone number' },
                                ]}
                                skippable
                                skipEndpoint='f'
@@ -134,10 +137,10 @@ class AdvisorUI extends Component {
                             /> )},
       { id: 'f', component: (<InputSegment
                                 schema={{ id: 'f', endpoint: 'g' }}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', text: 'Enter an email' },
+                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter an email' },
                                 ]}
                                 skippable
                                 skipEndpoint='g'
@@ -146,10 +149,10 @@ class AdvisorUI extends Component {
                              /> )},
        { id: 'g', component: (<InputSegment
                                  schema={{ id: 'g', endpoint: '0' }}
-                                 triggerScrollDown={() => this.triggerScrollDown()}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                  texts={[
-                                   { id: '0-1', text: 'Enter a URL' },
+                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a URL' },
                                  ]}
                                  skippable
                                  skipEndpoint='0'
@@ -159,10 +162,10 @@ class AdvisorUI extends Component {
       { id: '0', component: (<MapSegment
                                 title='Map Location'
                                 schema={{ id: '0', endpoint: '4' }}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', text: 'This component lets you select a geographic location.' }
+                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This component lets you select a geographic location.' }
                                 ]}
                                 skippable
                                 skipEndpoint='4'
@@ -179,13 +182,13 @@ class AdvisorUI extends Component {
                                    ]
                                  }}
                                  texts={[
-                                   { id: '2-1', text: 'This simple Segment lets you pick 1 choice' },
-                                   { id: '2-2', text: 'Make sure all texts and choices have unique IDs!' },
+                                   { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This simple Segment lets you pick 1 choice' },
+                                   { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Make sure all texts and choices have unique IDs!' },
                                  ]}
                                  skippable
                                  skipEndpoint='1'
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                 triggerScrollDown={() => this.triggerScrollDown()}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               />) },
       { id: '1', component: (<MultiOptionsSegment
                                 title='Single Select with Other'
@@ -193,9 +196,9 @@ class AdvisorUI extends Component {
                                   id: '1',
                                   endpoint: '2',
                                   choices: [
-                                    { id: '2-0', text: 'Next Multi Selection', value: 'A', endpoint: '2' },
-                                    { id: '2-1', text: 'File Uploader', value: 'B', endpoint: 'kk' },
-                                    { id: '2-2', text: 'Share Link', value: 'C', endpoint: 'oo' },
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Next Multi Selection', value: 'A', endpoint: '2' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'File Uploader', value: 'B', endpoint: 'kk' },
+                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Share Link', value: 'C', endpoint: 'oo' },
                                   ]
                                 }}
                                 texts={[
@@ -205,7 +208,7 @@ class AdvisorUI extends Component {
                                 skippable
                                 skipEndpoint='3'
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 other
                              />) },
      { id: 'kk', component: (<FileUploadSegment
@@ -215,14 +218,14 @@ class AdvisorUI extends Component {
                                  endpoint: '2',
                                }}
                                texts={[
-                                 { id: '2-1', text: 'This Segment lets you upload a single file.' },
-                                 { id: '2-2', text: 'Or you can upload multiple files.' },
-                                 { id: '2-3', text: 'This still needs work in terms of file validation.' },
+                                 { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you upload a single file.' },
+                                 { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Or you can upload multiple files.' },
+                                 { id: '2-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This still needs work in terms of file validation.' },
                                ]}
                                skippable
                                skipEndpoint='2'
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                               triggerScrollDown={() => this.triggerScrollDown()}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                multi
                             />) },
     { id: 'oo', component: (<ShareUrlSegment
@@ -232,10 +235,10 @@ class AdvisorUI extends Component {
                                 endpoint: '2',
                               }}
                               texts={[
-                                { id: '2-1', text: 'Share this link with your friends!' },
+                                { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Share this link with your friends!' },
                               ]}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                              triggerScrollDown={() => this.triggerScrollDown()}
+                              triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               url='https://google.ca'
                            />) },
       { id: '2', component: (<MultiOptionsSegment
@@ -244,9 +247,9 @@ class AdvisorUI extends Component {
                                   id: '2',
                                   endpoint: '3',
                                   choices: [
-                                    { id: '2-0', text: 'Option A', value: 'A', endpoint: '3' },
-                                    { id: '2-1', text: 'Option B', value: 'B', endpoint: '3' },
-                                    { id: '2-2', text: 'Option C', value: 'C', endpoint: '3' }
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: '3' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: '3' },
+                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: '3' }
                                   ]
                                 }}
                                 texts={[
@@ -255,7 +258,7 @@ class AdvisorUI extends Component {
                                 skippable
                                 skipEndpoint='3'
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 multi
                              />) },
       { id: '3', component: (<MultiOptionsSegment
@@ -264,8 +267,8 @@ class AdvisorUI extends Component {
                                   id: '3',
                                   endpoint: '5',
                                   choices: [
-                                    { id: '2-0', text: 'Option A', value: 'A', endpoint: '5' },
-                                    { id: '2-1', text: 'Option B', value: 'B', endpoint: '5' },
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: '5' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: '5' },
                                   ]
                                 }}
                                 texts={[
@@ -274,7 +277,7 @@ class AdvisorUI extends Component {
                                 skippable
                                 skipEndpoint='5'
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                triggerScrollDown={() => this.triggerScrollDown()}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 multi
                                 other
                              />) },
@@ -284,15 +287,15 @@ class AdvisorUI extends Component {
                                    id: '5',
                                    endpoint: null,
                                    choices: [
-                                     { id: 'nothing', text: 'DO NOTHING', value: 'abort', endpoint: '' },
-                                     { id: 'abort', text: 'ABORT', value: 'abort', endpoint: '/' },
-                                     { id: 'view_matches', text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
+                                     { id: 'nothing', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'DO NOTHING', value: 'abort', endpoint: '' },
+                                     { id: 'abort', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'ABORT', value: 'abort', endpoint: '/' },
+                                     { id: 'view_matches', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
                                    ]
                                  }}
                                  texts={[
                                    { id: '1-1', text: 'This is an Action Segment that is used at the end of a AdvisorUI dialog.' }
                                  ]}
-                                 triggerScrollDown={() => this.triggerScrollDown()}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
                                  skippable
                                  skipEndpoint='9'
@@ -303,27 +306,32 @@ class AdvisorUI extends Component {
   }
 
   done(original_id, endpoint, data) {
+    console.log('original_id: ', original_id)
     let original_id_index = this.shown_segments.length - 1
     this.shown_segments.forEach((seg, index) => {
-      if (seg.id === original_id) {
+      if (seg && seg.id === original_id) {
         original_id_index = index
       }
     })
+    // If we are adding more segments to this.shown_segments, or if we are backtracking on a past segment
     if (original_id_index + 1 >= this.shown_segments.length) {
+      // add next segment
       this.shown_segments = this.shown_segments.slice(0, original_id_index + 1).concat(this.all_segments.filter(seg => seg.id === endpoint))
       this.setState({ lastUpdated: moment().unix() }, () => {
         history.pushState(null, null, `${this.props.location.pathname}#${endpoint}`)
-        this.triggerScrollDown(endpoint)
+        this.redrawContainer()
       })
+    // Backtracking on a past segment
     } else {
+      // cut off past convo branch
       this.shown_segments = this.shown_segments.slice(0, original_id_index + 1)
+      // rerender react this.shown_segments
       this.setState({ lastUpdated: moment().unix() }, () => {
         history.pushState(null, null, `${this.props.location.pathname}#${endpoint}`)
         setTimeout(() => {
+          // add next segment
           this.shown_segments = this.shown_segments.concat(this.all_segments.filter(seg => seg.id === endpoint))
-          this.setState({ lastUpdated: moment().unix() }, () => {
-            this.triggerScrollDown(endpoint)
-          })
+          this.setState({ lastUpdated: moment().unix() }, () => this.redrawContainer())
         }, 700)
       })
     }
@@ -345,6 +353,20 @@ class AdvisorUI extends Component {
           scrollTop: document.getElementById("scrollable").scrollHeight
       }, duration);
     }
+  }
+
+  redrawContainer(duration = 500) {
+    const prevScrollHeight = document.getElementById('containment').offsetHeight
+    const screenHeight = document.documentElement.clientHeight
+    const nextHeight = prevScrollHeight + screenHeight
+    console.log('prevScrollHeight: ', prevScrollHeight)
+    console.log('screenHeight: ', screenHeight)
+    console.log('nextHeight: ', nextHeight)
+    document.getElementById('containment').style.height = `${nextHeight}px`
+    console.log('newHeight: ', document.getElementById('containment').offsetHeight)
+    $('#scrollable').animate({
+        scrollTop: prevScrollHeight
+    }, duration);
   }
 
 	render() {
@@ -405,9 +427,9 @@ const comStyles = () => {
       minHeight: '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
-			background: '#00c6ff', /* fallback for old browsers */
-		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
-		  background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+			background: BACKGROUND_COLOR,
+		  background: BACKGROUND_WEBKIT,
+		  background: BACKGROUND_MODERN
 		},
     scroll: {
       display: 'flex',

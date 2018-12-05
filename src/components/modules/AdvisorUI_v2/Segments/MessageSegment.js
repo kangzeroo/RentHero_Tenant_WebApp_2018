@@ -12,6 +12,7 @@ import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
@@ -135,8 +136,8 @@ class MessageSegment extends Component {
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -155,11 +156,16 @@ class MessageSegment extends Component {
     								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
     								speed={0.25}
     								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+                    tooltips={[
+                      { id: 'abc-123', text: 'This is some help for you...', component: (<div onClick={() => alert('Clicked')} style={{ width: '50px', height: '50px', backgroundColor: 'red' }}></div>) }
+                    ]}
     								text={text.text}
     								textStyles={{
     									fontSize: '1.1rem',
-    									color: 'white',
+    									color: FONT_COLOR,
     									textAlign: 'left',
+                      fontFamily: FONT_FAMILY,
+                      ...text.textStyles,
     								}}
     								containerStyles={{
     									width: '100%',
@@ -168,7 +174,6 @@ class MessageSegment extends Component {
     								}}
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
                         if (this.shouldDisplayInput()) {
                           setTimeout(() => {
                             this.nextSegment()
@@ -254,15 +259,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -272,7 +278,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',

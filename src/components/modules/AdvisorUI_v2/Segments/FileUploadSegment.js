@@ -1,4 +1,4 @@
-// Compt for copying as a DateRangeSegment
+// Compt for copying as a FileUploadSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -6,20 +6,19 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
-import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
-import { DateRange } from 'react-date-range'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <DateRangeSegment
-    title='DateRange Segment'
+  <FileUploadSegment
+    title='Plain FileUploadSegment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -30,12 +29,13 @@ import {
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
+    multi
   />
 */
 
 
 
-class DateRangeSegment extends Component {
+class FileUploadSegment extends Component {
 
   constructor() {
     super()
@@ -43,13 +43,7 @@ class DateRangeSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-  			dateRange: {
-          selection: {
-            startDate: new Date(),
-            endDate: null,
-            key: 'selection',
-          },
-        },
+        value: false,
       }
     }
   }
@@ -139,12 +133,12 @@ class DateRangeSegment extends Component {
 
 	render() {
 		return (
-			<div id={`DateRangeSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`FileUploadSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -166,8 +160,9 @@ class DateRangeSegment extends Component {
     								text={text.text}
     								textStyles={{
     									fontSize: '1.1rem',
-    									color: 'white',
+    									color: FONT_COLOR,
     									textAlign: 'left',
+                      ...text.textStyles,
     								}}
     								containerStyles={{
     									width: '100%',
@@ -176,7 +171,9 @@ class DateRangeSegment extends Component {
     								}}
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
+                        if (this.shouldDisplayInput()) {
+                          this.props.triggerScrollDown(null, 1000)
+                        }
                       })
     								}}
     							/>
@@ -188,22 +185,13 @@ class DateRangeSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <div style={{ margin: '30px 0px 0px 0px' }}>
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <DateRange
-                minDate={new Date()}
-                showMonthArrow={false}
-                scroll={{enabled: true}}
-                onChange={(selection) => this.setState({ data: { ...this.state.data, dateRange: selection } })}
-                moveRangeOnFirstSelection={false}
-                ranges={[this.state.data.dateRange.selection]}
-              />
-            </div>
+            <div style={comStyles().upload}>UPLOAD</div>
             :
-            null
+            <div style={{ width: '100%', height: '100px' }}></div>
           }
         </div>
         <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
@@ -218,7 +206,7 @@ class DateRangeSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              moment(this.state.data.dateRange.startDate) && this.shouldDisplayInput()
+              true && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -226,7 +214,7 @@ class DateRangeSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -240,7 +228,7 @@ class DateRangeSegment extends Component {
 }
 
 // defines the types of variables in this.props
-DateRangeSegment.propTypes = {
+FileUploadSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -267,20 +255,21 @@ DateRangeSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
+  multi: PropTypes.bool,                    // passed in, allow multiple file uploads?
 }
 
 // for all optional props, define a default value
-DateRangeSegment.defaultProps = {
-  title: '',
+FileUploadSegment.defaultProps = {
   texts: [],
   initialData: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
+  multi: false,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DateRangeSegment)
+const RadiumHOC = Radium(FileUploadSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -304,15 +293,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -322,13 +312,27 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
 			position: 'absolute',
 			bottom: '20px',
 			right: '0px',
-		}
+		},
+		upload: {
+			margin: '30px 0px 0px 0px',
+			width: '100%',
+			height: '250px',
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'center',
+			alignItems: 'center',
+			fontSize: '1.5rem',
+			fontWeight: 'bold',
+			color: FONT_COLOR,
+			border: '2px dashed white',
+			borderRadius: '20px',
+		},
 	}
 }

@@ -1,4 +1,4 @@
-// Compt for copying as a DatePickerSegment
+// Compt for copying as a ActionSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -6,21 +6,25 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
-import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
-import { Calendar } from 'react-date-range'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
-
+import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR } from '../styles/advisor_ui_styles'
 
 
 /*
-  <DatePickerSegment
-    title='DatePicker Segment'
-    schema={{ id: '1', endpoint: '2' }}
+  <ActionSegment
+    title='Plain ActionSegment'
+    schema={{
+      id: '1',
+      endpoint: '2',
+      choices: [
+        { id: 'view_matches', text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
+      ]
+    }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
       { id: '1-2', text: 'The next string to display!' }
@@ -28,14 +32,12 @@ import {
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
-    skippable={false}
-    skipEndpoint=''
   />
 */
 
 
 
-class DatePickerSegment extends Component {
+class ActionSegment extends Component {
 
   constructor() {
     super()
@@ -43,7 +45,7 @@ class DatePickerSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        date: new Date(),
+        selected_choices: [],
       }
     }
   }
@@ -131,14 +133,59 @@ class DatePickerSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+
+  clickedChoice(choice) {
+    let already_selected = false
+    this.state.data.selected_choices.forEach((c) => {
+      if (c.id === choice.id) {
+        already_selected = true
+      }
+    })
+    if (this.props.multi) {
+      if (already_selected) {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
+          }
+        })
+      } else {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.concat([choice])
+          }
+        })
+      }
+    } else {
+      if (already_selected) {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
+          }
+        })
+      } else {
+        this.setState({
+          data: {
+            ...this.state.data,
+            selected_choices: this.state.data.selected_choices.concat([choice])
+          }
+        }, () => {
+          this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+        })
+      }
+    }
+  }
+
 	render() {
 		return (
-			<div id={`DatePickerSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`ActionSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -160,8 +207,9 @@ class DatePickerSegment extends Component {
     								text={text.text}
     								textStyles={{
     									fontSize: '1.1rem',
-    									color: 'white',
+    									color: `${FONT_COLOR}`,
     									textAlign: 'left',
+                      ...text.textStyles,
     								}}
     								containerStyles={{
     									width: '100%',
@@ -170,7 +218,9 @@ class DatePickerSegment extends Component {
     								}}
     								doneEvent={() => {
   										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
+                        if (this.shouldDisplayInput()) {
+                          this.props.triggerScrollDown(null, 1000)
+                        }
                       })
     								}}
     							/>
@@ -182,58 +232,28 @@ class DatePickerSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-          {
-            this.shouldDisplayInput() || this.state.instantChars
-            ?
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Calendar
-                date={this.state.data.date}
-                showMonthArrow={false}
-                minDate={new Date()}
-                scroll={{enabled: true}}
-                onChange={date => this.setState({ data: { ...this.state.data, date } })}
-              />
-            </div>
-            :
-            null
-          }
-        </div>
-        <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
-            {
-              this.props.skippable && this.props.skipEndpoint && this.shouldDisplayInput()
-              ?
-              <div id={`skip--${this.props.schema.id}`} onClick={(e) => this.nextSegment(e, this.props.skipEndpoint)} style={comStyles().skip}>Skip</div>
-              :
-              null
-            }
+        {
+          this.shouldDisplayInput()
+          ?
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', margin: '50px 0px 0px 0px' }}>
+              {
+                this.props.schema.choices.map((choice) => {
+                  return (
+                    <div key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).action}>{choice.text}</div>
+                  )
+                })
+              }
           </div>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
-            {
-              moment(this.state.data.date).diff(moment(), 'hours') > 0 && this.shouldDisplayInput()
-              ?
-              <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
-              :
-              <div>
-                {
-                  this.shouldDisplayInput()
-                  ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
-                  :
-                  null
-                }
-              </div>
-            }
-          </div>
-        </div>
+          :
+          null
+        }
 			</div>
 		)
 	}
 }
 
 // defines the types of variables in this.props
-DatePickerSegment.propTypes = {
+ActionSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -241,8 +261,6 @@ DatePickerSegment.propTypes = {
   triggerScrollDown: PropTypes.func.isRequired, // passed in
   initialData: PropTypes.object,            // passed in, allows us to configure inputs to whats already given
   onDone: PropTypes.func.isRequired,        // passed in
-  skippable: PropTypes.bool,                // passed in
-  skipEndpoint: PropTypes.string,           // passed in
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
@@ -263,8 +281,7 @@ DatePickerSegment.propTypes = {
 }
 
 // for all optional props, define a default value
-DatePickerSegment.defaultProps = {
-  title: '',
+ActionSegment.defaultProps = {
   texts: [],
   initialData: {},
   segmentStyles: {},
@@ -273,7 +290,7 @@ DatePickerSegment.defaultProps = {
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DatePickerSegment)
+const RadiumHOC = Radium(ActionSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -297,15 +314,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: `${FONT_COLOR}`,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -315,7 +333,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: `${FONT_COLOR}`,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
@@ -324,4 +342,33 @@ const comStyles = () => {
 			right: '0px',
 		}
 	}
+}
+
+
+const choiceStyles = (selected_choices, choice) => {
+  let selectedStyle = {}
+  selected_choices.forEach((c) => {
+    if (c.id === choice.id) {
+      selectedStyle.backgroundColor = `${FONT_COLOR}`,
+      selectedStyle.color = BACKGROUND_COLOR
+    }
+  })
+  return {
+    action: {
+      width: '100%',
+      borderRadius: '10px',
+      border: `1px solid ${FONT_COLOR}`,
+      color: `${FONT_COLOR}`,
+      padding: '10px 0px 10px 0px',
+      backgroundColor: 'rgba(0,0,0,0)',
+      fontSize: '1rem',
+      margin: '10px 0px 10px 0px',
+      cursor: 'pointer',
+      ...selectedStyle,
+      ":hover": {
+        backgroundColor: 'rgba(256,256,256,1)',
+        color: BACKGROUND_COLOR
+      }
+    }
+  }
 }
