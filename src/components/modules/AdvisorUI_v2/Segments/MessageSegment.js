@@ -14,7 +14,7 @@ import {
   Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, INPUT_BACKGROUND } from '../styles/advisor_ui_styles'
 
 
 
@@ -141,7 +141,22 @@ class MessageSegment extends Component {
     if (this.state.completedSections.filter((id) => {
       return id === text.id
     }).length === 0) {
-      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+      let currIndex = null
+      let nextIndex = null
+      this.props.texts.forEach((x, index) => {
+        if (x.id === text.id) {
+          currIndex = index
+          nextIndex = index + 1
+        }
+      })
+      if (this.props.texts[nextIndex] && this.props.texts[nextIndex].component) {
+        const shouldDelay = this.shouldInstantChars(currIndex) ? 0 : this.props.texts[nextIndex].delay
+        setTimeout(() => {
+          this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+        }, shouldDelay)
+      } else {
+        this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+      }
     }
     return (text.component)
   }
@@ -177,7 +192,7 @@ class MessageSegment extends Component {
                         key={`${text.id}_${txtIndex}`}
         								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
         								speed={0.25}
-        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : text.delay}
                         tooltips={this.props.tooltips}
         								text={text}
         								textStyles={{
@@ -194,7 +209,10 @@ class MessageSegment extends Component {
         								}}
         								doneEvent={() => {
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                            if (this.shouldDisplayInput()) {
+                            if (text.scrollDown) {
+                              this.props.triggerScrollDown(null, 1000)
+                            }
+                            if (this.shouldDisplayInput() && !this.props.action.enabled) {
                               setTimeout(() => {
                                 this.nextSegment()
                               }, 1000)
@@ -212,6 +230,19 @@ class MessageSegment extends Component {
           })
         }
         </div>
+        <div>
+          {
+            this.shouldDisplayInput() && this.props.action.enabled
+            ?
+            <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
+                <div onClick={() => this.nextSegment()} style={comStyles().action}>{this.props.action.label}</div>
+              </div>
+            </div>
+            :
+            null
+          }
+        </div>
 			</div>
 		)
 	}
@@ -228,10 +259,11 @@ MessageSegment.propTypes = {
   onDone: PropTypes.func.isRequired,        // passed in
   skippable: PropTypes.bool,                // passed in
   skipEndpoint: PropTypes.string,           // passed in
+  action: PropTypes.object,                 // passed in
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
-      { id: 'parentID-textID', text: 'Some string to display', component: (<div>Example</div>), tooltips: [{ id: 'abc-123', tooltip: (<div>Click this for further info</div>) }] }
+      { id: 'parentID-textID', scrollDown: true, delay: 500, text: 'Some string to display', component: (<div>Example</div>), tooltips: [{ id: 'abc-123', tooltip: (<div>Click this for further info</div>) }] }
     ]
   */
   segmentStyles: PropTypes.object,          // passed in, style of container
@@ -254,6 +286,7 @@ MessageSegment.defaultProps = {
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
+  action: { enabled: false, label: '' },
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -307,6 +340,19 @@ const comStyles = () => {
 			position: 'absolute',
 			bottom: '20px',
 			right: '0px',
-		}
+		},
+    action: {
+      borderRadius: '10px',
+      border: `1px solid ${FONT_COLOR}`,
+      color: FONT_COLOR,
+      padding: '5px 10px 5px 10px',
+      // backgroundColor: INPUT_BACKGROUND,
+      fontSize: '1rem',
+      cursor: 'pointer',
+			margin: '15px 0px 0px 0px',
+			position: 'absolute',
+			bottom: '20px',
+			right: '0px',
+    }
 	}
 }

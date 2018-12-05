@@ -51,11 +51,12 @@ class AdvisorUI extends Component {
                                schema={{ id: 'x', endpoint: 'y' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                               action={{ enabled: true, label: 'Ok' }}
                                texts={[
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This component library is great for making beautiful & customizable conversational interfaces 😍 And yes, you can insert images and custom components!' },
-                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
-                                 { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
+                                 { id: '0-3', delay: 500, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
+                                 { id: '0-4', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
                                ]}
                                skippable
                                skipEndpoint='y'
@@ -70,7 +71,7 @@ class AdvisorUI extends Component {
                                texts={[
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'The AdvisorUI is made of Segments, of which there are many kinds.' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This particular Segment is a Segment Template. Just copy it whenever you need to make a new custom Segment.' },
-                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
+                                 { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
                                skipEndpoint='xxx'
@@ -86,7 +87,7 @@ class AdvisorUI extends Component {
                                   choices: [
                                     { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: 'a', tooltip: (<p>Tooltip A</p>) },
                                     { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: 'a' },
-                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: 'a' }
+                                    { id: '2-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: 'a' }
                                   ]
                                 }}
                                 texts={[
@@ -106,7 +107,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you select a single date.' }
+                                 { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you select a single date.' }
                                ]}
                                skippable
                                skipEndpoint='z'
@@ -120,7 +121,7 @@ class AdvisorUI extends Component {
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment allows you to select a date range.' },
-                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
+                                  { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
                                 ]}
                              /> )},
       {
@@ -132,7 +133,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Below is a simple text input' },
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Below is a simple text input' },
                                 ]}
                                 skippable
                                 skipEndpoint='c'
@@ -147,7 +148,7 @@ class AdvisorUI extends Component {
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a textarea input for more text.' },
-                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice the lack of a title unlike the previous Segment.' },
+                                 { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice the lack of a title unlike the previous Segment.' },
                                ]}
                                skippable
                                skipEndpoint='d'
@@ -161,7 +162,7 @@ class AdvisorUI extends Component {
                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                               texts={[
-                                { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Number input' },
+                                { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Number input' },
                               ]}
                               skippable
                               skipEndpoint='e'
@@ -175,7 +176,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
-                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a phone number' },
+                                 { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a phone number' },
                                ]}
                                skippable
                                skipEndpoint='f'
@@ -190,6 +191,7 @@ class AdvisorUI extends Component {
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter an email' },
+                                  { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '0px 0px 0px 0px' }}><img src='https://4.bp.blogspot.com/-j5loWPnSKDo/WniCnRFiQBI/AAAAAAAAzBQ/C8xKwr4UndYLDsXTa_Q48c5CruQkHVzpgCLcBGAs/s400/OACGFish.gif' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
                                 ]}
                                 skippable
                                 skipEndpoint='g'
@@ -203,7 +205,7 @@ class AdvisorUI extends Component {
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                  texts={[
-                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a URL' },
+                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a URL' },
                                  ]}
                                  skippable
                                  skipEndpoint='0'
@@ -219,7 +221,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This component lets you select a geographic location.' }
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This component lets you select a geographic location.' }
                                 ]}
                                 skippable
                                 skipEndpoint='4'
@@ -239,7 +241,7 @@ class AdvisorUI extends Component {
                                  }}
                                  texts={[
                                    { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This simple Segment lets you pick 1 choice' },
-                                   { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Make sure all texts and choices have unique IDs!' },
+                                   { id: '2-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Make sure all texts and choices have unique IDs!' },
                                  ]}
                                  skippable
                                  skipEndpoint='1'
@@ -261,7 +263,7 @@ class AdvisorUI extends Component {
                                 }}
                                 texts={[
                                   { id: '2-1', text: 'This Segment lets you select 1 choice, with an option for custom OTHER input.' },
-                                  { id: '2-2', text: 'There is also smart routing. Just design the routing schemas!' },
+                                  { id: '2-2', scrollDown: true, text: 'There is also smart routing. Just design the routing schemas!' },
                                 ]}
                                 skippable
                                 skipEndpoint='3'
@@ -280,7 +282,7 @@ class AdvisorUI extends Component {
                                texts={[
                                  { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you upload a single file.' },
                                  { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Or you can upload multiple files.' },
-                                 { id: '2-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This still needs work in terms of file validation.' },
+                                 { id: '2-3', scrollDown: true, scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This still needs work in terms of file validation.' },
                                ]}
                                skippable
                                skipEndpoint='2'
@@ -297,7 +299,7 @@ class AdvisorUI extends Component {
                                 endpoint: '2',
                               }}
                               texts={[
-                                { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Share this link with your friends!' },
+                                { id: '2-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Share this link with your friends!' },
                               ]}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -317,7 +319,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
-                                  { id: '2-1', text: 'This Segment lets you select multiple choices.' },
+                                  { id: '2-1', scrollDown: true, text: 'This Segment lets you select multiple choices.' },
                                 ]}
                                 skippable
                                 skipEndpoint='3'
@@ -338,7 +340,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
-                                  { id: '2-1', text: 'This Segment allows for multiple choices with an option for custom other.' }
+                                  { id: '2-1', scrollDown: true, text: 'This Segment allows for multiple choices with an option for custom other.' }
                                 ]}
                                 skippable
                                 skipEndpoint='5'

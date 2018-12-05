@@ -44,6 +44,7 @@ import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
 import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
+import DialogOnboarding from './dialogs/intro/DialogOnboarding'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -104,7 +105,8 @@ class AppRoot extends Component {
               <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={AdvisorUI} />
+              <Route exact path='/sample' render={AdvisorUI} />
+              <Route exact path='/sandbox' render={DialogOnboarding} />
             </Drawer>
           </Switch>
         </LocaleProvider>

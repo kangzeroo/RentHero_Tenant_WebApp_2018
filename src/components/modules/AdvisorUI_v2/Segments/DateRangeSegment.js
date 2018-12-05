@@ -201,7 +201,7 @@ class DateRangeSegment extends Component {
         								}}
         								doneEvent={() => {
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                            if (this.shouldDisplayInput()) {
+                            if (text.scrollDown) {
                               this.props.triggerScrollDown(null, 1000)
                             }
                           })
@@ -282,7 +282,7 @@ DateRangeSegment.propTypes = {
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
-      { id: 'parentID-textID', text: 'Some string to display' }
+      { id: 'parentID-textID', scrollDown: true, delay: 500, text: 'Some string to display', component: (<div>Example</div>), tooltips: [{ id: 'abc-123', tooltip: (<div>Click this for further info</div>) }] }
     ]
   */
   segmentStyles: PropTypes.object,          // passed in, style of container
