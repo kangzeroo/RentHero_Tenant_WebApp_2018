@@ -209,7 +209,7 @@ class InputSegment extends Component {
                               if (this.props.inputType === 'textarea') {
                                 // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
                               } else {
-                                if (this.mobile) {
+                                if (!this.mobile) {
                                   document.getElementById(`input_field--${this.props.schema.id}`).focus()
                                 }
                                 document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {

@@ -33,6 +33,10 @@ class AdvisorUI extends Component {
     super()
     this.state = {
       lastUpdated: 0,
+      scrollStyles: {
+        scroll_styles: {},
+        scrollable_styles: {},
+      }
     }
     this.all_segments = []
     this.shown_segments = []
@@ -40,7 +44,9 @@ class AdvisorUI extends Component {
 
   componentWillMount() {
     this.all_segments = this.all_segments.concat([
-      { id: 'x', component: (<MessageSegment
+      {
+        id: 'x',
+        component: (<MessageSegment
                                title='Introduction'
                                schema={{ id: 'x', endpoint: 'y' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -54,7 +60,9 @@ class AdvisorUI extends Component {
                                skippable
                                skipEndpoint='y'
                              />) },
-      { id: 'y', component: (<SegmentTemplate
+      {
+        id: 'y',
+        component: (<SegmentTemplate
                                title='Template Segment'
                                schema={{ id: 'y', endpoint: 'xxx' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -67,7 +75,10 @@ class AdvisorUI extends Component {
                                skippable
                                skipEndpoint='xxx'
                              />) },
-      { id: 'xxx', component: (<MultiOptionsSegment
+      {
+        id: 'xxx',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://static1.squarespace.com/static/5459116de4b07304c9c6ac24/58e550783e00be96f2c0fb55/58e5508215d5db03c97ca6d5/1491426153806/BroadviewWEB-7.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+        component: (<MultiOptionsSegment
                                 title='Multi Select'
                                 schema={{
                                   id: 'xxx',
@@ -87,7 +98,9 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 multi
                              />) },
-     { id: 'a', component: (<DatePickerSegment
+     {
+       id: 'a',
+       component: (<DatePickerSegment
                                title='Single Date Selection'
                                schema={{ id: 'a', endpoint: 'z' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -98,7 +111,9 @@ class AdvisorUI extends Component {
                                skippable
                                skipEndpoint='z'
                             /> )},
-      { id: 'z', component: (<DateRangeSegment
+      {
+        id: 'z',
+        component: (<DateRangeSegment
                                 title='Date Range'
                                 schema={{ id: 'z', endpoint: 'b' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -108,7 +123,10 @@ class AdvisorUI extends Component {
                                   { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
                                 ]}
                              /> )},
-      { id: 'b', component: (<InputSegment
+      {
+        id: 'b',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://d4qwptktddc5f.cloudfront.net/80960-minosa-design-marble-bathroom-sydney-1.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+        component: (<InputSegment
                                 title='Html Inputs'
                                 schema={{ id: 'b', endpoint: 'c' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -121,7 +139,9 @@ class AdvisorUI extends Component {
                                 inputType={'text'}
                                 stringInputPlaceholder={'Type something'}
                              /> )},
-     { id: 'c', component: (<InputSegment
+     {
+       id: 'c',
+       component: (<InputSegment
                                schema={{ id: 'c', endpoint: 'd' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -134,7 +154,9 @@ class AdvisorUI extends Component {
                                inputType={'textarea'}
                                stringInputPlaceholder={'Type something big'}
                             /> )},
-    { id: 'd', component: (<InputSegment
+    {
+      id: 'd',
+      component: (<InputSegment
                               schema={{ id: 'd', endpoint: 'e' }}
                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -146,7 +168,9 @@ class AdvisorUI extends Component {
                               inputType={'number'}
                               numberInputPlaceholder={10}
                            /> )},
-     { id: 'e', component: (<InputSegment
+     {
+       id: 'e',
+       component: (<InputSegment
                                schema={{ id: 'e', endpoint: 'f' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -158,7 +182,9 @@ class AdvisorUI extends Component {
                                inputType={'tel'}
                                stringInputPlaceholder={'phone'}
                             /> )},
-      { id: 'f', component: (<InputSegment
+      {
+        id: 'f',
+        component: (<InputSegment
                                 schema={{ id: 'f', endpoint: 'g' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -170,7 +196,9 @@ class AdvisorUI extends Component {
                                 inputType={'email'}
                                 stringInputPlaceholder={'name@gmail.com'}
                              /> )},
-       { id: 'g', component: (<InputSegment
+       {
+         id: 'g',
+         component: (<InputSegment
                                  schema={{ id: 'g', endpoint: '0' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -182,7 +210,10 @@ class AdvisorUI extends Component {
                                  inputType={'url'}
                                  stringInputPlaceholder={'https://google.ca'}
                               /> )},
-      { id: '0', component: (<MapSegment
+      {
+        id: '0',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://connectassetmanagement.com/wp-content/uploads/2016/04/toronto-sunset-city-view.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+        component: (<MapSegment
                                 title='Map Location'
                                 schema={{ id: '0', endpoint: '4' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -193,7 +224,9 @@ class AdvisorUI extends Component {
                                 skippable
                                 skipEndpoint='4'
                              /> )},
-       { id: '4', component: (<MultiOptionsSegment
+       {
+         id: '4',
+         component: (<MultiOptionsSegment
                                  title='Single Select'
                                  schema={{
                                    id: '4',
@@ -213,7 +246,9 @@ class AdvisorUI extends Component {
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               />) },
-      { id: '1', component: (<MultiOptionsSegment
+      {
+        id: '1',
+        component: (<MultiOptionsSegment
                                 title='Single Select with Other'
                                 schema={{
                                   id: '1',
@@ -234,7 +269,9 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 other
                              />) },
-     { id: 'kk', component: (<FileUploadSegment
+     {
+       id: 'kk',
+       component: (<FileUploadSegment
                                title='File Upload'
                                schema={{
                                  id: 'kk',
@@ -251,7 +288,9 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                multi
                             />) },
-    { id: 'oo', component: (<ShareUrlSegment
+    {
+      id: 'oo',
+      component: (<ShareUrlSegment
                               title='Share Link'
                               schema={{
                                 id: 'oo',
@@ -264,7 +303,9 @@ class AdvisorUI extends Component {
                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               url='https://google.ca'
                            />) },
-      { id: '2', component: (<MultiOptionsSegment
+      {
+        id: '2',
+        component: (<MultiOptionsSegment
                                 title='Multi Select'
                                 schema={{
                                   id: '2',
@@ -284,7 +325,9 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 multi
                              />) },
-      { id: '3', component: (<MultiOptionsSegment
+      {
+        id: '3',
+        component: (<MultiOptionsSegment
                                 title='Multi Select with Other'
                                 schema={{
                                   id: '3',
@@ -304,7 +347,9 @@ class AdvisorUI extends Component {
                                 multi
                                 other
                              />) },
-       { id: '5', component: (<ActionSegment
+       {
+         id: '5',
+         component: (<ActionSegment
                                  title='FINISH'
                                  schema={{
                                    id: '5',
@@ -378,7 +423,12 @@ class AdvisorUI extends Component {
     }
   }
 
+  extractRGBA(cssString) {
+    return cssString.replace('rgba(', '').replace(')', '').split(',')
+  }
+
   redrawContainer(duration = 500) {
+    // scroll down
     const prevScrollHeight = document.getElementById('containment').offsetHeight
     const screenHeight = document.documentElement.clientHeight
     const nextHeight = prevScrollHeight + screenHeight
@@ -390,13 +440,73 @@ class AdvisorUI extends Component {
     $('#scrollable').animate({
         scrollTop: prevScrollHeight
     }, duration);
+    // change background image if applicable
+    const current_segment = this.shown_segments[this.shown_segments.length - 1]
+    if (current_segment.scrollStyles && current_segment.scrollStyles.scroll_styles && current_segment.scrollStyles.scrollable_styles) {
+      let darkenCount = 0
+      const darken = setInterval(() => {
+        this.setState({
+          scrollStyles: {
+            ...this.state.scrollStyles,
+            scrollable_styles: {
+              ...this.state.scrollStyles.scrollable_styles,
+              backgroundColor: `rgba(
+                ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[0]},
+                ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[1]},
+                ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[2]},
+                ${darkenCount/duration}
+              )`
+            }
+          }
+        })
+        darkenCount += 25
+        if (darkenCount > duration) {
+          clearInterval(darken)
+        }
+      }, 25)
+      setTimeout(() => {
+        let lightenCount = duration
+        this.setState({
+          scrollStyles: {
+            ...this.state.scrollStyles,
+            scroll_styles: current_segment.scrollStyles.scroll_styles
+          }
+        })
+        const lighten = setInterval(() => {
+          this.setState({
+            scrollStyles: {
+              ...this.state.scrollStyles,
+              scrollable_styles: {
+                ...this.state.scrollStyles.scrollable_styles,
+                backgroundColor: `rgba(
+                  ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[0]},
+                  ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[1]},
+                  ${this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[2]},
+                  ${lightenCount/duration}
+                )`
+              }
+            }
+          })
+          lightenCount -= 25
+          if (lightenCount < duration * parseFloat(this.extractRGBA(current_segment.scrollStyles.scrollable_styles.backgroundColor)[3])) {
+            clearInterval(lighten)
+            this.setState({
+              scrollStyles: {
+                ...this.state.scrollStyles,
+                scrollable_styles: this.state.scrollStyles.scrollable_styles
+              }
+            })
+          }
+        }, 25)
+      }, duration + 250)
+    }
   }
 
 	render() {
 		return (
 			<div id='AdvisorUI' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
-        <div id='scroll' style={comStyles().scroll}>
-          <div id='scrollable' style={comStyles().scrollable}>
+        <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
+          <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
               {
                 this.shown_segments.map((seg) => {
@@ -406,6 +516,16 @@ class AdvisorUI extends Component {
             </div>
           </div>
         </div>
+        {
+          this.all_segments.filter((seg) => {
+            return seg.scrollStyles && seg.scrollStyles.scroll_styles && seg.scrollStyles.scroll_styles.backgroundImage
+          }).map((seg) => {
+            const cssURL = seg.scrollStyles.scroll_styles.backgroundImage.replace('url(', '').replace(')', '').replace(/(\"?\'?)/igm, '')
+            console.log('----------- CSS URL --------------')
+            console.log(cssURL)
+            return (<img src={cssURL} style={{ display: 'none' }} />)
+          })
+        }
 			</div>
 		)
 	}
@@ -454,6 +574,11 @@ const comStyles = () => {
 		  background: BACKGROUND_WEBKIT,
 		  background: BACKGROUND_MODERN
 		},
+	}
+}
+
+const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
+  return {
     scroll: {
       display: 'flex',
       flexDirection: 'column',
@@ -462,6 +587,9 @@ const comStyles = () => {
       width: '100vw',
       justifyContent: 'flex-start',
       alignItems: 'center',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      ...scroll_styles
     },
 		scrollable: {
       display: 'flex',
@@ -471,6 +599,11 @@ const comStyles = () => {
       justifyContent: 'flex-start',
       alignItems: 'center',
 			overflowY: 'scroll',
+      backgroundBlendMode: 'darken',
+      // opacity: 1,
+      // webkitTransition: 'opacity 3s ease-in-out',
+      // transition: 'opacity 3s ease-in-out',
+      ...scrollable_styles
 		}
-	}
+  }
 }

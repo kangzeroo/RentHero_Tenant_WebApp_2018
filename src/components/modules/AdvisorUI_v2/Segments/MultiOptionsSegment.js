@@ -410,12 +410,18 @@ class MultiOptionsSegment extends Component {
             }
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
+            {console.log(`this.props.multi: ${this.props.multi}`)}
+            {console.log(`Should display input: ${this.shouldDisplayInput()}`)}
+            {console.log(`this.state.data:`)}
+            {console.log(this.state.data)}
+            {console.log(`this.props.other: ${this.props.other}`)}
+            {console.log(`this.state.show_other_input: ${this.state.show_other_input}`)}
             {
               (this.props.multi ? this.props.multi && this.shouldDisplayInput() : this.shouldDisplayInput())
               ?
               <div>
                 {
-                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : true)
+                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : false)
                   ?
                   <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
                   :
@@ -575,13 +581,13 @@ const choiceStyles = (selected_choices, choice) => {
       border: `1px solid ${FONT_COLOR}`,
       color: FONT_COLOR,
       padding: '5px',
-      backgroundColor: INVERSE_FONT_COLOR,
+      backgroundColor: INPUT_BACKGROUND,
       fontSize: '1rem',
       cursor: 'pointer',
       ...selectedStyle,
-      ":hover": {
-        opacity: 0.5
-      }
+      // ":hover": {
+      //   opacity: 0.5
+      // }
     }
   }
 }

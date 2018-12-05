@@ -159,7 +159,9 @@ class MapSegment extends Component {
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
     this.autocomplete.addListener('place_changed', () => this.fillInAddress())
-    document.getElementById(`address--${this.props.schema.id}`).focus()
+    if(!this.mobile) {
+      document.getElementById(`address--${this.props.schema.id}`).focus()
+    }
   }
 
   fillInAddress() {

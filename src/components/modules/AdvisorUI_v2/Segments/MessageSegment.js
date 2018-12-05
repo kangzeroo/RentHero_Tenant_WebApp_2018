@@ -66,6 +66,7 @@ class MessageSegment extends Component {
   }
 
   componentDidMount() {
+    console.log(`Is it mobile? ${isMobile()}`)
     this.mobile = isMobile()
   }
 

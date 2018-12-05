@@ -14,7 +14,7 @@ import {
   Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, FONT_FAMILY, INVERSE_FONT_COLOR } from '../styles/advisor_ui_styles'
 
 
 /*
@@ -375,7 +375,7 @@ const choiceStyles = (selected_choices, choice) => {
   selected_choices.forEach((c) => {
     if (c.id === choice.id) {
       selectedStyle.backgroundColor = `${FONT_COLOR}`,
-      selectedStyle.color = BACKGROUND_COLOR
+      selectedStyle.color = INVERSE_FONT_COLOR
     }
   })
   return {
@@ -392,7 +392,7 @@ const choiceStyles = (selected_choices, choice) => {
       ...selectedStyle,
       ":hover": {
         backgroundColor: 'rgba(256,256,256,1)',
-        color: BACKGROUND_COLOR
+        color: INVERSE_FONT_COLOR
       }
     }
   }
