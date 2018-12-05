@@ -1,4 +1,4 @@
-// Compt for copying as a DatePickerSegment
+// Compt for copying as a MessageSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -6,20 +6,21 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
-import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
-import { Calendar } from 'react-date-range'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <DatePickerSegment
-    title='DatePicker Segment'
+  <MessageSegment
+    title='Plain MessageSegment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -35,7 +36,7 @@ import {
 
 
 
-class DatePickerSegment extends Component {
+class MessageSegment extends Component {
 
   constructor() {
     super()
@@ -43,7 +44,7 @@ class DatePickerSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        date: new Date(),
+        value: false,
       }
     }
   }
@@ -62,6 +63,11 @@ class DatePickerSegment extends Component {
         instantChars: true
       })
     }
+  }
+
+  componentDidMount() {
+    console.log(`Is it mobile? ${isMobile()}`)
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -131,14 +137,23 @@ class DatePickerSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
+  }
+
 	render() {
 		return (
-			<div id={`DatePickerSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`MessageSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -151,29 +166,44 @@ class DatePickerSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: 'white',
-    									textAlign: 'left',
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
-                      })
-    								}}
-    							/>
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+                        tooltips={this.props.tooltips}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              setTimeout(() => {
+                                this.nextSegment()
+                              }, 1000)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
@@ -182,58 +212,13 @@ class DatePickerSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-          {
-            this.shouldDisplayInput() || this.state.instantChars
-            ?
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <Calendar
-                date={this.state.data.date}
-                showMonthArrow={false}
-                minDate={new Date()}
-                scroll={{enabled: true}}
-                onChange={date => this.setState({ data: { ...this.state.data, date } })}
-              />
-            </div>
-            :
-            null
-          }
-        </div>
-        <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
-            {
-              this.props.skippable && this.props.skipEndpoint && this.shouldDisplayInput()
-              ?
-              <div id={`skip--${this.props.schema.id}`} onClick={(e) => this.nextSegment(e, this.props.skipEndpoint)} style={comStyles().skip}>Skip</div>
-              :
-              null
-            }
-          </div>
-          <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
-            {
-              moment(this.state.data.date).diff(moment(), 'hours') > 0 && this.shouldDisplayInput()
-              ?
-              <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
-              :
-              <div>
-                {
-                  this.shouldDisplayInput()
-                  ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
-                  :
-                  null
-                }
-              </div>
-            }
-          </div>
-        </div>
 			</div>
 		)
 	}
 }
 
 // defines the types of variables in this.props
-DatePickerSegment.propTypes = {
+MessageSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -246,7 +231,7 @@ DatePickerSegment.propTypes = {
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [
-      { id: 'parentID-textID', text: 'Some string to display' }
+      { id: 'parentID-textID', text: 'Some string to display', component: (<div>Example</div>), tooltips: [{ id: 'abc-123', tooltip: (<div>Click this for further info</div>) }] }
     ]
   */
   segmentStyles: PropTypes.object,          // passed in, style of container
@@ -263,8 +248,7 @@ DatePickerSegment.propTypes = {
 }
 
 // for all optional props, define a default value
-DatePickerSegment.defaultProps = {
-  title: '',
+MessageSegment.defaultProps = {
   texts: [],
   initialData: {},
   segmentStyles: {},
@@ -273,7 +257,7 @@ DatePickerSegment.defaultProps = {
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DatePickerSegment)
+const RadiumHOC = Radium(MessageSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -297,15 +281,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -315,7 +300,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',

@@ -1,4 +1,4 @@
-// Compt for copying as a FileUploadSegment
+// Compt for copying as a ShareUrlSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -8,16 +8,19 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <FileUploadSegment
-    title='Plain FileUploadSegment'
+  <ShareUrlSegment
+    title='Plain ShareUrlSegment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -28,13 +31,12 @@ import {
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    multi
   />
 */
 
 
 
-class FileUploadSegment extends Component {
+class ShareUrlSegment extends Component {
 
   constructor() {
     super()
@@ -45,6 +47,7 @@ class FileUploadSegment extends Component {
         value: false,
       }
     }
+    this.mobile = false
   }
 
   componentWillMount() {
@@ -61,6 +64,10 @@ class FileUploadSegment extends Component {
         instantChars: true
       })
     }
+  }
+
+  componentDidMount() {
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -130,14 +137,23 @@ class FileUploadSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
+  }
+
 	render() {
 		return (
-			<div id={`FileUploadSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`ShareUrlSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -150,29 +166,41 @@ class FileUploadSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: 'white',
-    									textAlign: 'left',
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
-                      })
-    								}}
-    							/>
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              this.props.triggerScrollDown(null, 1000)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
@@ -185,7 +213,19 @@ class FileUploadSegment extends Component {
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
-            <div style={comStyles().upload}>UPLOAD</div>
+						<div style={comStyles().share}>
+							<input
+								id={`share_link--${this.props.schema.id}`}
+								onClick={() => {
+									document.getElementById(`share_link--${this.props.schema.id}`).select()
+									document.execCommand("copy")
+                  Toast.info('URL copied to clipboard', 1)
+                  document.getElementById(`share_link--${this.props.schema.id}`).blur()
+								}}
+								value={this.props.url}
+								style={comStyles().text}
+							></input>
+						</div>
             :
             <div style={{ width: '100%', height: '100px' }}></div>
           }
@@ -202,7 +242,7 @@ class FileUploadSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              true && this.shouldDisplayInput()
+              this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -210,7 +250,7 @@ class FileUploadSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -224,7 +264,7 @@ class FileUploadSegment extends Component {
 }
 
 // defines the types of variables in this.props
-FileUploadSegment.propTypes = {
+ShareUrlSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -251,21 +291,20 @@ FileUploadSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  multi: PropTypes.bool,                    // passed in, allow multiple file uploads?
+  url: PropTypes.string.isRequired,         // passed in
 }
 
 // for all optional props, define a default value
-FileUploadSegment.defaultProps = {
+ShareUrlSegment.defaultProps = {
   texts: [],
   initialData: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  multi: false,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(FileUploadSegment)
+const RadiumHOC = Radium(ShareUrlSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -289,15 +328,31 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 100px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
+    text: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+			cursor: 'pointer',
+    },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -307,7 +362,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'rgba(256,256,256,1',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
@@ -315,19 +370,13 @@ const comStyles = () => {
 			bottom: '20px',
 			right: '0px',
 		},
-		upload: {
-			margin: '30px 0px 0px 0px',
+		share: {
 			width: '100%',
-			height: '250px',
+			margin: '30px 0px 0px 0px',
 			display: 'flex',
 			flexDirection: 'row',
 			justifyContent: 'center',
 			alignItems: 'center',
-			fontSize: '1.5rem',
-			fontWeight: 'bold',
-			color: 'white',
-			border: '2px dashed white',
-			borderRadius: '20px',
 		},
 	}
 }

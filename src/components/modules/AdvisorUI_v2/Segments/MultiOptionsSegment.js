@@ -8,9 +8,12 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, INVERSE_FONT_COLOR, BACKGROUND_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR } from '../styles/advisor_ui_styles'
 
 /*
   <MultiOptionsSegment
@@ -51,6 +54,7 @@ class MultiOptionsSegment extends Component {
         other_choice: '',
       }
     }
+    this.mobile = false
   }
 
   componentWillMount() {
@@ -69,6 +73,10 @@ class MultiOptionsSegment extends Component {
         instantChars: true
       })
     }
+  }
+
+  componentDidMount() {
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -195,55 +203,69 @@ class MultiOptionsSegment extends Component {
     }
   }
 
-
-    shouldDisplayText(text, txtIndex) {
-      if (txtIndex === 0) {
-        return true
-      } else {
-        return this.state.completedSections.filter((id) => {
-          return this.props.texts[txtIndex - 1].id === id
-        }).length > 0
-      }
+  shouldDisplayText(text, txtIndex) {
+    if (txtIndex === 0) {
+      return true
+    } else {
+      return this.state.completedSections.filter((id) => {
+        return this.props.texts[txtIndex - 1].id === id
+      }).length > 0
     }
+  }
 
-    shouldInstantChars(txtIndex) {
-      if (txtIndex === 0) {
-        return false
-      } else {
-        let allOtherTextsLoadedCount = 0
-        this.props.texts.forEach((text) => {
-          this.state.completedSections.forEach((sec) => {
-            if (text.id === sec.id) {
-              allOtherTextsLoadedCount += 1
-            }
-          })
+  shouldInstantChars(txtIndex) {
+    if (txtIndex === 0) {
+      return false
+    } else {
+      let allOtherTextsLoadedCount = 0
+      this.props.texts.forEach((text) => {
+        this.state.completedSections.forEach((sec) => {
+          if (text.id === sec.id) {
+            allOtherTextsLoadedCount += 1
+          }
         })
-        return allOtherTextsLoadedCount === this.props.texts.length
-      }
+      })
+      return allOtherTextsLoadedCount === this.props.texts.length
     }
+  }
 
-    shouldDisplayInput() {
-      if (this.state.instantChars) {
-        return true
-      } else {
-        let allOtherTextsLoadedCount = 0
-        this.props.texts.forEach((text) => {
-          this.state.completedSections.forEach((id) => {
-            if (text.id === id) {
-              allOtherTextsLoadedCount += 1
-            }
-          })
+  shouldDisplayInput() {
+    if (this.state.instantChars) {
+      return true
+    } else {
+      let allOtherTextsLoadedCount = 0
+      this.props.texts.forEach((text) => {
+        this.state.completedSections.forEach((id) => {
+          if (text.id === id) {
+            allOtherTextsLoadedCount += 1
+          }
         })
-        return allOtherTextsLoadedCount === this.props.texts.length
-      }
+      })
+      return allOtherTextsLoadedCount === this.props.texts.length
     }
+  }
 
-    nextSegment(e, endpoint = this.props.schema.endpoint) {
-      if (e) {
-        e.stopPropagation()
-      }
-      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+  nextSegment(e, endpoint = this.props.schema.endpoint) {
+    if (e) {
+      e.stopPropagation()
     }
+    this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+  }
+
+  focusedInput(id) {
+    if (this.mobile) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }
+
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
+  }
 
 	render() {
 		return (
@@ -251,8 +273,8 @@ class MultiOptionsSegment extends Component {
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -265,29 +287,41 @@ class MultiOptionsSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: 'white',
-    									textAlign: 'left',
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
-                      })
-    								}}
-    							/>
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              this.props.triggerScrollDown(null, 1000)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
@@ -301,7 +335,7 @@ class MultiOptionsSegment extends Component {
             this.shouldDisplayInput()
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', padding: '10px', color: 'rgba(256,256,256,0.4)' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', padding: '10px', color: ACCENT_COLOR }}>
                 {
                   this.props.multi
                   ?
@@ -315,7 +349,7 @@ class MultiOptionsSegment extends Component {
                   this.props.schema.choices.map((choice) => {
                     return (
                       <div style={{ margin: '10px 5px 10px 5px' }}>
-                        <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}</span>
+                        <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}{choice.tooltip ? <Tooltip title={choice.tooltip}><span onClick={(e) => e.stopPropagation()}>&nbsp;&nbsp;&nbsp;ℹ️</span></Tooltip> : null}</span>
                       </div>
                     )
                   })
@@ -347,7 +381,7 @@ class MultiOptionsSegment extends Component {
                       this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
                     }}
                     placeholder="Enter your choice"
-                    onFocus={() => document.getElementById(`other_input--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
+                    onFocus={() => this.focusedInput(`other_input--${this.props.schema.id}`)}
                     onKeyUp={(e) => {
                       if (e.keyCode === 13) {
                         document.getElementById(`other_input--${this.props.schema.id}`).blur()
@@ -376,12 +410,18 @@ class MultiOptionsSegment extends Component {
             }
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
+            {console.log(`this.props.multi: ${this.props.multi}`)}
+            {console.log(`Should display input: ${this.shouldDisplayInput()}`)}
+            {console.log(`this.state.data:`)}
+            {console.log(this.state.data)}
+            {console.log(`this.props.other: ${this.props.other}`)}
+            {console.log(`this.state.show_other_input: ${this.state.show_other_input}`)}
             {
               (this.props.multi ? this.props.multi && this.shouldDisplayInput() : this.shouldDisplayInput())
               ?
               <div>
                 {
-                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : true)
+                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : false)
                   ?
                   <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
                   :
@@ -393,7 +433,7 @@ class MultiOptionsSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -476,10 +516,11 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
     text: {
-      background: 'rgba(255,255,255,0.2)',
+      background: INPUT_BACKGROUND,
       border: 'none',
       display: 'flex',
       outline: 'none',
@@ -488,17 +529,23 @@ const comStyles = () => {
       height: '30px',
       borderRadius: '10px',
       padding: '20px',
-      color: '#ffffff',
+      color: FONT_COLOR,
       webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
     },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -508,7 +555,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
@@ -523,24 +570,24 @@ const choiceStyles = (selected_choices, choice) => {
   let selectedStyle = {}
   selected_choices.forEach((c) => {
     if (c.id === choice.id) {
-      selectedStyle.backgroundColor = 'white',
-      selectedStyle.color = '#009cfe'
+      selectedStyle.backgroundColor = FONT_COLOR,
+      selectedStyle.color = INVERSE_FONT_COLOR
     }
   })
   return {
     choice: {
       width: '200px',
       borderRadius: '10px',
-      border: '1px solid white',
-      color: 'white',
+      border: `1px solid ${FONT_COLOR}`,
+      color: FONT_COLOR,
       padding: '5px',
-      backgroundColor: 'rgba(0,0,0,0)',
+      backgroundColor: INPUT_BACKGROUND,
       fontSize: '1rem',
       cursor: 'pointer',
       ...selectedStyle,
-      ":hover": {
-        opacity: 0.5
-      }
+      // ":hover": {
+      //   opacity: 0.5
+      // }
     }
   }
 }

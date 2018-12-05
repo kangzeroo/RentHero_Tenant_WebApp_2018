@@ -1,4 +1,4 @@
-// Compt for copying as a MapSegment
+// Compt for copying as a CounterSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -7,17 +7,22 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import SubtitlesMachine from './SubtitlesMachine'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <MapSegment
-    title='Map Segment'
+  <CounterSegment
+    title='Counter Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -25,15 +30,19 @@ import {
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
+    renderCountValue={(v) => (<div><span>{v} </span><span style={{ fontSize: '0.8rem' }}>rooms</span></div>)}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
+    slider
+    sliderOptions={{ min: 10, max: 100, step: 5 }}
+    incrementerOptions={{ max: 100, min: 10, step: 5 }}
   />
 */
 
 
 
-class MapSegment extends Component {
+class CounterSegment extends Component {
 
   constructor() {
     super()
@@ -41,13 +50,10 @@ class MapSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        address_components: [],
-        address_lat: 0,
-        address_lng: 0,
-        address_place_id: '',
-        address: '',
+        count: 0,
       }
     }
+    this.mobile = false
   }
 
   componentWillMount() {
@@ -55,6 +61,7 @@ class MapSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
+          count: this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -67,9 +74,7 @@ class MapSegment extends Component {
   }
 
   componentDidMount() {
-    if (this.state.instantChars) {
-      this.startAutocomplete()
-    }
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +92,18 @@ class MapSegment extends Component {
           instantChars: true
         })
       }
+    }
+  }
+
+  clickedIncrementer(amount, direction) {
+    const x = amount * direction
+    console.log(this.state.data.count + x)
+    if (this.state.data.count + x < this.props.incrementerOptions.min) {
+      Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
+    } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
+      Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
+    } else {
+      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
     }
   }
 
@@ -139,59 +156,23 @@ class MapSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
-  startAutocomplete() {
-    this.autocomplete = new google.maps.places.Autocomplete(
-            /** @type {!HTMLInputElement} */(document.getElementById(`address--${this.props.schema.id}`)),
-            {
-              // types: ['address', 'establishment'],
-              // bounds: new google.maps.LatLngBounds(
-              //   new google.maps.LatLng(-80.671519, 43.522913),
-              //   new google.maps.LatLng(-80.344067, 43.436979)
-              // )
-							componentRestrictions: {country: "ca"}
-            }
-          );
-    // When the user selects an address from the dropdown, populate the address
-    // fields in the form.
-    this.autocomplete.addListener('place_changed', () => this.fillInAddress())
-    document.getElementById(`address--${this.props.schema.id}`).focus()
-  }
-
-  fillInAddress() {
-    const place = this.autocomplete.getPlace()
-    this.setState({
-      data: {
-        ...this.state.data,
-        address_components: place.address_components,
-        address_lat: place.geometry.location.lat().toFixed(7),
-        address_lng: place.geometry.location.lng().toFixed(7),
-        address_place_id: place.place_id,
-        address: place.formatted_address,
-      }
-    }, () => {
-			document.getElementById(`address--${this.props.schema.id}`).blur()
-			setTimeout(() => {
-        document.getElementById(`map--${this.props.schema.id}`).style.height = '250px'
-				const coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
-				const map = new google.maps.Map(document.getElementById(`map--${this.props.schema.id}`), {
-					center: coords,
-					zoom: 13,
-					disableDefaultUI: true,
-				})
-				const marker = new google.maps.Marker({position: coords, map: map})
-        document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "center" })
-			}, 500)
-		})
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
   }
 
 	render() {
 		return (
-			<div id={`MapSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`CounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -204,32 +185,41 @@ class MapSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: 'white',
-    									textAlign: 'left',
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
-                        if (this.shouldDisplayInput() || this.state.instantChars) {
-                          this.startAutocomplete()
-                        }
-                      })
-    								}}
-    							/>
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              this.props.triggerScrollDown(null, 1000)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
@@ -243,17 +233,26 @@ class MapSegment extends Component {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <input
-                id={`address--${this.props.schema.id}`}
-                value={this.state.data.address}
-                onChange={(e) => {
-                  this.setState({ data: { ...this.state.data, address: e.target.value } })
-                }}
-                onFocus={() => document.getElementById(`address--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
-                placeholder="Enter Location"
-                style={comStyles().text}
-              ></input>
-              <div id={`map--${this.props.schema.id}`} style={{ height: '10px', borderRadius: '10px', margin: '10px 0px 0px 0px' }}></div>
+              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: FONT_COLOR, margin: '5px' }}>-</span>
+                <span style={{ fontSize: '3rem', color: FONT_COLOR, margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
+        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: FONT_COLOR, margin: '5px' }}>+</span>
+              </div>
+              {
+                this.props.slider && this.props.sliderOptions
+                ?
+                <div style={{ width: '80%', alignSelf: 'center' }}>
+                  <Slider
+                    value={this.state.data.count}
+                    min={this.props.sliderOptions.min}
+                    max={this.props.sliderOptions.max}
+                    step={this.props.sliderOptions.step}
+                    onChange={(v) => this.setState({ data: { ...this.state.data, count: v } })}
+                  />
+                </div>
+                :
+                null
+              }
             </div>
             :
             null
@@ -271,7 +270,7 @@ class MapSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.address_place_id && this.shouldDisplayInput()
+              this.state.data.count && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -279,7 +278,7 @@ class MapSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -293,7 +292,7 @@ class MapSegment extends Component {
 }
 
 // defines the types of variables in this.props
-MapSegment.propTypes = {
+CounterSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -320,20 +319,39 @@ MapSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
+  incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
+  /*
+    incrementerOptions = { max: 5, min: 1 }
+  */
+  slider: PropTypes.bool,                   // passed in, should the slider appear?
+  sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
+  /*
+    // see here for full options: https://github.com/react-component/slider
+    sliderOptions = {
+      min: 0,
+      max: 100,
+      step: 5,
+      vertical: false,
+    }
+  */
+  renderCountValue: PropTypes.func,
 }
 
 // for all optional props, define a default value
-MapSegment.defaultProps = {
+CounterSegment.defaultProps = {
   title: '',
-  texts: [],
   initialData: {},
+  slider: false,
+  sliderOptions: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
+  texts: [],
+  renderCountValue: (count) => { return count}
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(MapSegment)
+const RadiumHOC = Radium(CounterSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -357,29 +375,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
-    text: {
-      background: 'rgba(255,255,255,0.2)',
-      border: 'none',
-      display: 'flex',
-      outline: 'none',
-      width: '100%',
-      fontSize: '1.2rem',
-      height: '30px',
-      borderRadius: '10px',
-      padding: '20px',
-      color: '#ffffff',
-      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -389,7 +394,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',

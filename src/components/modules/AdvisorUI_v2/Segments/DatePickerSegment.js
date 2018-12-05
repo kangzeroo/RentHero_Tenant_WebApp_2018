@@ -1,4 +1,4 @@
-// Compt for copying as a InputSegment
+// Compt for copying as a DatePickerSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -6,18 +6,23 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
+import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
+import { Calendar } from 'react-date-range'
+import { isMobile } from '../../../../api/general/general_api'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <InputSegment
-    title='Input Segment'
+  <DatePickerSegment
+    title='DatePicker Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
@@ -28,15 +33,12 @@ import {
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    inputType={'text', 'textarea', 'number', 'tel', 'email', 'url'}
-    stringInputPlaceholder={'Type something'}
-    numberInputPlaceholder={0}
   />
 */
 
 
 
-class InputSegment extends Component {
+class DatePickerSegment extends Component {
 
   constructor() {
     super()
@@ -44,9 +46,10 @@ class InputSegment extends Component {
       completedSections: [],
 			instantChars: false,
       data: {
-        input_string: '',
+        date: new Date(),
       }
     }
+    this.mobile = false
   }
 
   componentWillMount() {
@@ -63,6 +66,10 @@ class InputSegment extends Component {
         instantChars: true
       })
     }
+  }
+
+  componentDidMount() {
+    this.mobile = isMobile()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -132,14 +139,23 @@ class InputSegment extends Component {
     this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
+  renderCustomComponent(text) {
+    if (this.state.completedSections.filter((id) => {
+      return id === text.id
+    }).length === 0) {
+      this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
+    }
+    return (text.component)
+  }
+
 	render() {
 		return (
-			<div id={`InputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`DatePickerSegment--${this.props.schema.id}`} style={{ ...comStyles().container, minHeight: document.documentElement.clientHeight, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
-          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: '1px solid rgba(256,256,256,0.4)' }}>
-            <span style={{ fontSize: '0.7rem', color: 'rgba(256,256,256,0.4)' }}>{this.props.title.toUpperCase()}</span>
+          <div style={{ padding: '0px 0px 20px 0px', display: 'flex', borderBottom: `1px solid ${ACCENT_COLOR}` }}>
+            <span style={{ fontSize: '0.7rem', color: ACCENT_COLOR }}>{this.props.title.toUpperCase()}</span>
           </div>
           :
           null
@@ -152,42 +168,41 @@ class InputSegment extends Component {
                 {
                   this.shouldDisplayText(text, txtIndex) || this.state.instantChars
                   ?
-                  <SubtitlesMachine
-                    id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                    key={`${text.id}_${txtIndex}`}
-    								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
-    								speed={0.25}
-    								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
-    								text={text.text}
-    								textStyles={{
-    									fontSize: '1.1rem',
-    									color: 'white',
-    									textAlign: 'left',
-    								}}
-    								containerStyles={{
-    									width: '100%',
-    									backgroundColor: 'rgba(0,0,0,0)',
-    									margin: '20px 0px 20px 0px',
-    								}}
-    								doneEvent={() => {
-  										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
-                        this.props.triggerScrollDown(null, 1000)
-                        if (this.shouldDisplayInput() || this.state.instantChars) {
-                          if (this.props.inputType === 'textarea') {
-                            // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
-                          } else {
-                            document.getElementById(`input_field--${this.props.schema.id}`).focus()
-                            document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
-                        			if (e.keyCode === 13) {
-                                document.getElementById(`input_field--${this.props.schema.id}`).blur()
-                                this.nextSegment()
-                        			}
-                        		})
-                          }
-                        }
-                      })
-    								}}
-    							/>
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                      <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (this.shouldDisplayInput()) {
+                              this.props.triggerScrollDown(null, 1000)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
                   :
                   null
                 }
@@ -196,42 +211,18 @@ class InputSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px' }}>
+        <div style={{ margin: '30px 0px 0px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {
-                this.props.inputType === 'textarea'
-                ?
-                <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
-                  <textarea
-                    id={`textarea_field--${this.props.schema.id}`}
-                    rows={4}
-                    value={this.state.data.input_string}
-                    onChange={(e) => {
-                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
-                    }}
-                    onFocus={() => document.getElementById(`textarea_field--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
-                    placeholder={this.props.stringInputPlaceholder}
-                    style={comStyles().textarea}
-                  ></textarea>
-                </div>
-                :
-                <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
-                  <input
-                    id={`input_field--${this.props.schema.id}`}
-                    type={this.props.inputType}
-                    value={this.state.data.input_string}
-                    onChange={(e) => {
-                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
-                    }}
-                    onFocus={() => document.getElementById(`input_field--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "end" })}
-                    placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
-                    style={comStyles().text}
-                  ></input>
-                </div>
-              }
+              <Calendar
+                date={this.state.data.date}
+                showMonthArrow={false}
+                minDate={new Date()}
+                scroll={{enabled: true}}
+                onChange={date => this.setState({ data: { ...this.state.data, date } })}
+              />
             </div>
             :
             null
@@ -249,7 +240,7 @@ class InputSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.input_string && this.shouldDisplayInput()
+              moment(this.state.data.date).diff(moment(), 'hours') > 0 && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -257,7 +248,7 @@ class InputSegment extends Component {
                 {
                   this.shouldDisplayInput()
                   ?
-                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'rgba(256,256,256,0.2' }} />
+                  <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: ACCENT_COLOR }} />
                   :
                   null
                 }
@@ -271,7 +262,7 @@ class InputSegment extends Component {
 }
 
 // defines the types of variables in this.props
-InputSegment.propTypes = {
+DatePickerSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -298,24 +289,20 @@ InputSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  stringInputPlaceholder: PropTypes.string,
-  numberInputPlaceholder: PropTypes.number,
 }
 
 // for all optional props, define a default value
-InputSegment.defaultProps = {
+DatePickerSegment.defaultProps = {
   title: '',
   texts: [],
   initialData: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  stringInputPlaceholder: '',
-  numberInputPlaceholder: 0,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(InputSegment)
+const RadiumHOC = Radium(DatePickerSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -339,43 +326,16 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '100px 0px 20px 0px'
+      padding: '50px 0px 0px 0px',
+      minHeight: document.documentElement.clientHeight,
 		},
-    text: {
-      background: 'rgba(255,255,255,0.2)',
-      border: 'none',
-      display: 'flex',
-      outline: 'none',
-      width: '100%',
-      fontSize: '1.2rem',
-      height: '30px',
-      borderRadius: '10px',
-      padding: '20px',
-      color: '#ffffff',
-      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    },
-    textarea: {
-      background: 'rgba(255,255,255,0.2)',
-      border: 'none',
-      display: 'flex',
-      outline: 'none',
-      width: '100%',
-      fontSize: '1.2rem',
-      height: 'auto',
-      borderRadius: '10px',
-      padding: '20px',
-      color: '#ffffff',
-      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
-    },
     skip: {
       padding: '5px',
       minWidth: '50px',
-      border: '1px solid white',
+      border: `1px solid ${FONT_COLOR}`,
       borderRadius: '5px',
       fontSize: '0.8rem',
-      color: 'white',
+      color: FONT_COLOR,
       cursor: 'pointer',
       position: 'absolute',
       bottom: '20px',
@@ -385,7 +345,7 @@ const comStyles = () => {
       }
     },
 		check: {
-			color: 'white',
+			color: FONT_COLOR,
 			fontWeight: 'bold',
 			cursor: 'pointer',
 			margin: '15px 0px 0px 0px',
