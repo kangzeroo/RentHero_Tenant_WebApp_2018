@@ -382,7 +382,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
-      minHeight: document.documentElement.clientHeight,
+      // minHeight: document.documentElement.clientHeight,
 		},
     text: {
       background: INPUT_BACKGROUND,

@@ -186,7 +186,7 @@ class MapSegment extends Component {
 					disableDefaultUI: true,
 				})
 				const marker = new google.maps.Marker({position: coords, map: map})
-        document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "center" })
+        document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "top" })
 			}, 500)
 		})
   }
