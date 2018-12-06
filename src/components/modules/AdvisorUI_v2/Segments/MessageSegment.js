@@ -236,7 +236,7 @@ class MessageSegment extends Component {
             ?
             <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
               <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
-                <div onClick={() => this.nextSegment()} style={comStyles().action}>{this.props.action.label}</div>
+                <div onClick={(e) => this.nextSegment(e)} style={{ ...comStyles().action, ...this.props.action.actionStyles }}>{this.props.action.label}</div>
               </div>
             </div>
             :
@@ -260,6 +260,14 @@ MessageSegment.propTypes = {
   skippable: PropTypes.bool,                // passed in
   skipEndpoint: PropTypes.string,           // passed in
   action: PropTypes.object,                 // passed in
+  /*
+    action = {
+      id: 'abc-xxx',
+      enabled: true,
+      label: 'Get Started',
+      actionStyles: { width: '100%' }
+    }
+  */
   texts: PropTypes.array,        // passed in, text to say
   /*
     texts = [

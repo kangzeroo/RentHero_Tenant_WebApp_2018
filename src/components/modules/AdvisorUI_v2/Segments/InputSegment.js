@@ -156,6 +156,7 @@ class InputSegment extends Component {
   }
 
 	render() {
+    console.log('InputSegment')
 		return (
 			<div id={`InputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
@@ -183,7 +184,7 @@ class InputSegment extends Component {
                       :
                       <SubtitlesMachine
                         id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                        key={`${text.id}_${txtIndex}`}
+                        key={`${text.id}_${txtIndex}_${this.props.schema.id}`}
         								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
         								speed={0.25}
         								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
@@ -201,18 +202,22 @@ class InputSegment extends Component {
         									margin: '20px 0px 20px 0px',
         								}}
         								doneEvent={() => {
+                          console.log('DONE EVENT TRIGGERED')
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
                               this.props.triggerScrollDown(null, 1000)
                             }
+                            console.log('shouldDisplayInput: ', this.shouldDisplayInput())
                             if (this.shouldDisplayInput() || this.state.instantChars) {
                               if (this.props.inputType === 'textarea') {
                                 // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
                               } else {
+                                console.log(this.mobile)
                                 if (!this.mobile) {
                                   document.getElementById(`input_field--${this.props.schema.id}`).focus()
                                 }
                                 document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
+                                  console.log(e.keyCode)
                             			if (e.keyCode === 13) {
                                     document.getElementById(`input_field--${this.props.schema.id}`).blur()
                                     this.nextSegment()
@@ -390,7 +395,7 @@ const comStyles = () => {
       borderRadius: '10px',
       padding: '20px',
       color: FONT_COLOR,
-      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      WebkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
       "::placeholder": {
         color: INPUT_PLACEHOLDER_COLOR,

@@ -36,6 +36,9 @@ class AdvisorUI extends Component {
       scrollStyles: {
         scroll_styles: {},
         scrollable_styles: {},
+      },
+      data: {
+        name: ''
       }
     }
     this.all_segments = []
@@ -43,7 +46,13 @@ class AdvisorUI extends Component {
   }
 
   componentWillMount() {
-    this.all_segments = this.all_segments.concat([
+    this.rehydrateSegments()
+    this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
+    this.setState({ lastUpdated: moment().unix() })
+  }
+
+  rehydrateSegments() {
+    this.all_segments = [
       {
         id: 'x',
         component: (<MessageSegment
@@ -65,7 +74,7 @@ class AdvisorUI extends Component {
         id: 'y',
         component: (<SegmentTemplate
                                title='Template Segment'
-                               schema={{ id: 'y', endpoint: 'xxx' }}
+                               schema={{ id: 'y', endpoint: 'dddd' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
@@ -74,8 +83,24 @@ class AdvisorUI extends Component {
                                  { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
-                               skipEndpoint='xxx'
+                               skipEndpoint='dddd'
                              />) },
+
+       {
+         id: 'dddd',
+         component: (<InputSegment
+                                 title='Introductions'
+                                 schema={{ id: 'dddd', endpoint: 'xxx' }}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                 onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                                 texts={[
+                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your name?' },
+                                 ]}
+                                 skippable
+                                 skipEndpoint='xxx'
+                                 inputType={'text'}
+                                 stringInputPlaceholder={'Full Name'}
+                              /> )},
       {
         id: 'xxx',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://static1.squarespace.com/static/5459116de4b07304c9c6ac24/58e550783e00be96f2c0fb55/58e5508215d5db03c97ca6d5/1491426153806/BroadviewWEB-7.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
@@ -91,7 +116,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
-                                  { id: '2-1', text: 'This Segment lets you select multiple choices. ℹ️id[abc-999]', tooltips: [{ id: 'abc-999', tooltip: (<div>Info</div>) }] },
+                                  { id: '2-1', scrollDown: true, text: `Nice to meet you ${this.state.data.name}. This Segment lets you select multiple choices. ℹ️id[abc-999]`, tooltips: [{ id: 'abc-999', tooltip: (<div>Info</div>) }] },
                                 ]}
                                 skippable
                                 skipEndpoint='a'
@@ -116,7 +141,7 @@ class AdvisorUI extends Component {
         id: 'z',
         component: (<DateRangeSegment
                                 title='Date Range'
-                                schema={{ id: 'z', endpoint: 'b' }}
+                                schema={{ id: 'z', endpoint: 'ooo' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
@@ -124,6 +149,30 @@ class AdvisorUI extends Component {
                                   { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
                                 ]}
                              /> )},
+     {
+       id: 'ooo',
+       component: (<CounterSegment
+                               schema={{ id: 'ooo', endpoint: 'b' }}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                               texts={[
+                                 { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a counter with scroll bar' }
+                               ]}
+                               skippable
+                               skipEndpoint='b'
+                               incrementerOptions={{
+                                 max: 100,
+                                 min: 10,
+                                 step: 2
+                               }}
+                               slider
+                               sliderOptions={{
+                                 min: 10,
+                                 max: 100,
+                                 step: 10,
+                                 vertical: false,
+                               }}
+                            /> )},
       {
         id: 'b',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://d4qwptktddc5f.cloudfront.net/80960-minosa-design-marble-bathroom-sydney-1.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
@@ -363,16 +412,24 @@ class AdvisorUI extends Component {
                                    ]
                                  }}
                                  texts={[
-                                   { id: '1-1', text: 'This is an Action Segment that is used at the end of a AdvisorUI dialog.' }
+                                   { id: '1-1', scrollDown: true, text: 'This is an Action Segment that is used at the end of a AdvisorUI dialog.' }
                                  ]}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
                                  skippable
                                  skipEndpoint='9'
                                />) },
-    ])
-    this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
+    ]
     this.setState({ lastUpdated: moment().unix() })
+  }
+
+  doneName(original_id, endpoint, data) {
+    this.setState({
+      data: {
+        ...this.state.data,
+        name: data.input_string,
+      }
+    }, () => this.done(original_id, endpoint, data))
   }
 
   done(original_id, endpoint, data) {
@@ -383,6 +440,7 @@ class AdvisorUI extends Component {
         original_id_index = index
       }
     })
+    this.rehydrateSegments()
     // If we are adding more segments to this.shown_segments, or if we are backtracking on a past segment
     if (original_id_index + 1 >= this.shown_segments.length) {
       // add next segment
@@ -434,11 +492,7 @@ class AdvisorUI extends Component {
     const prevScrollHeight = document.getElementById('containment').offsetHeight
     const screenHeight = document.documentElement.clientHeight
     const nextHeight = prevScrollHeight + screenHeight
-    console.log('prevScrollHeight: ', prevScrollHeight)
-    console.log('screenHeight: ', screenHeight)
-    console.log('nextHeight: ', nextHeight)
     document.getElementById('containment').style.height = `${nextHeight}px`
-    console.log('newHeight: ', document.getElementById('containment').offsetHeight)
     $('#scrollable').animate({
         scrollTop: prevScrollHeight
     }, duration);
@@ -523,8 +577,6 @@ class AdvisorUI extends Component {
             return seg.scrollStyles && seg.scrollStyles.scroll_styles && seg.scrollStyles.scroll_styles.backgroundImage
           }).map((seg) => {
             const cssURL = seg.scrollStyles.scroll_styles.backgroundImage.replace('url(', '').replace(')', '').replace(/(\"?\'?)/igm, '')
-            console.log('----------- CSS URL --------------')
-            console.log(cssURL)
             return (<img src={cssURL} style={{ display: 'none' }} />)
           })
         }
@@ -585,6 +637,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
+      position: 'fixed',
 			bottom: '0px',
       width: '100vw',
       justifyContent: 'flex-start',

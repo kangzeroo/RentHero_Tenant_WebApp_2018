@@ -26,7 +26,7 @@ class SubtitlesMachine extends Component {
 
   componentDidMount() {
     if (this.props.instant) {
-      this.setState({ text: this.props.text.text, count: this.props.text.text.length - 1 })
+      this.setState({ text: this.props.text.text, count: this.props.text.text.length })
     } else {
       setTimeout(() => {
         this.renderAnimation(this.props.text.text)
@@ -36,7 +36,7 @@ class SubtitlesMachine extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.observable && this.props.instant && this.props.instant !== prevProps.instant) {
-      this.setState({ text: this.props.text.text })
+      this.setState({ text: this.props.text.text, count: this.props.text.text.length })
       this.observable.complete()
     }
   }
@@ -51,7 +51,7 @@ class SubtitlesMachine extends Component {
       if (this.props.instant) {
         this.setState({
           text: this.props.text.text,
-          count: this.props.text.text.length - 1
+          count: this.props.text.text.length
         })
         obs.complete()
       } else {

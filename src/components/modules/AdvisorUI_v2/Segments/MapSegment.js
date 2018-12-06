@@ -272,7 +272,7 @@ class MapSegment extends Component {
           })
         }
         </div>
-        <div style={{ margin: '30px 0px 0px 0px' }}>
+        <div style={{ margin: '10px 0px 0px 0px' }}>
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?

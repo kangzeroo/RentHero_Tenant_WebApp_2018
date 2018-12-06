@@ -66,8 +66,6 @@ class MultiOptionsSegment extends Component {
         }
       })
     }
-    console.log(this.props.instantCharsSegmentID)
-    console.log(this.props.schema.id)
     if (this.props.instant_chars_segment_id === this.props.schema.id) {
       this.setState({
         instantChars: true
@@ -410,12 +408,6 @@ class MultiOptionsSegment extends Component {
             }
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
-            {console.log(`this.props.multi: ${this.props.multi}`)}
-            {console.log(`Should display input: ${this.shouldDisplayInput()}`)}
-            {console.log(`this.state.data:`)}
-            {console.log(this.state.data)}
-            {console.log(`this.props.other: ${this.props.other}`)}
-            {console.log(`this.state.show_other_input: ${this.state.show_other_input}`)}
             {
               (this.props.multi ? this.props.multi && this.shouldDisplayInput() : this.shouldDisplayInput())
               ?

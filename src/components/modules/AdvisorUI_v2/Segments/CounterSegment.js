@@ -61,7 +61,7 @@ class CounterSegment extends Component {
       this.setState({
         data: {
           ...this.state.data,
-          count: this.props.incrementerOptions.min,
+          count: this.props.incrementerOptions.default || this.props.incrementerOptions.min,
           ...this.props.initialData
         }
       })
@@ -97,13 +97,12 @@ class CounterSegment extends Component {
 
   clickedIncrementer(amount, direction) {
     const x = amount * direction
-    console.log(this.state.data.count + x)
     if (this.state.data.count + x < this.props.incrementerOptions.min) {
       Toast.info(`Minimum is ${this.props.incrementerOptions.min}`, 1)
     } else if (this.state.data.count + x > this.props.incrementerOptions.max) {
       Toast.info(`Maximum is ${this.props.incrementerOptions.max}`, 1)
     } else {
-      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } })
+      this.setState({ data: { ...this.state.data, count: this.state.data.count + x } }, () => console.log(this.state.data))
     }
   }
 
@@ -233,10 +232,10 @@ class CounterSegment extends Component {
             this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2rem', color: FONT_COLOR, margin: '5px' }}>-</span>
+              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
+        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, -1)} style={{ fontSize: '2.5rem', fontWeight: 'bold', color: FONT_COLOR, margin: '5px' }}>-</span>
                 <span style={{ fontSize: '3rem', color: FONT_COLOR, margin: '5px' }}>{this.props.renderCountValue(this.state.data.count)}</span>
-        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2rem', color: FONT_COLOR, margin: '5px' }}>+</span>
+        				<span onClick={() => this.clickedIncrementer(this.props.incrementerOptions.step, 1)} style={{ fontSize: '2.5rem', fontWeight: 'bold', color: FONT_COLOR, margin: '5px' }}>+</span>
               </div>
               {
                 this.props.slider && this.props.sliderOptions
@@ -321,7 +320,7 @@ CounterSegment.propTypes = {
   // UNIQUE PROPS FOR COMPONENT
   incrementerOptions: PropTypes.object.isRequired,      // passed in, what should the { max, min } be?
   /*
-    incrementerOptions = { max: 5, min: 1 }
+    incrementerOptions = { max: 5, min: 1, step: 1, default: 2 }
   */
   slider: PropTypes.bool,                   // passed in, should the slider appear?
   sliderOptions: PropTypes.object,          // passed in, what slider options should there be?
@@ -335,6 +334,9 @@ CounterSegment.propTypes = {
     }
   */
   renderCountValue: PropTypes.func,
+  /*
+    renderCountValue = (count) => { return count}
+  */
 }
 
 // for all optional props, define a default value
