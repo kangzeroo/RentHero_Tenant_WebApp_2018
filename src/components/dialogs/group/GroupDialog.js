@@ -27,7 +27,7 @@ import ShareUrlSegment from '../../modules/AdvisorUI_v2/Segments/ShareUrlSegment
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 
-class MoveInDialog extends Component {
+class GroupDialog extends Component {
 
   constructor() {
     super()
@@ -54,12 +54,12 @@ class MoveInDialog extends Component {
   rehydrateSegments() {
     this.all_segments = [
       {
-        id: 'movein_urgency',
+        id: 'group_members',
         component: (<MultiOptionsSegment
-              title='Move-In Urgency'
+              title=''
               schema={{
-                id: 'movein_urgency',
-                endpoint: 'ideal_movein',
+                id: 'group_members',
+                endpoint: '',
                 choices: [
                   { id: 'urgent', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Urgent', value: 'urgent', endpoint: 'ideal_movein', tooltip: (<p>You need to move in less than 1 month.</p>) },
                   { id: 'flexible', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Flexible', value: 'flexible', endpoint: 'ideal_movein', tooltip: (<p>You are flexible to move-in anytime between now and 4 months from now.</p>) },
@@ -75,11 +75,11 @@ class MoveInDialog extends Component {
               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
            />) },
       {
-      id: 'ideal_movein',
+      id: 'members_certain_uncertain',
       scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.apartmentguide.com/blog/wp-content/uploads/2011/09/moving-truck-Christina-Richards-original.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
       component: (<DatePickerSegment
-                  title='Ideal Move-In Date'
-                  schema={{ id: 'ideal_movein', endpoint: 'movein_range' }}
+                  title=''
+                  schema={{ id: 'members_certain_uncertain', endpoint: 'movein_range' }}
                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                   onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                   texts={[
@@ -157,7 +157,7 @@ class MoveInDialog extends Component {
                                       id: 'two_months_notice',
                                       endpoint: 'needs_representative',
                                       choices: [
-                                        { id: 'notice_not_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, Secure Next Home First', value: 'notice_not_given', endpoint: 'needs_representative', tooltip: (<p>You are still looking for a new home, so you have not yet given the 2 months notice to your landlord yet.</p>) },
+                                        { id: 'notice_not_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, Still Searching For Next Home', value: 'notice_not_given', endpoint: 'needs_representative', tooltip: (<p>You are still looking for a new home, so you have not yet given the 2 months notice to your landlord yet.</p>) },
                                         { id: 'did_not_know', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, I Did Not Know About That', value: 'did_not_know', endpoint: 'needs_representative', tooltip: (<p>You were unaware of the 2 months notice rule.</p>) },
                                         { id: 'notice_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes I Have Given My Notice', value: 'notice_given', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord already.</p>) },
                                         { id: 'dont_care', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `My Landlord Doesn't Care`, value: 'dont_care', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord and they don't care. You are free to move anytime.</p>)},
@@ -178,7 +178,7 @@ class MoveInDialog extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When does your current lease end?' }
+                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When does your existing lease end?' }
                                 ]}
                              /> )},
            {
@@ -268,7 +268,6 @@ class MoveInDialog extends Component {
                                   ]}
                                   onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                  multi
                                   other
                                />) },
        {
@@ -293,14 +292,6 @@ class MoveInDialog extends Component {
                                />) },
     ]
     this.setState({ lastUpdated: moment().unix() })
-  }
-
-  doneMovingFrom(original_id, endpoint, data) {
-    if (data.address.indexOf('ON, Canada') > -1) {
-      this.done(original_id, 'current_housing_situation', data)
-    } else {
-      this.done(original_id, 'arrival_flight_time', data)
-    }
   }
 
   doneName(original_id, endpoint, data) {
@@ -440,7 +431,7 @@ class MoveInDialog extends Component {
 
 	render() {
 		return (
-			<div id='MoveInDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
+			<div id='GroupDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -466,18 +457,18 @@ class MoveInDialog extends Component {
 }
 
 // defines the types of variables in this.props
-MoveInDialog.propTypes = {
+GroupDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
-MoveInDialog.defaultProps = {
+GroupDialog.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(MoveInDialog)
+const RadiumHOC = Radium(GroupDialog)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

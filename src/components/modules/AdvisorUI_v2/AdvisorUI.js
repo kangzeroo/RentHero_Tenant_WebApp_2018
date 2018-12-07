@@ -24,6 +24,7 @@ import MessageSegment from './Segments/MessageSegment'
 import ActionSegment from './Segments/ActionSegment'
 import FileUploadSegment from './Segments/FileUploadSegment'
 import ShareUrlSegment from './Segments/ShareUrlSegment'
+import MultiCounterSegment from './Segments/MultiCounterSegment'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from './styles/advisor_ui_styles'
 
 
@@ -90,17 +91,42 @@ class AdvisorUI extends Component {
          id: 'dddd',
          component: (<InputSegment
                                  title='Introductions'
-                                 schema={{ id: 'dddd', endpoint: 'xxx' }}
+                                 schema={{ id: 'dddd', endpoint: 'eeee' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                  texts={[
                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your name?' },
                                  ]}
                                  skippable
-                                 skipEndpoint='xxx'
+                                 skipEndpoint='eeee'
                                  inputType={'text'}
                                  stringInputPlaceholder={'Full Name'}
                               /> )},
+        {
+          id: 'eeee',
+          component: (<MultiCounterSegment
+                                  title='Multi-Counter Segment'
+                                  schema={{ id: 'eeee', endpoint: 'xxx' }}
+                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                                  texts={[
+                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'You can put multiple inputs into me!' },
+                                  ]}
+                                  skippable
+                                  skipEndpoint='xxx'
+                                  counters={[
+                                    { id: 'small_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Small Dogs', value: 0, tooltip: (<p>20 kg or less</p>) },
+                                    { id: 'large_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Large Dogs', value: 0, tooltip: (<p>20 kg or more</p>) },
+                                    { id: 'cats', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Cats', value: 0 },
+                                  ]}
+                                  other
+                                  otherIncrementerOptions={{
+                                    min: 0,
+                                    max: 5,
+                                    default: 0,
+                                    step: 1,
+                                  }}
+                               /> )},
       {
         id: 'xxx',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://static1.squarespace.com/static/5459116de4b07304c9c6ac24/58e550783e00be96f2c0fb55/58e5508215d5db03c97ca6d5/1491426153806/BroadviewWEB-7.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
