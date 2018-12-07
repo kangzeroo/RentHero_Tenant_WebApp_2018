@@ -306,6 +306,7 @@ ActionSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
+  choices: PropTypes.array,
 }
 
 // for all optional props, define a default value
@@ -315,6 +316,7 @@ ActionSegment.defaultProps = {
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
+  choices: []
 }
 
 // Wrap the prop in Radium to allow JS styling

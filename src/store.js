@@ -8,7 +8,7 @@ import reducers from './reducers'
 // recall that all actions will flow through each middleware until it reaches the end to be passed to reducers
 const createStoreWithMiddleware = applyMiddleware(
 	reduxThunk,
-	// filteredLogger,
+	filteredLogger,
 )(createStore);
 // create an instance of the redux store with all our reducers
 const store = createStoreWithMiddleware(
