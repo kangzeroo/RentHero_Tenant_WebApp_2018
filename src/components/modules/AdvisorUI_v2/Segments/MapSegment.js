@@ -153,7 +153,8 @@ class MapSegment extends Component {
               //   new google.maps.LatLng(-80.671519, 43.522913),
               //   new google.maps.LatLng(-80.344067, 43.436979)
               // )
-							componentRestrictions: {country: "ca"}
+							componentRestrictions: {country: "ca"},
+              ...this.props.mapOptions
             }
           );
     // When the user selects an address from the dropdown, populate the address
@@ -354,6 +355,7 @@ MapSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
+  mapOptions: PropTypes.object,
 }
 
 // for all optional props, define a default value
@@ -364,6 +366,7 @@ MapSegment.defaultProps = {
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
+  mapOptions: {},   // see google maps options
 }
 
 // Wrap the prop in Radium to allow JS styling

@@ -1,0 +1,67 @@
+// AUTH & CLEANUP TODO
+
+1. Cleanse old cognito and federated identities
+        - preserve used ones (call center, admin, realtor)
+        - placeholder for new ones (tenant webapp)
+2. Cleanse old dynamodb and rds, backups to s3
+        - preserve used ones (call center, admin, realtor)
+        - placeholder for new ones (tenant webapp)
+3. Cleanse old dialogflow accounts
+4. Cleanse old Google Cloud projects
+        - preserve used ones (call center, admin, realtor)
+        - placeholder for new ones (tenant webapp)
+5. Cleanse old Auth0 accounts
+6. Cleanse old AWS creds
+        - preserve used ones (lambdas, s3)
+        - create new ones (dev, prod)
+7. Organize repos still used
+        - call center, admin, realtor, tenant webapp
+9. Implement server side auth checking
+        - auth JWT
+        - originCheck
+        - correct ID check
+
+
+// Tenant WebApp TODO
+
+1. Implement dialog screens for profiling
+        - save preferences to rds & elastic
+2. Implement profile edits page
+        - update preferences to rds & elastic
+3. Diff the web scraping to prevent duplicate listings and API calls
+4. Implement machine vision & named entity recognition for amenities (save to elastic)
+5. Create the ad listings page with upvote and downvote
+        - save upvotes and downvotes to profile
+        - dynamically filter listings to avoid ones already seen (upvoted or downvoted)
+6. Implement favorites page
+7. Implement new listings push notifications
+8. Transfer lead to realtor app
+9. Integrate Mixpanel
+10. Implement dialog screens for document uploading
+        - securely save docs to s3
+11. Implement doc edits page
+12. Implement docs upload sharing page
+        - securely save docs to s3
+13. Rent Resume generator
+
+
+// Realtor WebApp TODO
+
+1. Push notifications for new leads
+2. Smart push notification delays
+3. Test payments reliability
+4. Integrate mixpanel
+
+
+// Bots TODO
+
+1. Add Zumper scraping
+2. Add Craigslist scraping
+3. Add Facebook scraping
+4. Add Zumper post botting
+
+
+// Machine Learning TODO
+
+1. Implement image refinement as an API endpoint
+2. Implement deep learning approach to text-value extraction
