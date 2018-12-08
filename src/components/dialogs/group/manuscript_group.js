@@ -21,6 +21,10 @@
                                             a. no, we all want our own room
                                             b. yes, show me dens
 
+  MultiOptionsSegment             1b/c_2_3_4. What gender of roommates are you ok with?
+
+  MultiCounterSegment             1b/c_2_3_4_5. What is the min and max age of roommates you are ok with?
+
   MultiCounterSegment             1e. I am happy to serve your family 😊 How many people are you in total? Please include everyone who will sleep there.
 
   MultiCounterSegment             2. Do you have any pets?

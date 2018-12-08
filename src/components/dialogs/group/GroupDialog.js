@@ -97,21 +97,21 @@ class GroupDialog extends Component {
                ]}
             /> )},
      {
-     id: 'members_certain_uncertain',
-     scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
-     component: (<MultiCounterSegment
-               title='ROOMMATE COMMITMENT'
-               schema={{ id: 'members_certain_uncertain', endpoint: 'entire_place_or_roommates' }}
-               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-               onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
-               texts={[
-                 { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many people are 100% certain they want to live together, and how many are uncertain? ℹ️id[uncertain]', tooltips: [{ id: 'uncertain', tooltip: (<div>Depending on price, property or timing.</div>) }] },
-               ]}
-               counters={[
-                 { id: 'certain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Certain', value: 0, tooltip: (<p>100% certain we want to live together/</p>) },
-                 { id: 'uncertain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Not Certain', value: 0, tooltip: (<p>Might live together if a good deal is found.</p>) },
-               ]}
-            /> )},
+       id: 'members_certain_uncertain',
+       scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+       component: (<MultiCounterSegment
+                 title='ROOMMATE COMMITMENT'
+                 schema={{ id: 'members_certain_uncertain', endpoint: 'entire_place_or_roommates' }}
+                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                 onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                 texts={[
+                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many people are 100% certain they want to live together, and how many are uncertain? ℹ️id[uncertain]', tooltips: [{ id: 'uncertain', tooltip: (<div>Depending on price, property or timing.</div>) }] },
+                 ]}
+                 counters={[
+                   { id: 'certain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Certain', value: 0, tooltip: (<p>100% certain we want to live together/</p>) },
+                   { id: 'uncertain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Not Certain', value: 0, tooltip: (<p>Might live together if a good deal is found.</p>) },
+                 ]}
+              /> )},
       {
         id: 'entire_place_or_roommates',
         component: (<MultiOptionsSegment
@@ -155,10 +155,10 @@ class GroupDialog extends Component {
                                 title='PARTIAL ROOMS'
                                 schema={{
                                   id: 'ok_with_dens',
-                                  endpoint: 'furry_friends',
+                                  endpoint: 'roommate_gender',
                                   choices: [
-                                    { id: 'own_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Real Rooms', value: 'own_rooms', endpoint: 'furry_friends', tooltip: (<p>A real bedroom is defined as a room with a lockable door and at least 1 window.</p>) },
-                                    { id: 'ok_den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Ok With Den', value: 'ok_den', endpoint: 'furry_friends', tooltip: (<p>Dens may be a seperate office room or a semi-seperate living room, and rarely has a door or wall. It can be liveable but cramped. Always visit in person to see the reality!</p>) },
+                                    { id: 'own_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Real Rooms', value: 'own_rooms', endpoint: 'roommate_gender', tooltip: (<p>A real bedroom is defined as a room with a lockable door and at least 1 window.</p>) },
+                                    { id: 'ok_den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Ok With Den', value: 'ok_den', endpoint: 'roommate_gender', tooltip: (<p>Dens may be a seperate office room or a semi-seperate living room, and rarely has a door or wall. It can be liveable but cramped. Always visit in person to see the reality!</p>) },
                                   ]
                                 }}
                                 texts={[
@@ -168,6 +168,41 @@ class GroupDialog extends Component {
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                              />) },
+       {
+         id: 'roommate_gender',
+         scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn.freshome.com/wp-content/uploads/2018/07/balcony-how.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+         component: (<MultiOptionsSegment
+                                 title='ROOMMATE GENDERS'
+                                 schema={{
+                                   id: 'roommate_gender',
+                                   endpoint: 'roommate_age_limits',
+                                   choices: [
+                                     { id: 'female_only', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Females Only', value: 'female_only', endpoint: 'roommate_age_limits' },
+                                     { id: 'male_only', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Males Only', value: 'male_only', endpoint: 'roommate_age_limits' },
+                                     { id: 'mixed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Any Gender', value: 'mixed', endpoint: 'roommate_age_limits' },
+                                   ]
+                                 }}
+                                 texts={[
+                                   { id: '1', text: `What gender of roommates are you comfortable living with?` },
+                                 ]}
+                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                              />) },
+      {
+        id: 'roommate_age_limits',
+        component: (<MultiCounterSegment
+                  title='ROOMMATE AGES'
+                  schema={{ id: 'roommate_age_limits', endpoint: 'furry_friends' }}
+                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                  texts={[
+                    { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What age range of roommates are you comfortable with?' },
+                  ]}
+                  counters={[
+                    { id: 'min_age', renderCountValue: (c) => c, incrementerOptions: { min: 18, max: 99, step: 1, default: 20 }, text: 'Min Age', value: 20 },
+                    { id: 'max_age', renderCountValue: (c) => c, incrementerOptions: { min: 18, max: 99, step: 1, default: 30 }, text: 'Max Age', value: 30 },
+                  ]}
+               /> )},
      {
        id: 'furry_friends',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
