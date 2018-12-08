@@ -25,6 +25,15 @@
 
   MultiCounterSegment             1b/c_2_3_4_5. What is the min and max age of roommates you are ok with?
 
+  MultiOptionsSegment             1b/c_2_3_4_5_6. Are you LGBT friendly?
+                                            a. Yes
+                                            b. No
+                                            c. Other
+
+  InputSegment                    1b/c_2_3_4_5_6_7. Do you have any allergies or medical conditions?
+
+  MultiCounterSegment             1b/c_2_3_4_5_6_7_8. What time do you usually sleep on weekdays and weekends?
+
   MultiCounterSegment             1e. I am happy to serve your family 😊 How many people are you in total? Please include everyone who will sleep there.
 
   MultiCounterSegment             2. Do you have any pets?

@@ -47,6 +47,7 @@ import SearchPrefs from './tenant/SearchPrefs'
 import DialogOnboarding from './dialogs/intro/DialogOnboarding'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
 import GroupDialog from './dialogs/group/GroupDialog'
+import PersonalDialog from './dialogs/personal/PersonalDialog'
 import ChineseDialogOnboarding from './dialogs/intro/ChineseDialogOnboarding'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
@@ -108,11 +109,12 @@ class AppRoot extends Component {
               <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={GroupDialog} />
+              <Route exact path='/sandbox' render={PersonalDialog} />
               <Route exact path='/movein' render={MoveInDialog} />
               <Route exact path='/sample' render={AdvisorUI} />
               <Route exact path='/sino' render={ChineseDialogOnboarding} />
               <Route exact path='/onboarding' render={DialogOnboarding} />
+              <Route exact path='/group' render={GroupDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

@@ -192,7 +192,7 @@ class GroupDialog extends Component {
         id: 'roommate_age_limits',
         component: (<MultiCounterSegment
                   title='ROOMMATE AGES'
-                  schema={{ id: 'roommate_age_limits', endpoint: 'furry_friends' }}
+                  schema={{ id: 'roommate_age_limits', endpoint: 'lgbt_friendly' }}
                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                   onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                   texts={[
@@ -203,6 +203,39 @@ class GroupDialog extends Component {
                     { id: 'max_age', renderCountValue: (c) => c, incrementerOptions: { min: 18, max: 99, step: 1, default: 30 }, text: 'Max Age', value: 30 },
                   ]}
                /> )},
+     {
+       id: 'lgbt_friendly',
+       component: (<MultiOptionsSegment
+             title='LGBT Friendliness'
+             schema={{
+               id: 'lgbt_friendly',
+               endpoint: 'allergies_medical_conditions',
+               choices: [
+                 { id: 'yes', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes', value: 'yes', endpoint: 'allergies_medical_conditions' },
+                 { id: 'no', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'No', value: 'no', endpoint: 'allergies_medical_conditions' },
+               ]
+             }}
+             texts={[
+               { id: '1', scrollDown: true, text: `Are you LGBT friendly?` },
+             ]}
+             onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+             other
+          />) },
+      {
+        id: 'allergies_medical_conditions',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://foodrevolution.org/wp-content/uploads/2018/04/blog-featured-diabetes-20180406-1330.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+        component: (<InputSegment
+               title='Allergies & Medical'
+               schema={{ id: 'allergies_medical_conditions', endpoint: 'furry_friends' }}
+               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+               onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+               texts={[
+                 { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Do you have any allergies or medical conditions?` },
+               ]}
+               inputType={'textarea'}
+               stringInputPlaceholder={'Tell me as much as you are comfortable sharing'}
+            /> )},
      {
        id: 'furry_friends',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
