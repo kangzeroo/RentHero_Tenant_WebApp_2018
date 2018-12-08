@@ -14,7 +14,7 @@ import {
   Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR } from '../styles/advisor_ui_styles'
 
 
 
@@ -53,6 +53,8 @@ class MultiCounterSegment extends Component {
     this.state = {
       completedSections: [],
 			instantChars: false,
+      addAnother: false,
+      input_string: '',
       data: {
         counters: [],
       }
@@ -61,13 +63,6 @@ class MultiCounterSegment extends Component {
   }
 
   componentWillMount() {
-    console.log(this.props.counters)
-    this.setState({
-      data: {
-        ...this.state.data,
-        counters: [].concat(this.props.counters),
-      }
-    }, () => console.log(this.state.data))
     if (this.props.initialData) {
       this.setState({
         data: {
@@ -85,6 +80,14 @@ class MultiCounterSegment extends Component {
 
   componentDidMount() {
     this.mobile = isMobile()
+    console.log(typeof this.props.counters)
+    console.log(this.props.counters)
+    this.setState({
+      data: {
+        ...this.state.data,
+        counters: [].concat(this.props.counters),
+      }
+    }, () => console.log(this.state.data))
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -163,8 +166,61 @@ class MultiCounterSegment extends Component {
     return (text.component)
   }
 
+  incrementedCounter(event, counter, step, direction) {
+    if (event) {
+      event.stopPropagation()
+    }
+    const magnitude = step * direction
+    console.log(magnitude)
+    console.log(counter)
+    if (counter.value + magnitude < counter.incrementerOptions.min) {
+      Toast.info(`Minimum for ${counter.text} is ${counter.incrementerOptions.min}`, 1)
+    } else if (counter.value + magnitude > counter.incrementerOptions.max) {
+      Toast.info(`Maximum for ${counter.text} is ${counter.incrementerOptions.max}`, 1)
+    } else {
+      this.setState({
+        data: {
+          ...this.state.data,
+          counters: this.state.data.counters.map((c) => {
+            if (c.id === counter.id) {
+              return {
+                ...c,
+                value: c.value + magnitude
+              }
+            } else {
+              return c
+            }
+          })
+        }
+      })
+    }
+  }
+
+  focusedInput(id) {
+    if (this.mobile) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }
+
+  saveNewCounter(input_string) {
+    const id = input_string.split(' ').join('_').toLowerCase()
+    this.setState({
+      data: {
+        ...this.state.data,
+        counters: this.state.data.counters.concat([{
+          id: id,
+          text: input_string,
+          renderCountValue: (c) => c,
+          incrementerOptions: this.props.otherIncrementerOptions,
+          value: 0
+        }]),
+      },
+      input_string: '',
+      addAnother: false
+    })
+  }
+
 	render() {
-    console.log(this.state)
 		return (
 			<div id={`MultiCounterSegment--${this.props.schema.id}`} style={{ ...comStyles().container, minHeight: document.documentElement.clientHeight, ...this.props.segmentStyles }}>
         {
@@ -235,9 +291,55 @@ class MultiCounterSegment extends Component {
               {
                 this.state.data.counters.map((counter) => {
                   return (
-                    <div>{counter.id}</div>
+                    <div key={counter.id} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '10px 0px 10px 0px' }}>
+                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, -1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'white', ...counter.textStyles }}>-</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                          <div style={{ fontSize: '1.5rem', color: 'white', ...counter.textStyles }}>{counter.renderCountValue(counter.value)}</div>
+                          <div style={{ fontSize: '0.9rem', color: 'white', ...counter.textStyles }}>
+                            {counter.text}
+                            {
+                              counter.tooltip
+                              ?
+                              <Tooltip title={counter.tooltip}>
+                                <span>&nbsp;&nbsp;ℹ️</span>
+                              </Tooltip>
+                              :
+                              ''
+                            }
+                          </div>
+                        </div>
+                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, 1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'white', ...counter.textStyles }}>+</div>
+                    </div>
                   )
                 })
+              }
+              {
+                this.props.other
+                ?
+                <div style={{ width: '100%' }}>
+                  {
+                    this.state.addAnother
+                    ?
+                    <div style={{ width: '100%', borderRadius: '10px', padding: '15px', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', margin: '20px 0px 0px 0px' }}>
+                      <input
+                        id={`input_field--${this.props.schema.id}--add--another`}
+                        type='text'
+                        value={this.state.input_string}
+                        onChange={(e) => {
+                          this.setState({ input_string: e.target.value })
+                        }}
+                        onFocus={() => this.focusedInput(`input_field--${this.props.schema.id}--add--another`)}
+                        style={comStyles().text}
+                      ></input>
+                      <Icon onClick={(e) => this.saveNewCounter(this.state.input_string)} type='check-circle' size='lg' style={{ color: 'white' }} />
+                      <Icon onClick={(e) => this.setState({ input_string: '', addAnother: false })} type='cross-circle-o' size='lg' style={{ color: 'white' }} />
+                    </div>
+                    :
+                    <div onClick={() => this.setState({ addAnother: true })} style={{ width: '100%', borderRadius: '10px', backgroundColor: 'rgba(0,0,0,0.1)', padding: '15px', color: 'white', margin: '20px 0px 0px 0px', fontWeight: 'bold' }}>ADD ANOTHER</div>
+                  }
+                </div>
+                :
+                null
               }
             </div>
             :
@@ -327,7 +429,6 @@ MultiCounterSegment.defaultProps = {
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  counters: [],
   other: false,
   otherIncrementerOptions: {}
 }
@@ -383,6 +484,26 @@ const comStyles = () => {
 			position: 'absolute',
 			bottom: '20px',
 			right: '0px',
-		}
+		},
+    text: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '80%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      WebkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
+    },
 	}
 }

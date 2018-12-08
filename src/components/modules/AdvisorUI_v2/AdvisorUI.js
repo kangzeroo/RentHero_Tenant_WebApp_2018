@@ -110,14 +110,14 @@ class AdvisorUI extends Component {
                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                   onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                   texts={[
-                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'You can put multiple inputs into me!' },
+                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'You can put multiple counters into me!' },
                                   ]}
                                   skippable
                                   skipEndpoint='xxx'
                                   counters={[
-                                    { id: 'small_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Small Dogs', value: 0, tooltip: (<p>20 kg or less</p>) },
-                                    { id: 'large_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Large Dogs', value: 0, tooltip: (<p>20 kg or more</p>) },
-                                    { id: 'cats', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Cats', value: 0 },
+                                    { id: 'small_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Small Dogs', value: 0, tooltip: (<p>20 kg or less</p>) },
+                                    { id: 'large_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Large Dogs', value: 0, tooltip: (<p>20 kg or more</p>) },
+                                    { id: 'cats', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Cats', value: 0 },
                                   ]}
                                   other
                                   otherIncrementerOptions={{

@@ -156,7 +156,6 @@ class InputSegment extends Component {
   }
 
 	render() {
-    console.log('InputSegment')
 		return (
 			<div id={`InputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {

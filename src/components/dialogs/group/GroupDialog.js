@@ -24,6 +24,7 @@ import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import FileUploadSegment from '../../modules/AdvisorUI_v2/Segments/FileUploadSegment'
 import ShareUrlSegment from '../../modules/AdvisorUI_v2/Segments/ShareUrlSegment'
+import MultiCounterSegment from '../../modules/AdvisorUI_v2/Segments/MultiCounterSegment'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 
@@ -56,240 +57,179 @@ class GroupDialog extends Component {
       {
         id: 'group_members',
         component: (<MultiOptionsSegment
-              title=''
+              title='GROUP SIZE'
               schema={{
                 id: 'group_members',
-                endpoint: '',
+                endpoint: 'members_certain_uncertain',
                 choices: [
-                  { id: 'urgent', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Urgent', value: 'urgent', endpoint: 'ideal_movein', tooltip: (<p>You need to move in less than 1 month.</p>) },
-                  { id: 'flexible', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Flexible', value: 'flexible', endpoint: 'ideal_movein', tooltip: (<p>You are flexible to move-in anytime between now and 4 months from now.</p>) },
-                  { id: 'browsing', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Just Browsing', value: 'browsing', endpoint: 'ideal_movein', tooltip: (<p>You are more than 4 months away from move-in, so just looking for now.</p>)},
-                  { id: 'exact', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Exact Date Needed', value: 'exact', endpoint: 'ideal_movein', tooltip: (<p>You have an exact date you need to move-in on.</p>)}
+                  { id: 'myself', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Just Myself', value: 'myself', endpoint: 'furry_friends' },
+                  { id: '2_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 Friends', value: '2_friends', endpoint: 'members_certain_uncertain' },
+                  { id: '3+_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Friends', value: '3+_friends', endpoint: 'members_certain_uncertain' },
+                  { id: 'couple', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Couple of 2', value: 'couple', endpoint: 'furry_friends' },
+                  { id: '3+_family', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Family Members', value: '3+_family', endpoint: 'meet_the_family', tooltip: (<p>Including parents, children and elderly.</p>) },
                 ]
               }}
               texts={[
-                { id: '1', scrollDown: true, text: `Let's talk about move-in dates.` },
-                { id: '2', scrollDown: true, text: `How soon do you need to move-in? Is it urgent, or are you just browsing ahead of time?` },
+                { id: '1', scrollDown: true, text: `Who are you searching with?` },
               ]}
               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
            />) },
+     {
+     id: 'meet_the_family',
+     scrollStyles: { scroll_styles: { backgroundImage: `url('https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/mado5ne/birthday-party-family-eating-cake-in-the-park-next-to-inscription-happy-birthday_4jlwyrudxl__F0000.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+     component: (<MultiCounterSegment
+               title='MEET THE FAMILY'
+               schema={{ id: 'meet_the_family', endpoint: 'furry_friends' }}
+               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+               onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+               texts={[
+                 { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'I am happy to serve your family 😊' },
+                 { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How many people are you in total? Please include everyone who will sleep there.' },
+               ]}
+               counters={[
+                 { id: 'adult_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Male', value: 0, tooltip: (<p>Age 18 - 60</p>) },
+                 { id: 'adult_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Female', value: 0, tooltip: (<p>Age 18 - 60</p>) },
+                 { id: 'child_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Male', value: 0, tooltip: (<p>Younger than 18</p>) },
+                 { id: 'child_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Female', value: 0, tooltip: (<p>Younger than 18</p>) },
+                 { id: 'elderly_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Male', value: 0, tooltip: (<p>Older than 60</p>) },
+                 { id: 'elderly_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Female', value: 0, tooltip: (<p>Older than 60</p>) },
+               ]}
+            /> )},
+     {
+     id: 'members_certain_uncertain',
+     scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+     component: (<MultiCounterSegment
+               title='ROOMMATE COMMITMENT'
+               schema={{ id: 'members_certain_uncertain', endpoint: 'entire_place_or_roommates' }}
+               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+               onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+               texts={[
+                 { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many people are 100% certain they want to live together, and how many are uncertain? ℹ️id[uncertain]', tooltips: [{ id: 'uncertain', tooltip: (<div>Depending on price, property or timing.</div>) }] },
+               ]}
+               counters={[
+                 { id: 'certain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Certain', value: 0, tooltip: (<p>100% certain we want to live together/</p>) },
+                 { id: 'uncertain', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Not Certain', value: 0, tooltip: (<p>Might live together if a good deal is found.</p>) },
+               ]}
+            /> )},
       {
-      id: 'members_certain_uncertain',
-      scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.apartmentguide.com/blog/wp-content/uploads/2011/09/moving-truck-Christina-Richards-original.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
-      component: (<DatePickerSegment
-                  title=''
-                  schema={{ id: 'members_certain_uncertain', endpoint: 'movein_range' }}
-                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                  texts={[
-                    { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal move-in date?' }
-                  ]}
-               /> )},
-        {
-          id: 'movein_range',
-          component: (<DateRangeSegment
-                           title='Date Range'
-                           schema={{ id: 'movein_range', endpoint: 'moving_from' }}
-                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                           onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                           texts={[
-                             { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'If you are flexible with your move-in range, you will have better options.' },
-                             { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'When is the earliest and latest date you can move-in?' },
-                           ]}
-                        /> )},
-        {
-          id: 'moving_from',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
-          component: (<MapSegment
-                            title='Your Current City'
-                            schema={{ id: 'moving_from', endpoint: 'current_housing_situation' }}
-                            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                            onDone={(original_id, endpoint, data) => this.doneMovingFrom(original_id, endpoint, data)}
-                            texts={[
-                              { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Where are you moving from? What is your current city?` }
-                            ]}
-                            mapOptions={{ componentRestrictions: {} }}
-                         /> )},
-        {
-          id: 'arrival_flight_time',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://onemileatatime.com/wp-content/uploads/2015/06/Window.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
-          component: (<DatePickerSegment
-                    title='Arrival Flight Time'
-                    schema={{ id: 'arrival_flight_time', endpoint: 'needs_representative' }}
-                    triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                    onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                    texts={[
-                      { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When will you arrive in Ontario and be ready to go on tours?' }
-                    ]}
-                 /> )},
-       {
-         id: 'current_housing_situation',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.homedepot-static.com/productImages/a5754483-c06d-4976-b6d6-f31d00bd18d4/svn/heritage-mill-engineered-hardwood-pf9710-64_1000.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
-         component: (<MultiOptionsSegment
-                                   title='Current Housing Situation'
-                                   schema={{
-                                     id: 'current_housing_situation',
-                                     endpoint: 'needs_representative',
-                                     choices: [
-                                       { id: 'leaving_lease', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'I am leaving a lease', value: 'leaving_lease', endpoint: 'two_months_notice', tooltip: (<p>You signed a lease for the place you are currently living in but now plan to move.</p>) },
-                                       { id: 'escape_lease', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'I want to escape a lease', value: 'escape_lease', endpoint: 'lease_end', tooltip: (<p>You signed a 12 month lease for your current place but now want to terminate the lease contract.</p>) },
-                                       { id: 'sublet', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Short term sublet', value: 'sublet', endpoint: 'needs_representative', tooltip: (<p>You signed a short term sublet for less than 12 months. You pay rent to another tenant, not the property owner.</p>)},
-                                       { id: 'no_lease', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'No lease', value: 'no_lease', endpoint: 'needs_representative', tooltip: (<p>You do not have a lease because you live for free with friends or social assistance.</p>)},
-                                       { id: 'with_family', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'I live with family', value: 'family', endpoint: 'needs_representative', tooltip: (<p>You live with your parents or relatives, without a lease contract.</p>)},
-                                     ]
-                                   }}
-                                   texts={[
-                                     { id: '1', scrollDown: true, text: `I see you are currently living in Ontario.` },
-                                     { id: '2', scrollDown: true, text: `What is your current housing situation?` },
-                                   ]}
-                                   skippable
-                                   skipEndpoint='a'
-                                   onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                   other
-                                />) },
-        {
-          id: 'two_months_notice',
-          component: (<MultiOptionsSegment
-                                    title='Ontario Move-Out Notice'
-                                    schema={{
-                                      id: 'two_months_notice',
-                                      endpoint: 'needs_representative',
-                                      choices: [
-                                        { id: 'notice_not_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, Still Searching For Next Home', value: 'notice_not_given', endpoint: 'needs_representative', tooltip: (<p>You are still looking for a new home, so you have not yet given the 2 months notice to your landlord yet.</p>) },
-                                        { id: 'did_not_know', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, I Did Not Know About That', value: 'did_not_know', endpoint: 'needs_representative', tooltip: (<p>You were unaware of the 2 months notice rule.</p>) },
-                                        { id: 'notice_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes I Have Given My Notice', value: 'notice_given', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord already.</p>) },
-                                        { id: 'dont_care', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `My Landlord Doesn't Care`, value: 'dont_care', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord and they don't care. You are free to move anytime.</p>)},
-                                      ]
-                                    }}
-                                    texts={[
-                                      { id: '1', scrollDown: true, text: `In Ontario, tenants must give landlords a minimum of 2 months notice before leaving a lease contract.` },
-                                      { id: '2', scrollDown: true, text: `Have you given your 2 months lease yet?` },
-                                    ]}
-                                    onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                    triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 />) },
-          {
-            id: 'lease_end',
-            component: (<DatePickerSegment
-                                title='Existing Lease End'
-                                schema={{ id: 'lease_end', endpoint: 'needs_representative' }}
-                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+        id: 'entire_place_or_roommates',
+        component: (<MultiOptionsSegment
+                                title='ENTIRE PLACE OR JUST ROOMS'
+                                schema={{
+                                  id: 'entire_place_or_roommates',
+                                  endpoint: 'furry_friends',
+                                  choices: [
+                                    { id: 'want_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Entire Place', value: 'want_entire_place', endpoint: 'furry_friends', tooltip: (<p>Just your group, no unknown roommates.</p>) },
+                                    { id: 'open_to_roommates', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Ok With New Roommates', value: 'open_to_roommates', endpoint: 'max_total_roommates', tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
+                                  ]
+                                }}
                                 texts={[
-                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When does your existing lease end?' }
+                                  { id: '1', text: `Do you want to live in one place all to yourselves, or are you ok with meeting new roommates who are also searching?` },
+                                  { id: '2', scrollDown: true, text: `Roommates mean less space for cheaper rent.` },
                                 ]}
-                             /> )},
-           {
-             id: 'needs_representative',
-             scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/storage.propsocial.com/topic/post_picture/7348/what-should-you-do-when-viewing-a-house-4.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
-             component: (<MultiOptionsSegment
-                                       title='Tenant Representative'
-                                       schema={{
-                                         id: 'needs_representative',
-                                         endpoint: 'moving_reason',
-                                         choices: [
-                                           { id: 'self_visit', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'I can visit myself', value: 'self_visit', endpoint: 'moving_reason', tooltip: (<p>You will be in Ontario before you sign a lease, so you have time to visit properties yourself.</p>) },
-                                           { id: 'friend_family_rep', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Friends or family will visit', value: 'friend_family_rep', endpoint: 'moving_reason', tooltip: (<p>You want to sign a lease before arriving in Ontario, so you cannot visit in person. However you have a friend or family member who can help visit places for you.</p>) },
-                                           { id: 'realtor_rep', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'I need a real estate agent', value: 'realtor_rep', endpoint: 'moving_reason', tooltip: (<p>You do not have family or friends who can help you visit places, and will need the help of a real estate agent to visit for you.</p>)},
-                                         ]
-                                       }}
-                                       texts={[
-                                         { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, scrollDown: true, text: `Will you be able to visit properties in person?` },
-                                         { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, scrollDown: true, text: `Or will you need a representative to visit on your behalf such as a friend, family, or real estate agent?` },
-                                         { id: '3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, scrollDown: true, text: `We highly encourage that you see places in person before signing a rental property. It's a big decision so always see it in real life!` },
-                                       ]}
-                                       multi
-                                       onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                       triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                       other
-                                    />) },
-         {
-           id: 'moving_reason',
-           scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.shift8stock.com/wp-content/uploads/edd/2016/12/DSCF3496-1560x1040.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
-           component: (<InputSegment
-                                 title='Reason for Moving'
-                                 schema={{ id: 'moving_reason', endpoint: 'lease_length' }}
-                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
-                                 texts={[
-                                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Can you tell me a little bit about why you are moving?` },
-                                 ]}
-                                 inputType={'textarea'}
-                                 stringInputPlaceholder={'Tell me as much as you are comfortable sharing'}
-                              /> )},
-        {
-         id: 'lease_length',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                             />) },
+       {
+         id: 'max_total_roommates',
          component: (<CounterSegment
-                                 schema={{ id: 'lease_length', endpoint: 'moving_choice_factor' }}
+                                 title='MAX ROOMMATES'
+                                 schema={{ id: 'max_total_roommates', endpoint: 'ok_with_dens' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                  texts={[
-                                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How long of a lease are you looking for?' }
+                                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'At most how many roommates are you ok with?' }
                                  ]}
                                  incrementerOptions={{
-                                   max: 19,
-                                   min: 1,
+                                   max: 10,
+                                   min: 2,
                                    step: 1,
-                                   default: 12
-                                 }}
-                                 renderCountValue={(c) => {
-                                   if (c == 1) {
-                                     return 'monthly'
-                                   } else if (c > 18) {
-                                     return 'multi-year'
-                                   } else if (c == 12) {
-                                     return '1 year'
-                                   } else {
-                                     return (<span style={{ fontSize: '1.5rem' }}>{`${c} months`}</span>)
-                                   }
+                                   default: 4
                                  }}
                               /> )},
       {
-        id: 'moving_choice_factor',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        id: 'ok_with_dens',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.pinimg.com/originals/13/9c/a0/139ca00c8fe547473f798a4dbd6c3045.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<MultiOptionsSegment
-                                  title='Decision Making Factors'
-                                  schema={{
-                                    id: 'moving_choice_factor',
-                                    endpoint: 'finish',
-                                    choices: [
-                                      { id: 'good_deal', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'If I Find A Good Deal', value: 'good_deal', endpoint: 'finish', tooltip: (<p>You are flexible with move-in, so the price, location, quality mix will determine your final decision.</p>) },
-                                      { id: 'available_in_time', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: `If It's Available In Time`, value: 'available_in_time', endpoint: 'finish', tooltip: (<p>Time is of top importance. Price, location and quality can be flexible.</p>) },
-                                      { id: 'group_members', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Depends On My Group', value: 'group_members', endpoint: 'finish', tooltip: (<p>You're waiting on your group members to commit or make a choice.</p>) },
-                                      { id: 'enough_money', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Saved Enough Money', value: 'family', endpoint: 'finish', tooltip: (<p>You are saving enough money before moving in.</p>) },
-                                      { id: 'when_employed', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'When I Get A Job', value: 'family', endpoint: 'finish', tooltip: (<p>You are confident to move-in when you secure a job with steady pay.</p>) },
-                                    ]
-                                  }}
-                                  texts={[
-                                    { id: '1', scrollDown: true, text: `Which of these is the biggest factor to your final decision?` },
-                                  ]}
-                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                  other
-                               />) },
-       {
-         id: 'finish',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-         component: (<ActionSegment
-                                 title='FINISH'
-                                 schema={{
-                                   id: 'finish',
-                                   endpoint: null,
-                                   choices: [
-                                     { id: 'view_matches', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
-                                   ]
-                                 }}
-                                 texts={[
-                                   { id: '1', scrollDown: true, text: `Ok I've filtered out the rentals that fit your move-in preferences.` },
-                                   { id: '2', scrollDown: true, text: `Many online ads don't mention the move-in date or lease length, so I will still show those.` },
-                                   { id: '3', scrollDown: true, text: `Ready to see your matches?` },
-                                 ]}
-                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
-                               />) },
+                                title='PARTIAL ROOMS'
+                                schema={{
+                                  id: 'ok_with_dens',
+                                  endpoint: 'furry_friends',
+                                  choices: [
+                                    { id: 'own_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Real Rooms', value: 'own_rooms', endpoint: 'furry_friends', tooltip: (<p>A real bedroom is defined as a room with a lockable door and at least 1 window.</p>) },
+                                    { id: 'ok_den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Ok With Den', value: 'ok_den', endpoint: 'furry_friends', tooltip: (<p>Dens may be a seperate office room or a semi-seperate living room, and rarely has a door or wall. It can be liveable but cramped. Always visit in person to see the reality!</p>) },
+                                  ]
+                                }}
+                                texts={[
+                                  { id: '1', text: `Rent can be expensive. Do any roommates want to save money and live in a den?` },
+                                  { id: '2', scrollDown: true, text: `I can show you places with that possibility, but the max limit is 1 person in a den.` },
+                                ]}
+                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                             />) },
+     {
+       id: 'furry_friends',
+       scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+       component: (<MultiCounterSegment
+                 title='PETS'
+                 schema={{ id: 'furry_friends', endpoint: 'desired_rooms' }}
+                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                 onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                 texts={[
+                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Do you have any pets?' },
+                 ]}
+                 counters={[
+                   { id: 'large_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Large Dogs', value: 0, tooltip: (<p>Large dogs are over 25 lbs (12kg)</p>) },
+                   { id: 'small_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Small Dogs', value: 0, tooltip: (<p>Small dogs are under 25 lbs (12kg).</p>) },
+                   { id: 'cats', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Cats', value: 0 },
+                 ]}
+                 other
+                 otherIncrementerOptions={{
+                   min: 0,
+                   max: 5,
+                   default: 0,
+                   step: 1,
+                 }}
+              /> )},
+      {
+        id: 'desired_rooms',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://s7d4.scene7.com/is/image/roomandboard/ella_259692_17e_g?$str_g$&size=1968,1450&scl=1')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        component: (<CounterSegment
+                          title='NUMBER OF ROOMS'
+                          schema={{ id: 'desired_rooms', endpoint: 'finish' }}
+                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                          onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                          texts={[
+                            { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many individual bedrooms does your group want?' },
+                            { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'A real bedroom has a lockable door with at least one window.' }
+                          ]}
+                          incrementerOptions={{
+                            max: 10,
+                            min: 0,
+                            step: 1,
+                            default: 1
+                          }}
+                       /> )},
+     {
+       id: 'finish',
+       scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+       component: (<ActionSegment
+                               title='FINISH'
+                               schema={{
+                                 id: 'finish',
+                                 endpoint: null,
+                                 choices: [
+                                   { id: 'view_matches', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'VIEW MATCHES', value: 'view_matches', endpoint: '/matches' }
+                                 ]
+                               }}
+                               texts={[
+                                 { id: '1', scrollDown: true, text: `Ok I've filtered out the rentals that fit your group preferences.` },
+                                 { id: '2', scrollDown: true, text: `Ready to see your matches?` },
+                               ]}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                               onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
+                             />) },
     ]
     this.setState({ lastUpdated: moment().unix() })
   }
