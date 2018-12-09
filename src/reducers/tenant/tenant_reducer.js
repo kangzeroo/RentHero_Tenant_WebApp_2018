@@ -10,6 +10,7 @@ import {
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
+  tenant_id: 'abc-123-xyz-789',
   name: '',
   likes: [],
   dislikes: [],

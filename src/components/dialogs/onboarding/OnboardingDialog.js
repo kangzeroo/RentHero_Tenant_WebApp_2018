@@ -22,7 +22,7 @@ import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 
-class DialogOnboarding extends Component {
+class OnboardingDialog extends Component {
 
   constructor() {
     super()
@@ -345,7 +345,7 @@ class DialogOnboarding extends Component {
 
 	render() {
 		return (
-			<div id='DialogOnboarding' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
+			<div id='OnboardingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -371,18 +371,18 @@ class DialogOnboarding extends Component {
 }
 
 // defines the types of variables in this.props
-DialogOnboarding.propTypes = {
+OnboardingDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
-DialogOnboarding.defaultProps = {
+OnboardingDialog.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DialogOnboarding)
+const RadiumHOC = Radium(OnboardingDialog)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

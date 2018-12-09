@@ -27,7 +27,7 @@ import ShareUrlSegment from '../../modules/AdvisorUI_v2/Segments/ShareUrlSegment
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 
-class PersonalDialog extends Component {
+class RoommatesDialog extends Component {
 
   constructor() {
     super()
@@ -61,13 +61,14 @@ class PersonalDialog extends Component {
                          onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                          texts={[
                            { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'I am about to ask you some personal questions.' },
-                           { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `None of these will be shared with a landlord, they are only used to help us respect and serve your needs better.` },
+                           { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `None of these will be shared with a landlord, they are only used to help us understand and serve your needs better.` },
                            { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Answering is optional, but we encourage you to answer as many as possible.` },
                          ]}
                          action={{ enabled: true, label: 'Begin', actionStyles: { width: '100%' } }}
                        />) },
       {
         id: 'first_time_renting',
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.utoronto.ca/sites/default/files/zia-syed-Toronto-unsplash%28weblead0.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<MultiOptionsSegment
 
                         schema={{
@@ -87,7 +88,7 @@ class PersonalDialog extends Component {
                      />) },
       {
         id: 'how_long_searching',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.theglobeandmail.com/resizer/E5UhKkd9oC1MiABKrCh5VYjADG8=/1200x0/filters:quality(80)/arc-anglerfish-tgam-prod-tgam.s3.amazonaws.com/public/ESXSYJOCIBAOPEMRC2KIKRMOSY')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<CounterSegment
                                 schema={{ id: 'how_long_searching', endpoint: 'how_many_tours' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -96,23 +97,34 @@ class PersonalDialog extends Component {
                                   { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How long have you been searching for?' }
                                 ]}
                                 incrementerOptions={{
-                                  max: 52,
+                                  max: 13,
                                   min: 0,
                                   step: 1,
                                   default: 0
                                 }}
-                                renderCountValue={(c) => `${c} weeks`}
+                                renderCountValue={(c) => {
+                                  if (c > 12) {
+                                    return `3+ months`
+                                  } else if (c === 12) {
+                                    return `3 months`
+                                  } else if (c === 8) {
+                                    return `2 months`
+                                  } else if (c === 4) {
+                                    return `1 month`
+                                  } else {
+                                    return `${c} weeks`
+                                  }
+                                }}
                                 slider
                                 sliderOptions={{
                                   min: 0,
-                                  max: 52,
+                                  max: 13,
                                   step: 1,
                                   vertical: false,
                                 }}
                              /> )},
         {
           id: 'how_many_tours',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
           component: (<CounterSegment
                                   schema={{ id: 'how_many_tours', endpoint: 'current_realtor' }}
                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -121,14 +133,14 @@ class PersonalDialog extends Component {
                                     { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many property tours have you gone on so far?' }
                                   ]}
                                   incrementerOptions={{
-                                    max: 13,
+                                    max: 11,
                                     min: 0,
                                     step: 1,
                                     default: 0
                                   }}
                                   renderCountValue={(c) => {
-                                    if (c > 12) {
-                                      return `${c}+`
+                                    if (c > 10) {
+                                      return `10+`
                                     } else {
                                       return c
                                     }
@@ -136,12 +148,14 @@ class PersonalDialog extends Component {
                                   slider
                                   sliderOptions={{
                                     min: 0,
-                                    max: 13,
+                                    max: 11,
                                     step: 1,
                                   }}
+                                  canBeZero
                                /> )},
         {
           id: 'current_realtor',
+          scrollStyles: { scroll_styles: { backgroundImage: `url('https://maryanneveldkamp.com/wp-content/uploads/2016/09/iStock_90650295_LARGE.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
           component: (<MultiOptionsSegment
 
                                     schema={{
@@ -161,12 +175,12 @@ class PersonalDialog extends Component {
                                  />) },
          {
            id: 'why_leave_realtor',
-           scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.homedepot-static.com/productImages/a5754483-c06d-4976-b6d6-f31d00bd18d4/svn/heritage-mill-engineered-hardwood-pf9710-64_1000.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
            component: (<MultiOptionsSegment
                                      schema={{
                                        id: 'why_leave_realtor',
                                        endpoint: 'age',
                                        choices: [
+                                         { id: 'hassle', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Too Much of a Hassle', value: 'hassle', endpoint: 'age' },
                                          { id: 'not_helpful', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Helpful', value: 'not_helpful', endpoint: 'age' },
                                          { id: 'pushy', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Too Pushy', value: 'pushy', endpoint: 'age' },
                                          { id: 'not_prioritized', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Did Not Prioritize Me', value: 'not_prioritized', endpoint: 'age' },
@@ -179,10 +193,11 @@ class PersonalDialog extends Component {
                                      onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                      triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                      other
+                                     multi
                                   />) },
         {
          id: 'age',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+         scrollStyles: { scroll_styles: { backgroundImage: `url('https://nlfv12e18e1jzs2fc7s3q7v4-wpengine.netdna-ssl.com/wp-content/uploads/2018/04/people-working_185293590_l-2015.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
          component: (<CounterSegment
                                  schema={{ id: 'age', endpoint: 'gender' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -212,7 +227,7 @@ class PersonalDialog extends Component {
                               /> )},
        {
          id: 'gender',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/storage.propsocial.com/topic/post_picture/7348/what-should-you-do-when-viewing-a-house-4.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.ottawaoutdoorflooring.com/img/ottawa-condo-flooring-slide.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
          component: (<MultiOptionsSegment
 
                                        schema={{
@@ -232,7 +247,6 @@ class PersonalDialog extends Component {
                                     />) },
        {
          id: 'lgbt',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/storage.propsocial.com/topic/post_picture/7348/what-should-you-do-when-viewing-a-house-4.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
          component: (<MultiOptionsSegment
 
                                        schema={{
@@ -252,7 +266,7 @@ class PersonalDialog extends Component {
                                     />) },
       {
         id: 'religion',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn.dnaindia.com/sites/default/files/styles/full/public/2018/09/12/730590-504437-guru-granth-sahib.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<MultiOptionsSegment
 
                                 schema={{
@@ -279,7 +293,7 @@ class PersonalDialog extends Component {
                              />) },
       {
        id: 'ethnicity',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+       scrollStyles: { scroll_styles: { backgroundImage: `url('http://img.src.ca/2016/06/27/635x357/PC_160627_6f2pc_rci-trudeau-multiculturalim2_sn635.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.85)' } },
        component: (<MultiOptionsSegment
 
                                schema={{
@@ -316,7 +330,7 @@ class PersonalDialog extends Component {
                             />) },
         {
           id: 'education_levels',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+          scrollStyles: { scroll_styles: { backgroundImage: `url('https://2018aatk.files.wordpress.com/2018/02/122d-20161117-uoft-resize_then_crop-_frame_bg_color_fff-h_1365-gravity_center-q_70-preserve_ratio_true-w_2048_.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
           component: (<MultiOptionsSegment
                                   schema={{
                                     id: 'education_levels',
@@ -340,7 +354,6 @@ class PersonalDialog extends Component {
                                />) },
        {
          id: 'place_of_study',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
          component: (<InputSegment
                                  schema={{ id: 'place_of_study', endpoint: 'finish' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -519,7 +532,7 @@ class PersonalDialog extends Component {
 
 	render() {
 		return (
-			<div id='PersonalDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
+			<div id='RoommatesDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -545,18 +558,18 @@ class PersonalDialog extends Component {
 }
 
 // defines the types of variables in this.props
-PersonalDialog.propTypes = {
+RoommatesDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
-PersonalDialog.defaultProps = {
+RoommatesDialog.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(PersonalDialog)
+const RadiumHOC = Radium(RoommatesDialog)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

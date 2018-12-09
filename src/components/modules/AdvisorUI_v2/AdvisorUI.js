@@ -25,6 +25,8 @@ import ActionSegment from './Segments/ActionSegment'
 import FileUploadSegment from './Segments/FileUploadSegment'
 import ShareUrlSegment from './Segments/ShareUrlSegment'
 import MultiCounterSegment from './Segments/MultiCounterSegment'
+import MultiTagSegment from './Segments/MultiTagSegment'
+import MultiTimePickerSegment from './Segments/MultiTimePickerSegment'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from './styles/advisor_ui_styles'
 
 
@@ -68,14 +70,12 @@ class AdvisorUI extends Component {
                                  { id: '0-3', delay: 500, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
                                  { id: '0-4', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
                                ]}
-                               skippable
-                               skipEndpoint='y'
                              />) },
       {
         id: 'y',
         component: (<SegmentTemplate
                                title='Template Segment'
-                               schema={{ id: 'y', endpoint: 'dddd' }}
+                               schema={{ id: 'y', endpoint: 'taggy' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
@@ -84,9 +84,57 @@ class AdvisorUI extends Component {
                                  { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
-                               skipEndpoint='dddd'
+                               skipEndpoint='taggy'
                              />) },
-
+         {
+             id: 'taggy',
+             component: (<MultiTagSegment
+                             title='Multi Tag Segment'
+                             schema={{ id: 'taggy', endpoint: 'zxc' }}
+                             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                             onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                             texts={[
+                               { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi tag segment' },
+                             ]}
+                             tags={[
+                               { id: 'balcony', text: 'Balcony', value: true },
+                               { id: 'ensuite_laundry', text: 'Ensuite Laundry', value: false },
+                               { id: 'hardwood_floor', text: 'Hardwood Flooring', value: false },
+                               { id: 'gas_stove', text: 'Gas Stove', value: true },
+                               { id: 'marble_countertop', text: 'Marble Countertops', value: true },
+                             ]}
+                             skippable
+                             skipEndpoint='zxc'
+                             other
+                           />) },
+       {
+           id: 'zxc',
+           component: (<MultiTimePickerSegment
+             title='Multi Time Input'
+             schema={{ id: 'zxc', endpoint: 'dddd' }}
+             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+             onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+             texts={[
+               { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi-time input' },
+               { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Of course you can still do single time input' },
+             ]}
+             skippable
+             skipEndpoint='dddd'
+             counters={[
+               { id: 'weekday_sleep', renderCountValue: (c) => {
+                                         const hours = Math.floor(c/60)
+                                         const mins = (c-(hours*60)).toFixed(0)
+                                         const pm = hours >= 12 ? 'pm' : 'am'
+                                         return `${hours > 12 ? hours - 12 : hours}:${mins == 0 ? '00' : mins} ${pm}`
+                                       }, incrementerOptions: { min: 0, max: 1440, step: 30, default: 1380 }, text: 'Weekdays', value: 1380, tooltip: (<p>When you sleep on weekdays</p>) },
+               { id: 'weekend_sleep', renderCountValue: (c) => {
+                                         const hours = Math.floor(c/60)
+                                         const mins = (c-(hours*60)).toFixed(0)
+                                         const pm = hours >= 12 ? 'pm' : 'am'
+                                         return `${hours > 12 ? hours - 12 : hours}:${mins == 0 ? '00' : mins} ${pm}`
+                                       }, incrementerOptions: { min: 0, max: 1440, step: 30, default: 60 }, text: 'Weekends', value: 60, tooltip: (<p>When you sleep on weekends</p>) },
+             ]}
+           />) },
        {
          id: 'dddd',
          component: (<InputSegment
@@ -101,6 +149,7 @@ class AdvisorUI extends Component {
                                  skipEndpoint='eeee'
                                  inputType={'text'}
                                  stringInputPlaceholder={'Full Name'}
+                                 minChars={5}
                               /> )},
         {
           id: 'eeee',
