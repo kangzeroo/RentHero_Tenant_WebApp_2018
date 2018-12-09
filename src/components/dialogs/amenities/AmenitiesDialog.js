@@ -39,7 +39,10 @@ class AmenitiesDialog extends Component {
       },
       data: {
         name: ''
-      }
+      },
+      premessages: [
+        // { segment_id: 'someSegment', texts: [{ id, textStyles, delay, scrollDown, text, component }] }
+      ]
     }
     this.all_segments = []
     this.shown_segments = []
@@ -49,6 +52,17 @@ class AmenitiesDialog extends Component {
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
     this.setState({ lastUpdated: moment().unix() })
+  }
+
+  addAnyPreMessages(segment_id) {
+    const prem = this.state.premessages.filter((pre) => {
+      return pre.segment_id === segment_id
+    })[0]
+    if (prem && prem.texts) {
+      return prem.texts
+    } else {
+      return []
+    }
   }
 
   rehydrateSegments() {

@@ -48,8 +48,8 @@ import FinancialDialog from './dialogs/financial/FinancialDialog'
 import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
 import GroupDialog from './dialogs/group/GroupDialog'
-import PersonalDialog from './dialogs/personal/PersonalDialog'
-import ChineseDialogOnboarding from './dialogs/intro/ChineseDialogOnboarding'
+import RoommatesDialog from './dialogs/roommates/RoommatesDialog'
+import ChineseDialogOnboarding from './dialogs/onboarding/ChineseDialogOnboarding'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -116,7 +116,7 @@ class AppRoot extends Component {
               <Route exact path='/sino' render={ChineseDialogOnboarding} />
               <Route exact path='/onboarding' render={OnboardingDialog} />
               <Route exact path='/group' render={GroupDialog} />
-              <Route exact path='/personal' render={PersonalDialog} />
+              <Route exact path='/personal' render={RoommatesDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

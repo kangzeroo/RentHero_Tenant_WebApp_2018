@@ -42,7 +42,10 @@ class AdvisorUI extends Component {
       },
       data: {
         name: ''
-      }
+      },
+      premessages: [
+        // { segment_id: 'someSegment', texts: [{ id, textStyles, delay, scrollDown, text, component }] }
+      ]
     }
     this.all_segments = []
     this.shown_segments = []
@@ -54,6 +57,17 @@ class AdvisorUI extends Component {
     this.setState({ lastUpdated: moment().unix() })
   }
 
+  addAnyPreMessages(segment_id) {
+    const prem = this.state.premessages.filter((pre) => {
+      return pre.segment_id === segment_id
+    })[0]
+    if (prem && prem.texts) {
+      return prem.texts
+    } else {
+      return []
+    }
+  }
+
   rehydrateSegments() {
     this.all_segments = [
       {
@@ -62,9 +76,10 @@ class AdvisorUI extends Component {
                                title='Introduction'
                                schema={{ id: 'x', endpoint: 'y' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                               onDone={(original_id, endpoint, data) => this.doneIntro(original_id, endpoint, data)}
                                action={{ enabled: true, label: 'Ok' }}
                                texts={[
+                                 ...this.addAnyPreMessages('x'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This component library is great for making beautiful & customizable conversational interfaces 😍 And yes, you can insert images and custom components!' },
                                  { id: '0-3', delay: 500, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
@@ -79,6 +94,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('y'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'The AdvisorUI is made of Segments, of which there are many kinds.' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This particular Segment is a Segment Template. Just copy it whenever you need to make a new custom Segment.' },
                                  { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
@@ -94,6 +110,7 @@ class AdvisorUI extends Component {
                              triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                              onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                              texts={[
+                               ...this.addAnyPreMessages('taggy'),
                                { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi tag segment' },
                              ]}
                              tags={[
@@ -115,6 +132,7 @@ class AdvisorUI extends Component {
              triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
              onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
              texts={[
+               ...this.addAnyPreMessages('zxc'),
                { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi-time input' },
                { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Of course you can still do single time input' },
              ]}
@@ -143,6 +161,7 @@ class AdvisorUI extends Component {
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                  texts={[
+                                   ...this.addAnyPreMessages('dddd'),
                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your name?' },
                                  ]}
                                  skippable
@@ -159,6 +178,7 @@ class AdvisorUI extends Component {
                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                   onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                   texts={[
+                                    ...this.addAnyPreMessages('eeee'),
                                     { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'You can put multiple counters into me!' },
                                   ]}
                                   skippable
@@ -191,6 +211,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('xxx'),
                                   { id: '2-1', scrollDown: true, text: `Nice to meet you ${this.state.data.name}. This Segment lets you select multiple choices. ℹ️id[abc-999]`, tooltips: [{ id: 'abc-999', tooltip: (<div>Info</div>) }] },
                                 ]}
                                 skippable
@@ -207,6 +228,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('a'),
                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you select a single date.' }
                                ]}
                                skippable
@@ -220,6 +242,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
+                                  ...this.addAnyPreMessages('z'),
                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment allows you to select a date range.' },
                                   { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice that you cannot skip this Segment like the other ones.' },
                                 ]}
@@ -231,6 +254,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('ooo'),
                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a counter with scroll bar' }
                                ]}
                                skippable
@@ -257,6 +281,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
+                                  ...this.addAnyPreMessages('b'),
                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Below is a simple text input' },
                                 ]}
                                 skippable
@@ -271,6 +296,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('c'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a textarea input for more text.' },
                                  { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Also notice the lack of a title unlike the previous Segment.' },
                                ]}
@@ -286,6 +312,7 @@ class AdvisorUI extends Component {
                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                               texts={[
+                                ...this.addAnyPreMessages('d'),
                                 { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Number input' },
                               ]}
                               skippable
@@ -300,6 +327,7 @@ class AdvisorUI extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('e'),
                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a phone number' },
                                ]}
                                skippable
@@ -314,6 +342,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
+                                  ...this.addAnyPreMessages('f'),
                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter an email' },
                                   { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '0px 0px 0px 0px' }}><img src='https://4.bp.blogspot.com/-j5loWPnSKDo/WniCnRFiQBI/AAAAAAAAzBQ/C8xKwr4UndYLDsXTa_Q48c5CruQkHVzpgCLcBGAs/s400/OACGFish.gif' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
                                 ]}
@@ -329,6 +358,7 @@ class AdvisorUI extends Component {
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                  texts={[
+                                   ...this.addAnyPreMessages('g'),
                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Enter a URL' },
                                  ]}
                                  skippable
@@ -345,6 +375,7 @@ class AdvisorUI extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
+                                  ...this.addAnyPreMessages('0'),
                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This component lets you select a geographic location.' }
                                 ]}
                                 skippable
@@ -364,6 +395,7 @@ class AdvisorUI extends Component {
                                    ]
                                  }}
                                  texts={[
+                                   ...this.addAnyPreMessages('4'),
                                    { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This simple Segment lets you pick 1 choice' },
                                    { id: '2-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Make sure all texts and choices have unique IDs!' },
                                  ]}
@@ -386,6 +418,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('1'),
                                   { id: '2-1', text: 'This Segment lets you select 1 choice, with an option for custom OTHER input.' },
                                   { id: '2-2', scrollDown: true, text: 'There is also smart routing. Just design the routing schemas!' },
                                 ]}
@@ -404,6 +437,7 @@ class AdvisorUI extends Component {
                                  endpoint: '2',
                                }}
                                texts={[
+                                 ...this.addAnyPreMessages('kk'),
                                  { id: '2-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'This Segment lets you upload a single file.' },
                                  { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Or you can upload multiple files.' },
                                  { id: '2-3', scrollDown: true, scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'This still needs work in terms of file validation.' },
@@ -423,6 +457,7 @@ class AdvisorUI extends Component {
                                 endpoint: '2',
                               }}
                               texts={[
+                                ...this.addAnyPreMessages('oo'),
                                 { id: '2-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Share this link with your friends!' },
                               ]}
                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
@@ -443,6 +478,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('2'),
                                   { id: '2-1', scrollDown: true, text: 'This Segment lets you select multiple choices.' },
                                 ]}
                                 skippable
@@ -464,6 +500,7 @@ class AdvisorUI extends Component {
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('3'),
                                   { id: '2-1', scrollDown: true, text: 'This Segment allows for multiple choices with an option for custom other.' }
                                 ]}
                                 skippable
@@ -487,6 +524,7 @@ class AdvisorUI extends Component {
                                    ]
                                  }}
                                  texts={[
+                                   ...this.addAnyPreMessages('5'),
                                    { id: '1-1', scrollDown: true, text: 'This is an Action Segment that is used at the end of a AdvisorUI dialog.' }
                                  ]}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -496,6 +534,21 @@ class AdvisorUI extends Component {
                                />) },
     ]
     this.setState({ lastUpdated: moment().unix() })
+  }
+
+  doneIntro(original_id, endpoint, data) {
+    this.setState({
+      premessages: this.state.premessages.filter((pre) => {
+        return pre.segment_id !== endpoint
+      }).concat([
+        { segment_id: endpoint, texts: [
+          { id: '001', text: 'This is dynamically generated response text by the way!' }
+        ] }
+      ])
+    }, () => {
+      this.done(original_id, endpoint, data)
+      console.log(this.state)
+    })
   }
 
   doneName(original_id, endpoint, data) {
