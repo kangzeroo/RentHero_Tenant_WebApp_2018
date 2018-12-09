@@ -24,6 +24,9 @@ import MessageSegment from './Segments/MessageSegment'
 import ActionSegment from './Segments/ActionSegment'
 import FileUploadSegment from './Segments/FileUploadSegment'
 import ShareUrlSegment from './Segments/ShareUrlSegment'
+import MultiCounterSegment from './Segments/MultiCounterSegment'
+import MultiTagSegment from './Segments/MultiTagSegment'
+import MultiTimePickerSegment from './Segments/MultiTimePickerSegment'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from './styles/advisor_ui_styles'
 
 
@@ -67,14 +70,12 @@ class AdvisorUI extends Component {
                                  { id: '0-3', delay: 500, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
                                  { id: '0-4', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
                                ]}
-                               skippable
-                               skipEndpoint='y'
                              />) },
       {
         id: 'y',
         component: (<SegmentTemplate
                                title='Template Segment'
-                               schema={{ id: 'y', endpoint: 'dddd' }}
+                               schema={{ id: 'y', endpoint: 'taggy' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
@@ -83,24 +84,98 @@ class AdvisorUI extends Component {
                                  { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
-                               skipEndpoint='dddd'
+                               skipEndpoint='taggy'
                              />) },
-
+         {
+             id: 'taggy',
+             component: (<MultiTagSegment
+                             title='Multi Tag Segment'
+                             schema={{ id: 'taggy', endpoint: 'zxc' }}
+                             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                             onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                             texts={[
+                               { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi tag segment' },
+                             ]}
+                             tags={[
+                               { id: 'balcony', text: 'Balcony', value: true },
+                               { id: 'ensuite_laundry', text: 'Ensuite Laundry', value: false },
+                               { id: 'hardwood_floor', text: 'Hardwood Flooring', value: false },
+                               { id: 'gas_stove', text: 'Gas Stove', value: true },
+                               { id: 'marble_countertop', text: 'Marble Countertops', value: true },
+                             ]}
+                             skippable
+                             skipEndpoint='zxc'
+                             other
+                           />) },
+       {
+           id: 'zxc',
+           component: (<MultiTimePickerSegment
+             title='Multi Time Input'
+             schema={{ id: 'zxc', endpoint: 'dddd' }}
+             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+             onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+             texts={[
+               { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Here is a multi-time input' },
+               { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Of course you can still do single time input' },
+             ]}
+             skippable
+             skipEndpoint='dddd'
+             counters={[
+               { id: 'weekday_sleep', renderCountValue: (c) => {
+                                         const hours = Math.floor(c/60)
+                                         const mins = (c-(hours*60)).toFixed(0)
+                                         const pm = hours >= 12 ? 'pm' : 'am'
+                                         return `${hours > 12 ? hours - 12 : hours}:${mins == 0 ? '00' : mins} ${pm}`
+                                       }, incrementerOptions: { min: 0, max: 1440, step: 30, default: 1380 }, text: 'Weekdays', value: 1380, tooltip: (<p>When you sleep on weekdays</p>) },
+               { id: 'weekend_sleep', renderCountValue: (c) => {
+                                         const hours = Math.floor(c/60)
+                                         const mins = (c-(hours*60)).toFixed(0)
+                                         const pm = hours >= 12 ? 'pm' : 'am'
+                                         return `${hours > 12 ? hours - 12 : hours}:${mins == 0 ? '00' : mins} ${pm}`
+                                       }, incrementerOptions: { min: 0, max: 1440, step: 30, default: 60 }, text: 'Weekends', value: 60, tooltip: (<p>When you sleep on weekends</p>) },
+             ]}
+           />) },
        {
          id: 'dddd',
          component: (<InputSegment
                                  title='Introductions'
-                                 schema={{ id: 'dddd', endpoint: 'xxx' }}
+                                 schema={{ id: 'dddd', endpoint: 'eeee' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                  texts={[
                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your name?' },
                                  ]}
                                  skippable
-                                 skipEndpoint='xxx'
+                                 skipEndpoint='eeee'
                                  inputType={'text'}
                                  stringInputPlaceholder={'Full Name'}
+                                 minChars={5}
                               /> )},
+        {
+          id: 'eeee',
+          component: (<MultiCounterSegment
+                                  title='Multi-Counter Segment'
+                                  schema={{ id: 'eeee', endpoint: 'xxx' }}
+                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                  onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                                  texts={[
+                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'You can put multiple counters into me!' },
+                                  ]}
+                                  skippable
+                                  skipEndpoint='xxx'
+                                  counters={[
+                                    { id: 'small_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Small Dogs', value: 0, tooltip: (<p>20 kg or less</p>) },
+                                    { id: 'large_dogs', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Large Dogs', value: 0, tooltip: (<p>20 kg or more</p>) },
+                                    { id: 'cats', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 5, step: 1, default: 0 }, text: 'Cats', value: 0 },
+                                  ]}
+                                  other
+                                  otherIncrementerOptions={{
+                                    min: 0,
+                                    max: 5,
+                                    default: 0,
+                                    step: 1,
+                                  }}
+                               /> )},
       {
         id: 'xxx',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://static1.squarespace.com/static/5459116de4b07304c9c6ac24/58e550783e00be96f2c0fb55/58e5508215d5db03c97ca6d5/1491426153806/BroadviewWEB-7.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },

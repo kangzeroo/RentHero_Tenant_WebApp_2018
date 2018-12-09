@@ -269,7 +269,7 @@ class CounterSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.count && this.shouldDisplayInput()
+              (this.state.data.count && this.shouldDisplayInput()) || this.props.canBeZero
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -337,6 +337,7 @@ CounterSegment.propTypes = {
   /*
     renderCountValue = (count) => { return count}
   */
+  canBeZero: PropTypes.bool,
 }
 
 // for all optional props, define a default value
@@ -349,7 +350,8 @@ CounterSegment.defaultProps = {
   skippable: false,
   skipEndpoint: '',
   texts: [],
-  renderCountValue: (count) => { return count}
+  renderCountValue: (count) => { return count},
+  canBeZero: false,
 }
 
 // Wrap the prop in Radium to allow JS styling

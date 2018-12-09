@@ -346,7 +346,7 @@ class MultiOptionsSegment extends Component {
                 {
                   this.props.schema.choices.map((choice) => {
                     return (
-                      <div style={{ margin: '10px 5px 10px 5px' }}>
+                      <div style={{ margin: '10px 5px 10px 5px', minWidth: '50px' }}>
                         <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}{choice.tooltip ? <Tooltip title={choice.tooltip}><span onClick={(e) => e.stopPropagation()}>&nbsp;&nbsp;&nbsp;ℹ️</span></Tooltip> : null}</span>
                       </div>
                     )

@@ -44,8 +44,11 @@ import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
 import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
-import DialogOnboarding from './dialogs/intro/DialogOnboarding'
+import FinancialDialog from './dialogs/financial/FinancialDialog'
+import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
+import GroupDialog from './dialogs/group/GroupDialog'
+import PersonalDialog from './dialogs/personal/PersonalDialog'
 import ChineseDialogOnboarding from './dialogs/intro/ChineseDialogOnboarding'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
@@ -107,10 +110,13 @@ class AppRoot extends Component {
               <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={MoveInDialog} />
+              <Route exact path='/sandbox' render={FinancialDialog} />
+              <Route exact path='/movein' render={MoveInDialog} />
               <Route exact path='/sample' render={AdvisorUI} />
               <Route exact path='/sino' render={ChineseDialogOnboarding} />
-              <Route exact path='/onboarding' render={DialogOnboarding} />
+              <Route exact path='/onboarding' render={OnboardingDialog} />
+              <Route exact path='/group' render={GroupDialog} />
+              <Route exact path='/personal' render={PersonalDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

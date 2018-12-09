@@ -157,7 +157,7 @@ class MoveInDialog extends Component {
                                       id: 'two_months_notice',
                                       endpoint: 'needs_representative',
                                       choices: [
-                                        { id: 'notice_not_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, Still Searching For Next Home', value: 'notice_not_given', endpoint: 'needs_representative', tooltip: (<p>You are still looking for a new home, so you have not yet given the 2 months notice to your landlord yet.</p>) },
+                                        { id: 'notice_not_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, Secure Next Home First', value: 'notice_not_given', endpoint: 'needs_representative', tooltip: (<p>You are still looking for a new home, so you have not yet given the 2 months notice to your landlord yet.</p>) },
                                         { id: 'did_not_know', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Not Yet, I Did Not Know About That', value: 'did_not_know', endpoint: 'needs_representative', tooltip: (<p>You were unaware of the 2 months notice rule.</p>) },
                                         { id: 'notice_given', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes I Have Given My Notice', value: 'notice_given', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord already.</p>) },
                                         { id: 'dont_care', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `My Landlord Doesn't Care`, value: 'dont_care', endpoint: 'needs_representative', tooltip: (<p>You have given the 2 months notice to your landlord and they don't care. You are free to move anytime.</p>)},
@@ -178,7 +178,7 @@ class MoveInDialog extends Component {
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When does your existing lease end?' }
+                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'When does your current lease end?' }
                                 ]}
                              /> )},
            {
@@ -268,6 +268,7 @@ class MoveInDialog extends Component {
                                   ]}
                                   onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                  multi
                                   other
                                />) },
        {
