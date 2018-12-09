@@ -212,6 +212,21 @@ class MultiTagSegment extends Component {
     }
   }
 
+  focusedInput(id) {
+    if (this.mobile) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }
+
+  clickedAddNew() {
+    this.setState({ new_tag: true }, () => {
+      document.getElementById(`input--add--tag--${this.props.schema.id}`).focus()
+      if (this.mobile) {
+        document.getElementById(`input--add--tag--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "center" })
+      }
+    })
+  }
+
 	render() {
 		return (
 			<div id={`MultiTagSegment--${this.props.schema.id}`} style={{ ...comStyles().container, minHeight: document.documentElement.clientHeight, ...this.props.segmentStyles }}>
@@ -283,6 +298,7 @@ class MultiTagSegment extends Component {
               <div style={{ height: '50px' }}>
                 {this.state.new_tag && (
                   <Input
+                    id={`input--add--tag--${this.props.schema.id}`}
                     type="text"
                     size="small"
                     style={{ width: 120 }}
@@ -294,7 +310,7 @@ class MultiTagSegment extends Component {
                 )}
                 {!this.state.new_tag && (
                   <div
-                    onClick={() => this.setState({ new_tag: true })}
+                    onClick={() => this.clickedAddNew()}
                     style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', margin: '5px', color: 'white', cursor: 'pointer', border: '1px dashed white', borderRadius: '5px' }}
                   >
                     Add New
