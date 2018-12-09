@@ -1,4 +1,4 @@
-// Compt for copying as a MultiOptionsSegment
+// Compt for copying as a MultiInputSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -9,49 +9,51 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
 import { isMobile } from '../../../../api/general/general_api'
+import ShortUniqueId from 'short-unique-id'
+const uid = new ShortUniqueId()
 import { Tooltip } from 'antd'
 import {
+  Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, INVERSE_FONT_COLOR, BACKGROUND_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
+
+
 
 /*
-  <MultiOptionsSegment
-    title='MultiOptions Segment'
-    schema={{
-      id: '2',
-      endpoint: '3',
-      choices: [
-        { id: '2-0', text: 'Option A', value: 'A', endpoint: '3' },
-        { id: '2-1', text: 'Option B', value: 'B', endpoint: '4' },
-        { id: '2-2', text: 'Option C', value: 'C', endpoint: '5' }
-      ]
-    }}
+  <MultiInputSegment
+    title='Multi Input Segment'
+    schema={{ id: '1', endpoint: '2' }}
     texts={[
-      { id: '2-1', text: 'Some string to display' },
-      { id: '2-2', text: 'The next string to display! The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display'},
-      { id: '2-3', text: 'OH YES. the next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display, The next string to display'}
+      { id: '1-1', text: 'Some string to display' },
+      { id: '1-2', text: 'The next string to display!' }
+    ]}
+    inputs={[
+      { id: '123', text: 'Web Developer', value: 'Web Developer' },
+      { id: '234', text: 'Chef', value: 'Chef' },
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
-    segmentStyles={{ padding: '100px 0px 100px 0px' }}
+    segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
-    multi
+    inputType={'text', 'textarea', 'number', 'tel', 'email', 'url'}
+    stringInputPlaceholder={'Type something'}
+    numberInputPlaceholder={0}
   />
 */
 
-class MultiOptionsSegment extends Component {
+
+
+class MultiInputSegment extends Component {
 
   constructor() {
     super()
     this.state = {
       completedSections: [],
 			instantChars: false,
-      show_other_input: false,
       data: {
-        selected_choices: [],
-        other_string: '',
+        inputs: [],
       }
     }
     this.mobile = false
@@ -75,22 +77,11 @@ class MultiOptionsSegment extends Component {
 
   componentDidMount() {
     this.mobile = isMobile()
-    let other_option = this.props.preselected.filter(pre => pre.id === 'other')[0]
-    let other_string = ''
-    if (other_option && other_option.text && other_option.value) {
-      other_string = other_option.text
-    }
     this.setState({
-      show_other_input: other_string ? true : false,
       data: {
         ...this.state.data,
-        selected_choices: this.props.preselected.map(pre => {
-          return {
-            ...pre,
-            value: true
-          }
-        }),
-        other_string: other_string
+        inputs: this.props.inputs,
+        ...initialData: this.props.initialData
       }
     })
   }
@@ -110,112 +101,6 @@ class MultiOptionsSegment extends Component {
           instantChars: true
         })
       }
-    }
-  }
-
-  clickedChoice(choice) {
-    let already_selected = false
-    this.state.data.selected_choices.forEach((c) => {
-      if (c.id === choice.id) {
-        already_selected = true
-      }
-    })
-    // MULTI SELECT
-    if (this.props.multi) {
-      // UNSELECT
-      if (already_selected) {
-        this.setState({
-          data: {
-            ...this.state.data,
-            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
-          }
-        })
-      // SELECT
-      } else {
-        this.setState({
-          data: {
-            ...this.state.data,
-            selected_choices: this.state.data.selected_choices.concat([choice])
-          }
-        })
-      }
-    // SINGLE SELECT
-    } else {
-      // UNSELECT
-      if (already_selected) {
-        this.setState({
-          data: {
-            ...this.state.data,
-            selected_choices: this.state.data.selected_choices.filter(c => c.id !== choice.id)
-          }
-        })
-      // SELECT
-      } else {
-        // OTHER ENABLED
-        if (this.props.other) {
-          // OTHER ALREADY OPENED
-          if (this.state.show_other_input) {
-            this.setState({
-              show_other_input: false,
-              data: {
-                ...this.state.data,
-                selected_choices: [choice],
-                other_choice: '',
-              }
-            }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
-            })
-          // OTHER ALREADY CLOSED
-          } else {
-            this.setState({
-              show_other_input: false,
-              data: {
-                ...this.state.data,
-                selected_choices: [choice],
-                other_choice: '',
-              }
-            }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
-            })
-          }
-        // OTHER DISABLED
-        } else {
-          this.setState({
-            data: {
-              ...this.state.data,
-              selected_choices: [choice]
-            }
-          }, () => {
-            this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
-          })
-        }
-      }
-    }
-  }
-
-  clickedOther(bool) {
-    if (bool) {
-      if (this.props.multi) {
-        this.setState({
-          show_other_input: bool,
-        })
-      } else {
-        this.setState({
-          show_other_input: bool,
-          data: {
-            ...this.state.data,
-            selected_choices: []
-          }
-        })
-      }
-    } else {
-      this.setState({
-        show_other_input: bool,
-        data: {
-          ...this.state.data,
-          other_choice: ''
-        }
-      })
     }
   }
 
@@ -265,14 +150,29 @@ class MultiOptionsSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    this.setState({
-      data: {
-        ...this.state.data,
-        selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat([
-          { id: 'other', text: this.state.data.other_string, value: this.state.data.other_string ? true : false }
-        ])
+    if (this.state.data.input_string.length < this.props.minChars) {
+      Toast.info(`Minimum ${this.props.minChars} characters. ${this.props.minChars - this.state.data.input_string.length} left to go.`, 2)
+    } else if (this.props.inputType === 'tel') {
+      if (this.state.data.input_string.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/igm)) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid phone number`, 1)
       }
-    }, () => this.props.onDone(this.props.schema.id, endpoint, this.state.data))
+    } else if (this.props.inputType === 'email') {
+      if (this.state.data.input_string.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/igm)) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid email address`, 1)
+      }
+    } else if (this.props.inputType === 'url') {
+      if (this.state.data.input_string.toLowerCase().indexOf('http') > -1 || this.state.data.input_string.toLowerCase().indexOf('www') > -1 || this.state.data.input_string.toLowerCase().indexOf('.') > -1) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid URL`, 1)
+      }
+    } else {
+      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    }
   }
 
   focusedInput(id) {
@@ -292,7 +192,7 @@ class MultiOptionsSegment extends Component {
 
 	render() {
 		return (
-			<div id={`MultiOptionsSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
+			<div id={`MultiInputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
@@ -318,7 +218,7 @@ class MultiOptionsSegment extends Component {
                       :
                       <SubtitlesMachine
                         id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                        key={`${text.id}_${txtIndex}`}
+                        key={`${text.id}_${txtIndex}_${this.props.schema.id}`}
         								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
         								speed={0.25}
         								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
@@ -336,9 +236,28 @@ class MultiOptionsSegment extends Component {
         									margin: '20px 0px 20px 0px',
         								}}
         								doneEvent={() => {
+                          console.log('DONE EVENT TRIGGERED')
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
                               this.props.triggerScrollDown(null, 1000)
+                            }
+                            console.log('shouldDisplayInput: ', this.shouldDisplayInput())
+                            if (this.shouldDisplayInput() || this.state.instantChars) {
+                              if (this.props.inputType === 'textarea') {
+                                // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
+                              } else {
+                                console.log(this.mobile)
+                                if (!this.mobile) {
+                                  document.getElementById(`input_field--${this.props.schema.id}`).focus()
+                                }
+                                document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
+                                  console.log(e.keyCode)
+                            			if (e.keyCode === 13) {
+                                    document.getElementById(`input_field--${this.props.schema.id}`).blur()
+                                    this.nextSegment()
+                            			}
+                            		})
+                              }
                             }
                           })
         								}}
@@ -355,67 +274,39 @@ class MultiOptionsSegment extends Component {
         </div>
         <div style={{ margin: '30px 0px 0px 0px' }}>
           {
-            this.shouldDisplayInput()
+            this.shouldDisplayInput() || this.state.instantChars
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', padding: '10px', color: ACCENT_COLOR }}>
-                {
-                  this.props.multi
-                  ?
-                  'SELECT MULTIPLE'
-                  :
-                  'SELECT ONE'
-                }
-              </div>
-              <div style={{ padding: '20px', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-                {
-                  this.props.schema.choices.map((choice) => {
-                    return (
-                      <div style={{ margin: '10px 5px 10px 5px', minWidth: '50px' }}>
-                        <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}{choice.tooltip ? <Tooltip title={choice.tooltip}><span onClick={(e) => e.stopPropagation()}>&nbsp;&nbsp;&nbsp;ℹ️</span></Tooltip> : null}</span>
-                      </div>
-                    )
-                  })
-                }
-                {
-                  this.props.other
-                  ?
-                  <div>
-                    {
-                      this.state.show_other_input
-                      ?
-                      null
-                      :
-                      <span key='other' onClick={() => this.clickedOther(true)} style={choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice}>Other</span>
-                    }
-                  </div>
-                  :
-                  null
-                }
-              </div>
               {
-                this.props.other && this.state.show_other_input
+                this.props.inputType === 'textarea'
                 ?
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                  <input
-                    id={`other_input--${this.props.schema.id}`}
-                    value={this.state.data.other_string}
+                <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
+                  <textarea
+                    id={`textarea_field--${this.props.schema.id}`}
+                    rows={4}
+                    value={this.state.data.input_string}
                     onChange={(e) => {
-                      this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
                     }}
-                    placeholder="Enter your choice"
-                    onFocus={() => this.focusedInput(`other_input--${this.props.schema.id}`)}
-                    onKeyUp={(e) => {
-                      if (e.keyCode === 13) {
-                        document.getElementById(`other_input--${this.props.schema.id}`).blur()
-                      }
-                    }}
-                    style={comStyles().text}
-                  ></input>
-                  <span onClick={() => this.clickedOther(false)} style={{ margin: '5px', padding: '5px' }}>X</span>
+                    onFocus={() => this.focusedInput(`textarea_field--${this.props.schema.id}`)}
+                    placeholder={this.props.stringInputPlaceholder}
+                    style={comStyles().textarea}
+                  ></textarea>
                 </div>
                 :
-                null
+                <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
+                  <input
+                    id={`input_field--${this.props.schema.id}`}
+                    type={this.props.inputType}
+                    value={this.state.data.input_string}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                    }}
+                    onFocus={() => this.focusedInput(`input_field--${this.props.schema.id}`)}
+                    placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
+                    style={comStyles().text}
+                  ></input>
+                </div>
               }
             </div>
             :
@@ -434,17 +325,9 @@ class MultiOptionsSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              (this.props.multi ? this.props.multi && this.shouldDisplayInput() : this.shouldDisplayInput())
+              this.state.data.input_string && this.shouldDisplayInput()
               ?
-              <div>
-                {
-                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_string : false)
-                  ?
-                  <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
-                  :
-                  null
-                }
-              </div>
+              <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
               <div>
                 {
@@ -464,14 +347,14 @@ class MultiOptionsSegment extends Component {
 }
 
 // defines the types of variables in this.props
-MultiOptionsSegment.propTypes = {
+MultiInputSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
-  instant_chars_segment_id: PropTypes.string, // passed in, determines if this.state.instantChars = true
+  instant_chars_segment_id: PropTypes.string.isRequired, // passed in, determines if this.state.instantChars = true
   triggerScrollDown: PropTypes.func.isRequired, // passed in
-  onDone: PropTypes.func.isRequired,        // passed in, function to call at very end
   initialData: PropTypes.object,            // passed in, allows us to configure inputs to whats already given
+  onDone: PropTypes.func.isRequired,        // passed in
   skippable: PropTypes.bool,                // passed in
   skipEndpoint: PropTypes.string,           // passed in
   texts: PropTypes.array,        // passed in, text to say
@@ -486,38 +369,42 @@ MultiOptionsSegment.propTypes = {
     schema.id = 'abc'
     schema.endpoint = 'xyz'
     schema.choices = [
-      { id: 'parentID-choiceID', value: 'X', text: 'Something to show', endpoint: 'targetID'  }
+      { id: 'parentID-choiceID', text: 'Something to show', endpoint: 'targetID'  }
     ]
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  multi: PropTypes.bool,                    // passed in, can there be multiple input choices?
-  other: PropTypes.bool,                    // passed in, can there be an "other" option for text input?
-  preselected: PropTypes.array,             // passed in
+  inputType: PropTypes.string,              // passed in
   /*
-    preselected = [
-      { id: 'optionA', text: 'Option A', value: true  },
-      { id: 'other', text: 'Something else', value: true }
-    ]
+    inputType ['text', 'textarea', 'number', 'tel', 'email', 'url']
   */
+  inputs: PropTypes.array,
+  /*
+    inputs = [{ id: '123', text: 'Web Developer', value: 'Web Developer' }]
+  */
+  minChars: PropTypes.number,               // passed in
+  stringInputPlaceholder: PropTypes.string,
+  numberInputPlaceholder: PropTypes.number,
+
 }
 
 // for all optional props, define a default value
-MultiOptionsSegment.defaultProps = {
+MultiInputSegment.defaultProps = {
   title: '',
-  initialData: null,
-  instant_chars_segment_id: '',
-  multi: false,
-  other: false,
+  texts: [],
+  initialData: {},
+  segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  segmentStyles: {},
-  texts: [],
-  preselected: []
+  inputType: 'text',
+  inputs: [],
+  minChars: 0,
+  stringInputPlaceholder: '',
+  numberInputPlaceholder: 0,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(MultiOptionsSegment)
+const RadiumHOC = Radium(MultiInputSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -542,7 +429,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
-      minHeight: document.documentElement.clientHeight,
+      // minHeight: document.documentElement.clientHeight,
 		},
     text: {
       background: INPUT_BACKGROUND,
@@ -550,8 +437,28 @@ const comStyles = () => {
       display: 'flex',
       outline: 'none',
       width: '100%',
-      fontSize: '1rem',
+      fontSize: '1.2rem',
       height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      WebkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
+    },
+    textarea: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: 'auto',
       borderRadius: '10px',
       padding: '20px',
       color: FONT_COLOR,
@@ -589,30 +496,4 @@ const comStyles = () => {
 			right: '0px',
 		}
 	}
-}
-
-const choiceStyles = (selected_choices, choice) => {
-  let selectedStyle = {}
-  selected_choices.forEach((c) => {
-    if (c.id === choice.id) {
-      selectedStyle.backgroundColor = FONT_COLOR,
-      selectedStyle.color = INVERSE_FONT_COLOR
-    }
-  })
-  return {
-    choice: {
-      width: '200px',
-      borderRadius: '10px',
-      border: `1px solid ${FONT_COLOR}`,
-      color: FONT_COLOR,
-      padding: '5px',
-      backgroundColor: INPUT_BACKGROUND,
-      fontSize: '1rem',
-      cursor: 'pointer',
-      ...selectedStyle,
-      // ":hover": {
-      //   opacity: 0.5
-      // }
-    }
-  }
 }

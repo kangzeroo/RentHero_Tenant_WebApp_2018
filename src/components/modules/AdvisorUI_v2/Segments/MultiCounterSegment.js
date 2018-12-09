@@ -9,6 +9,8 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
 import { isMobile } from '../../../../api/general/general_api'
+import ShortUniqueId from 'short-unique-id'
+const uid = new ShortUniqueId()
 import { Tooltip } from 'antd'
 import {
   Toast,
@@ -86,6 +88,7 @@ class MultiCounterSegment extends Component {
       data: {
         ...this.state.data,
         counters: [].concat(this.props.counters),
+        ...this.props.initialData,
       }
     }, () => console.log(this.state.data))
   }
@@ -203,12 +206,11 @@ class MultiCounterSegment extends Component {
   }
 
   saveNewCounter(input_string) {
-    const id = input_string.split(' ').join('_').toLowerCase()
     this.setState({
       data: {
         ...this.state.data,
         counters: this.state.data.counters.concat([{
-          id: id,
+          id: uid.randomUUID(6),
           text: input_string,
           renderCountValue: (c) => c,
           incrementerOptions: this.props.otherIncrementerOptions,

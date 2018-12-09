@@ -9,6 +9,8 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
 import { isMobile } from '../../../../api/general/general_api'
+import ShortUniqueId from 'short-unique-id'
+const uid = new ShortUniqueId()
 import { Tooltip, Tag, Input } from 'antd'
 import {
   Toast,
@@ -172,7 +174,7 @@ class MultiTagSegment extends Component {
       data: {
         ...this.state.data,
         all_tags: this.state.data.all_tags.concat([
-          { id: tag_text.replace(/(\s)/igm, '_'), text: tag_text, value: true }
+          { id: uid.randomUUID(6), text: tag_text, value: true }
         ])
       }
     })
