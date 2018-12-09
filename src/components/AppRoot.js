@@ -32,7 +32,6 @@ import WelcomeScreen from './home/WelcomeScreen'
 import UserPreferences from './home/UserPreferences'
 import NoteToTester from './home/NoteToTester'
 import SwipeList from './swipe/SwipeList'
-import OnboardingTenant from './tenant/OnboardingTenant'
 import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
 import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
@@ -76,7 +75,6 @@ class AppRoot extends Component {
           <Switch>
 
             <Route exact path='/' render={WelcomeScreen} />
-            <Route exact path='/onboarding' render={OnboardingTenant} />
             <Route exact path='/login' render={HomePage} />
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />

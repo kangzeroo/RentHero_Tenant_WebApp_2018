@@ -4,6 +4,7 @@
   ROOMMATES = {
 
       TENANT_ID: 'abc123',
+      KEY: 'ROOMMATES',
       AGE: 24,
       GENDER: 'male',
 

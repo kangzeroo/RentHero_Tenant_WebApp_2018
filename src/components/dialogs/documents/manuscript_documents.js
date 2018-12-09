@@ -4,6 +4,7 @@
   DOCUMENTS = {
 
       TENANT_ID: 'abc123',
+      KEY: 'DOCUMENTS',
       LEGAL_NAME: 'Jose Sanchez Rodriguez',
       PREFERRED_NAME: 'Joe',
       EMAIL: 'tenant@gmail.com',

@@ -18,6 +18,7 @@ import {
 	saveListingsToRedux,
 	loadLocalStorageAccount,
 } from '../actions/listings/listings_actions'
+import { updatePreferences } from '../actions/prefs/prefs_actions'
 import {
 	redirectPath,
 	setLanguageFromLocale,
@@ -30,6 +31,16 @@ import {
 import {
 	getListings,
 } from '../api/listings/listings_api'
+import { getPreferences } from '../api/prefs/prefs_api'
+import { FINANCIALS } from '../reducers/prefs/schemas/financials_schema'
+import { GROUP } from '../reducers/prefs/schemas/group_schema'
+import { MOVEIN } from '../reducers/prefs/schemas/movein_schema'
+import { CREDIT } from '../reducers/prefs/schemas/credit_schema'
+import { LOCATION } from '../reducers/prefs/schemas/location_schema'
+import { AMENITIES } from '../reducers/prefs/schemas/amenities_schema'
+import { TOUR } from '../reducers/prefs/schemas/tour_schema'
+import { DOCUMENTS } from '../reducers/prefs/schemas/documents_schema'
+import { ROOMMATES } from '../reducers/prefs/schemas/roommates_schema'
 
 
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
@@ -41,6 +52,7 @@ export default (ComposedComponent) => {
 			this.props.loadLocalStorageAccount()
 			setTimeout(() => {
 				this.grabListings()
+				this.grabPrefs()
 			}, 100)
 			// check if staff is already authenticated
 			this.checkIfStaffLoggedIn()
@@ -71,6 +83,31 @@ export default (ComposedComponent) => {
 				.catch((err) => {
 					console.log(err)
 				})
+		}
+
+		grabPrefs() {
+			const keys = [
+				FINANCIALS.KEY,
+				GROUP.KEY,
+				MOVEIN.KEY,
+				CREDIT.KEY,
+				LOCATION.KEY,
+				AMENITIES.KEY,
+				TOUR.KEY,
+				DOCUMENTS.KEY,
+				ROOMMATES.KEY,
+			]
+			const gotAllKeys = keys.map((key) => {
+				return getPreferences(key)
+			})
+			Promise.all(gotAllKeys)
+					.then((prefs) => {
+						prefs.filter(p => p).forEach((p) => {
+							this.props.updatePreferences(p)
+						})
+					}).catch((err) => {
+						console.log(err)
+					})
 		}
 
 		checkIfStaffLoggedIn() {
@@ -182,6 +219,7 @@ export default (ComposedComponent) => {
 		saveListingsToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
 		loadLocalStorageAccount: PropTypes.func.isRequired,
+		updatePreferences: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -208,6 +246,7 @@ export default (ComposedComponent) => {
 			authenticationLoaded,
 			saveListingsToRedux,
 			loadLocalStorageAccount,
+			updatePreferences,
     })(AppRootMechanics)
 	)
 }

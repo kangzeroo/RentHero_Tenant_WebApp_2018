@@ -5,6 +5,7 @@
   GROUP: {
 
         TENANT_ID: 'abc123',
+        KEY: 'GROUP',
         GROUP_ID, 'asdf-gdg35t-sdfgdsf',
         GROUP_NAME: 'Winter 2019 Crew',
         CERTAIN_MEMBERS: 2,

@@ -4,6 +4,7 @@
   CREDIT = {
 
     TENANT_ID: 'abc123',
+    KEY: 'CREDIT',
     GUESSED_CREDIT_SCORE: 600,
 
     // past credit report experience
