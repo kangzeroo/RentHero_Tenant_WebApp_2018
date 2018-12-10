@@ -3,6 +3,7 @@
 export const MOVEIN = {
 
   KEY: 'MOVEIN',
+  TENANT_ID: '',
 
   TOUR_READY_DATE: null,
   IDEAL_MOVEIN_DATE: null,

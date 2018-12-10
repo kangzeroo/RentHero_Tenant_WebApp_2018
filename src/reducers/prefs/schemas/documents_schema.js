@@ -3,6 +3,7 @@
 export const DOCUMENTS = {
 
     KEY: 'DOCUMENTS',
+    TENANT_ID: '',
 
     LEGAL_NAME: '',
     PREFERRED_NAME: '',

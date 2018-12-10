@@ -3,6 +3,7 @@
 export const TOUR = {
 
     KEY: 'TOUR',
+    TENANT_ID: '',
 
     DAYS_SEARCHING: 0,
     TOURS_BEEN_ON: 0,

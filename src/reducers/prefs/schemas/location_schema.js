@@ -3,6 +3,7 @@
 export const LOCATION = {
 
     KEY: 'LOCATION',
+    TENANT_ID: '',
 
     // how set are you on your location preferences?
     // PREFERENCES_AS: ['defined area', 'open to recommendations'],                   // save as CSV string

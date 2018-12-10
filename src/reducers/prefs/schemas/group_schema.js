@@ -4,6 +4,7 @@
 export const GROUP = {
 
       KEY: 'GROUP',
+      TENANT_ID: '',
 
       GROUP_ID: '',
       GROUP_NAME: '',

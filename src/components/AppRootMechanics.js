@@ -86,24 +86,21 @@ export default (ComposedComponent) => {
 		}
 
 		grabPrefs() {
-			const keys = [
-				FINANCIALS.KEY,
-				GROUP.KEY,
-				MOVEIN.KEY,
-				CREDIT.KEY,
-				LOCATION.KEY,
-				AMENITIES.KEY,
-				TOUR.KEY,
-				DOCUMENTS.KEY,
-				ROOMMATES.KEY,
-			]
-			const gotAllKeys = keys.map((key) => {
-				return getPreferences(key)
-			})
-			Promise.all(gotAllKeys)
+			getPreferences(this.props.tenant_id)
 					.then((prefs) => {
-						prefs.filter(p => p).forEach((p) => {
-							this.props.updatePreferences(p)
+						const keys = [
+							FINANCIALS.KEY,
+							GROUP.KEY,
+							MOVEIN.KEY,
+							CREDIT.KEY,
+							LOCATION.KEY,
+							AMENITIES.KEY,
+							TOUR.KEY,
+							DOCUMENTS.KEY,
+							ROOMMATES.KEY,
+						]
+						keys.filter(key => key).forEach((key) => {
+							this.props.updatePreferences(prefs[key] || {})
 						})
 					}).catch((err) => {
 						console.log(err)
@@ -216,6 +213,7 @@ export default (ComposedComponent) => {
 		dispatchActionsToRedux: PropTypes.func.isRequired,
 		saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 		authenticationLoaded: PropTypes.func.isRequired,
+		tenant_id: PropTypes.string.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
 		loadLocalStorageAccount: PropTypes.func.isRequired,
@@ -229,7 +227,8 @@ export default (ComposedComponent) => {
 
 	const mapStateToProps = (redux) => {
 		return {
-			prefs: redux.tenant.prefs
+			prefs: redux.tenant.prefs,
+			tenant_id: redux.tenant.tenant_id,
 		}
 	}
 

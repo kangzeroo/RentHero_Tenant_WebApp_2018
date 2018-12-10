@@ -163,7 +163,7 @@ class MultiOptionsSegment extends Component {
                 other_choice: '',
               }
             }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           // OTHER ALREADY CLOSED
           } else {
@@ -175,7 +175,7 @@ class MultiOptionsSegment extends Component {
                 other_choice: '',
               }
             }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           }
         // OTHER DISABLED
@@ -186,7 +186,7 @@ class MultiOptionsSegment extends Component {
               selected_choices: [choice]
             }
           }, () => {
-            this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+            this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
           })
         }
       }
@@ -269,7 +269,7 @@ class MultiOptionsSegment extends Component {
       data: {
         ...this.state.data,
         selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat([
-          { id: 'other', text: this.state.data.other_string, value: this.state.data.other_string ? true : false }
+          { id: 'other', text: this.state.data.other_string || 'other', value: this.state.data.other_string ? true : false }
         ])
       }
     }, () => this.props.onDone(this.props.schema.id, endpoint, this.state.data))

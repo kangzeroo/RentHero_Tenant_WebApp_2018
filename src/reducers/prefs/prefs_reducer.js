@@ -12,6 +12,7 @@ import { DOCUMENTS } from './schemas/documents_schema'
 import { ROOMMATES } from './schemas/roommates_schema'
 
 const INITIAL_STATE = {
+  TENANT_ID: '',
   FINANCIALS,
   GROUP,
   MOVEIN,
@@ -29,7 +30,10 @@ export default (state = INITIAL_STATE, action) => {
     case UPDATE_PREFERENCES:
       return {
         ...state,
-        [action.payload.KEY]: action.payload
+        [action.payload.KEY]: {
+          ...state[action.payload.KEY],
+          ...action.payload
+        }
       }
     default:
       return {

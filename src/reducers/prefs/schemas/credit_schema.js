@@ -2,6 +2,7 @@
 export const CREDIT = {
 
   KEY: 'CREDIT',
+  TENANT_ID: '',
 
   GUESSED_CREDIT_SCORE: 600,
 

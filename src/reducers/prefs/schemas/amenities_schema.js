@@ -2,6 +2,7 @@
 export const AMENITIES = {
 
     KEY: 'AMENITIES',
+    TENANT_ID: '',
 
     DESCRIPTION: '',
 

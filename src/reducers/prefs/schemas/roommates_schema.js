@@ -3,6 +3,7 @@
 export const ROOMMATES = {
 
     KEY: 'ROOMMATES',
+    TENANT_ID: '',
 
     AGE: 18,
     GENDER: '',

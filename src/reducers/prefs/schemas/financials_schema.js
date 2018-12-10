@@ -2,6 +2,7 @@
 export const FINANCIALS = {
 
     KEY: 'FINANCIALS',
+    TENANT_ID: '',
 
     IDEAL_PER_PERSON: 0,
     DEPOSIT_CASH: 0,
