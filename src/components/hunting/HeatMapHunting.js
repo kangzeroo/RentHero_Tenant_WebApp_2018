@@ -185,8 +185,8 @@ class HeatMapHunting extends Component {
 	render() {
 		return (
 			<div id='HeatMapHunting' style={comStyles().container}>
-        <div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 4, color: 'white' }}>
-          <Icon type='ellipsis' size='lg' />
+        <div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 4, color: 'white', cursor: 'pointer' }}>
+          <Ionicon icon="md-menu" color='#117bc7b3' fontSize='2rem' />
         </div>
         <div id="map" style={comStyles().map}></div>
         {
