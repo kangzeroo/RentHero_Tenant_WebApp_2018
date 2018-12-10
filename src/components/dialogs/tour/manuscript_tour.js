@@ -4,6 +4,7 @@
   TOUR = {
 
       TENANT_ID: 'abc123',
+      KEY: 'TOUR',
       DAYS_SEARCHING: 28,
       TOURS_BEEN_ON: 4,
       TOUR_READY_DATE: 'ISODateString',

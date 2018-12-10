@@ -9,6 +9,8 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import $ from 'jquery'
+import { updatePreferences } from '../../../actions/prefs/prefs_actions'
+import { savePreferences } from '../../../api/prefs/prefs_api'
 import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
@@ -71,6 +73,7 @@ class OnboardingDialog extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('1'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋 My name is RentHero' },
                                  { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm an A.I. real estate agent here to help you find your next home! Here's what I can do for you:` },
                                  { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'center' }, text: `🔍 Browse Online Rentals` },
@@ -89,10 +92,14 @@ class OnboardingDialog extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('2'),
                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "Let's get to know each other better 😊 What's your name?" },
                                ]}
                                inputType={'text'}
                                stringInputPlaceholder={'Full Name'}
+                               initialData={{
+                                 input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
+                               }}
                             />)},
       {
         id: '3',
@@ -101,10 +108,18 @@ class OnboardingDialog extends Component {
                                 title='Frequently Travelled'
                                 schema={{ id: '3', endpoint: '4' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
                                 texts={[
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.state.data.name} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
+                                  ...this.addAnyPreMessages('3'),
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.prefs.DOCUMENTS.PREFERRED_NAME} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
                                 ]}
+                                initialData={{
+                                  address_components: [],
+                                  address_lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
+                                  address_lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
+                                  address_place_id: '',
+                                  address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
+                                }}
                              /> )},
       {
         id: '4',
@@ -115,17 +130,19 @@ class OnboardingDialog extends Component {
                                   id: '4',
                                   endpoint: '5',
                                   choices: [
-                                    { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: 'DRIVING', endpoint: '5' },
-                                    { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: 'TRANSIT', endpoint: '5' },
-                                    { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: 'WALKING', endpoint: '5' },
-                                    { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: 'BICYCLING', endpoint: '5' }
+                                    { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
+                                    { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
+                                    { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
+                                    { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('4'),
                                   { id: '4-1', scrollDown: true, text: 'What is your primary means of transportation?' },
                                 ]}
-                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                onDone={(original_id, endpoint, data) => this.travelModeDone(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                preselected={this.props.prefs.LOCATION.TRANSPORT_MODES_AS_SCHEMAS}
                              />) },
        {
          id: '5',
@@ -136,6 +153,7 @@ class OnboardingDialog extends Component {
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.donePersons(original_id, endpoint, data)}
                                  texts={[
+                                   ...this.addAnyPreMessages('5'),
                                    { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'And how many people are looking for a rental? 🙋 Just you, or more?' },
                                    { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `It's ok if you're not sure. We can get less specific later.` }
                                  ]}
@@ -143,6 +161,9 @@ class OnboardingDialog extends Component {
                                    max: 7,
                                    min: 1,
                                    step: 1
+                                 }}
+                                 initialData={{
+                                   count: parseFloat(this.props.prefs.GROUP.CERTAIN_MEMBERS)
                                  }}
                               /> )},
       {
@@ -154,15 +175,18 @@ class OnboardingDialog extends Component {
                                   id: '6',
                                   endpoint: '7',
                                   choices: [
-                                    { id: '6-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: 'entireplace', endpoint: '7', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
-                                    { id: '6-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: 'rooms', endpoint: '7', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) }
+                                    { id: 'entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: false, endpoint: '7', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
+                                    { id: 'just_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: false, endpoint: '7', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) },
+                                    { id: 'both_place_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BOTH', value: false, endpoint: '7', tooltip: (<p>You are open to entire units and random roommates.</p>) },
                                   ]
                                 }}
                                 texts={[
+                                  ...this.addAnyPreMessages('6'),
                                   { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.state.data.group_size} rooms (possibly with other new roommates)?` },
                                 ]}
-                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                                onDone={(original_id, endpoint, data) => this.suitesRoomsDone(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                preselected={this.props.prefs.GROUP.WHOLE_OR_RANDOMS_AS_SCHEMAS}
                              />) },
      {
        id: '7',
@@ -171,8 +195,9 @@ class OnboardingDialog extends Component {
                                title='Budget Per Person'
                                schema={{ id: '7', endpoint: '8' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                               onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
                                texts={[
+                                 ...this.addAnyPreMessages('7'),
                                  { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
                                ]}
                                incrementerOptions={{
@@ -189,6 +214,9 @@ class OnboardingDialog extends Component {
                                  vertical: false,
                                }}
                                renderCountValue={(count) => `$ ${count}`}
+                               initialData={{
+                                 count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON
+                               }}
                             /> )},
      {
        id: '8',
@@ -203,6 +231,7 @@ class OnboardingDialog extends Component {
                                  ]
                                }}
                                texts={[
+                                 ...this.addAnyPreMessages('8'),
                                  { id: '1-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `And that's it! Ready to see your matches? 👀` },
                                  { id: '1-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `( By the way, these aren't your matches. That part isn't hooked up yet 😅 )` }
                                ]}
@@ -214,21 +243,91 @@ class OnboardingDialog extends Component {
   }
 
   doneName(original_id, endpoint, data) {
-    this.setState({
-      data: {
-        ...this.state.data,
-        name: data.input_string
-      }
-    }, () => this.done(original_id, endpoint, data))
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.DOCUMENTS.KEY,
+      PREFERRED_NAME: data.input_string,
+    }).then((DOCUMENTS) => {
+      console.log(DOCUMENTS)
+      this.props.updatePreferences(DOCUMENTS)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  mapDone(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.LOCATION.KEY,
+      DESTINATION_ADDRESS: data.address,
+      DESTINATION_GEOPOINT: `${data.address_lat},${data.address_lng}`
+    }).then((LOCATION) => {
+      console.log(LOCATION)
+      this.props.updatePreferences(LOCATION)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  travelModeDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.LOCATION.KEY,
+      TRANSPORT_MODES_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
+      TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices
+    }).then((LOCATION) => {
+      this.props.updatePreferences(LOCATION)
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   donePersons(original_id, endpoint, data) {
-    this.setState({
-      data: {
-        ...this.state.data,
-        group_size: data.count
-      }
-    }, () => this.done(original_id, endpoint, data))
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      CERTAIN_MEMBERS: data.count,
+      UNCERTAIN_MEMBERS: data.count
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  suitesRoomsDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      WHOLE_OR_RANDOM_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
+      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  budgetDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.FINANCIALS.KEY,
+      IDEAL_PER_PERSON: data.count,
+    }).then((FINANCIALS) => {
+      this.props.updatePreferences(FINANCIALS)
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   done(original_id, endpoint, data) {
@@ -388,6 +487,9 @@ class OnboardingDialog extends Component {
 OnboardingDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
+  updatePreferences: PropTypes.func.isRequired,
+  prefs: PropTypes.array.isRequired,
+  tenant_id: PropTypes.string.isRequired,
 }
 
 // for all optional props, define a default value
@@ -401,7 +503,8 @@ const RadiumHOC = Radium(OnboardingDialog)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+    prefs: redux.prefs,
+    tenant_id: redux.tenant.tenant_id,
 	}
 }
 
@@ -409,6 +512,7 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
     toggleInstantCharsSegmentID,
+    updatePreferences,
 	})(RadiumHOC)
 )
 

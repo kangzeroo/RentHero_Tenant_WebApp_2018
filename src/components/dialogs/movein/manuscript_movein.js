@@ -4,6 +4,7 @@
   MOVEIN = {
 
     TENANT_ID: 'abc123',
+    KEY: 'MOVEIN',
     TOUR_READY_DATE: 'ISODateString()',
     IDEAL_MOVEIN_DATE: 'ISODateString()',
     MIN_MOVEIN_DATE: 'ISODateString()',

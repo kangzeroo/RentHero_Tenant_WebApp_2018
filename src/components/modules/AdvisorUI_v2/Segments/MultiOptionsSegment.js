@@ -51,7 +51,7 @@ class MultiOptionsSegment extends Component {
       show_other_input: false,
       data: {
         selected_choices: [],
-        other_choice: '',
+        other_string: '',
       }
     }
     this.mobile = false
@@ -75,6 +75,24 @@ class MultiOptionsSegment extends Component {
 
   componentDidMount() {
     this.mobile = isMobile()
+    let other_option = this.props.preselected.filter(pre => pre.id === 'other')[0]
+    let other_string = ''
+    if (other_option && other_option.text && other_option.value) {
+      other_string = other_option.text
+    }
+    this.setState({
+      show_other_input: other_string ? true : false,
+      data: {
+        ...this.state.data,
+        selected_choices: this.props.preselected.map(pre => {
+          return {
+            ...pre,
+            value: true
+          }
+        }),
+        other_string: other_string
+      }
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -145,7 +163,7 @@ class MultiOptionsSegment extends Component {
                 other_choice: '',
               }
             }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           // OTHER ALREADY CLOSED
           } else {
@@ -157,7 +175,7 @@ class MultiOptionsSegment extends Component {
                 other_choice: '',
               }
             }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           }
         // OTHER DISABLED
@@ -168,7 +186,7 @@ class MultiOptionsSegment extends Component {
               selected_choices: [choice]
             }
           }, () => {
-            this.props.onDone(this.props.schema.id, choice.endpoint, this.state)
+            this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
           })
         }
       }
@@ -247,7 +265,14 @@ class MultiOptionsSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    this.setState({
+      data: {
+        ...this.state.data,
+        selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat([
+          { id: 'other', text: this.state.data.other_string || 'other', value: this.state.data.other_string ? true : false }
+        ])
+      }
+    }, () => this.props.onDone(this.props.schema.id, endpoint, this.state.data))
   }
 
   focusedInput(id) {
@@ -374,7 +399,7 @@ class MultiOptionsSegment extends Component {
                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                   <input
                     id={`other_input--${this.props.schema.id}`}
-                    value={this.state.data.other_choice}
+                    value={this.state.data.other_string}
                     onChange={(e) => {
                       this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
                     }}
@@ -413,7 +438,7 @@ class MultiOptionsSegment extends Component {
               ?
               <div>
                 {
-                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : false)
+                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_string : false)
                   ?
                   <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
                   :
@@ -468,6 +493,13 @@ MultiOptionsSegment.propTypes = {
   // UNIQUE PROPS FOR COMPONENT
   multi: PropTypes.bool,                    // passed in, can there be multiple input choices?
   other: PropTypes.bool,                    // passed in, can there be an "other" option for text input?
+  preselected: PropTypes.array,             // passed in
+  /*
+    preselected = [
+      { id: 'optionA', text: 'Option A', value: true  },
+      { id: 'other', text: 'Something else', value: true }
+    ]
+  */
 }
 
 // for all optional props, define a default value
@@ -480,7 +512,8 @@ MultiOptionsSegment.defaultProps = {
   skippable: false,
   skipEndpoint: '',
   segmentStyles: {},
-  texts: []
+  texts: [],
+  preselected: []
 }
 
 // Wrap the prop in Radium to allow JS styling

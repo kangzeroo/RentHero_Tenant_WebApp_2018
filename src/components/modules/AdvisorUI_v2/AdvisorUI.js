@@ -205,14 +205,17 @@ class AdvisorUI extends Component {
                                   id: 'xxx',
                                   endpoint: 'a',
                                   choices: [
-                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: 'a', tooltip: (<p>Tooltip A</p>) },
-                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: 'a' },
-                                    { id: '2-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: 'a' }
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: false, endpoint: 'a', tooltip: (<p>Tooltip A</p>) },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: false, endpoint: 'a' },
+                                    { id: '2-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: false, endpoint: 'a' }
                                   ]
                                 }}
                                 texts={[
                                   ...this.addAnyPreMessages('xxx'),
                                   { id: '2-1', scrollDown: true, text: `Nice to meet you ${this.state.data.name}. This Segment lets you select multiple choices. ℹ️id[abc-999]`, tooltips: [{ id: 'abc-999', tooltip: (<div>Info</div>) }] },
+                                ]}
+                                preselected={[
+                                  { id: '2-1', text: 'Option B', value: false },
                                 ]}
                                 skippable
                                 skipEndpoint='a'
@@ -389,9 +392,9 @@ class AdvisorUI extends Component {
                                    id: '4',
                                    endpoint: '1',
                                    choices: [
-                                     { id: '2-0', text: 'Option A', value: 'A', endpoint: '1' },
-                                     { id: '2-1', text: 'Option B', value: 'B', endpoint: '1' },
-                                     { id: '2-2', text: 'Option C', value: 'C', endpoint: '1' }
+                                     { id: '2-0', text: 'Option A', value: false, endpoint: '1' },
+                                     { id: '2-1', text: 'Option B', value: false, endpoint: '1' },
+                                     { id: '2-2', text: 'Option C', value: false, endpoint: '1' }
                                    ]
                                  }}
                                  texts={[
@@ -412,9 +415,9 @@ class AdvisorUI extends Component {
                                   id: '1',
                                   endpoint: '2',
                                   choices: [
-                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Next Multi Selection', value: 'A', endpoint: '2' },
-                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'File Uploader', value: 'B', endpoint: 'kk' },
-                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Share Link', value: 'C', endpoint: 'oo' },
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Next Multi Selection', value: false, endpoint: '2' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'File Uploader', value: false, endpoint: 'kk' },
+                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Share Link', value: false, endpoint: 'oo' },
                                   ]
                                 }}
                                 texts={[
@@ -472,9 +475,9 @@ class AdvisorUI extends Component {
                                   id: '2',
                                   endpoint: '3',
                                   choices: [
-                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: '3' },
-                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: '3' },
-                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: 'C', endpoint: '3' }
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: false, endpoint: '3' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: false, endpoint: '3' },
+                                    { id: '2-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option C', value: false, endpoint: '3' }
                                   ]
                                 }}
                                 texts={[
@@ -495,8 +498,8 @@ class AdvisorUI extends Component {
                                   id: '3',
                                   endpoint: '5',
                                   choices: [
-                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: 'A', endpoint: '5' },
-                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: 'B', endpoint: '5' },
+                                    { id: '2-0', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Option A', value: false, endpoint: '5' },
+                                    { id: '2-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Option B', value: false, endpoint: '5' },
                                   ]
                                 }}
                                 texts={[

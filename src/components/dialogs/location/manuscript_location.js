@@ -4,6 +4,7 @@
   LOCATION = {
 
       TENANT_ID: 'abc123',
+      KEY: 'LOCATION',
 
       // how set are you on your location preferences?
       PREFERENCES_AS: ['defined area', 'open to recommendations'],                   // save as CSV string

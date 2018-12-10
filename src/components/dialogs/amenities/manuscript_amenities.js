@@ -4,6 +4,7 @@
   AMENITIES = {
 
       TENANT_ID: 'abc123',
+      KEY: 'AMENITIES',
       DESCRIPTION: '',
 
       // sqft sizes of rooms

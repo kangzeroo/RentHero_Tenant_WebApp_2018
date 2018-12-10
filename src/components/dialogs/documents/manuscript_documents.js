@@ -4,6 +4,7 @@
   DOCUMENTS = {
 
       TENANT_ID: 'abc123',
+      KEY: 'DOCUMENTS',
       LEGAL_NAME: 'Jose Sanchez Rodriguez',
       PREFERRED_NAME: 'Joe',
       EMAIL: 'tenant@gmail.com',
@@ -33,6 +34,11 @@
       // the urls of the background check
       BACKGROUND_CHECK_AS: ['police'],                                                      // save as CSV string
       BACKGROUND_CHECK_AS_SCHEMAS: [{ id, label, value: url }],                              // save as stringified json
+
+      // insurance options
+      INSURANCE_AS: ['already have'],                                                      // save as CSV string
+      INSURANCE_AS_SCHEMAS: [{ id, label, value: url }],                              // save as stringified json
+
 }
 
 
@@ -73,5 +79,9 @@
   FileUploadSegment          14. Upload your background check here.
 
   ShareUrlSegment            15. Share this link with your references for them to easily contribute to your rent application.
+
+  MultiOptionsSegment        16. Do you have renter's insurance?
+                                        a. yes
+                                        b. not yet
 
 */

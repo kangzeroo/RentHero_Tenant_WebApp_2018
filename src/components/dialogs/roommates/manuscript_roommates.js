@@ -4,6 +4,7 @@
   ROOMMATES = {
 
       TENANT_ID: 'abc123',
+      KEY: 'ROOMMATES',
       AGE: 24,
       GENDER: 'male',
 
@@ -44,7 +45,7 @@
       RELIGION_AS_SCHEMAS: [{ id, text, value }],                              // save as stringified json
 
       // ethnicity
-      ETHNICITY_AS: ['alcohol', 'cannabis'],                                     // save as CSV string
+      ETHNICITY_AS: ['east asian', 'white'],                                     // save as CSV string
       ETHNICITY_AS_SCHEMAS: [{ id, text, value }],                              // save as stringified json
   }
 

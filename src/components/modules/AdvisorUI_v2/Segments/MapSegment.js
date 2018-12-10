@@ -306,7 +306,7 @@ class MapSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.address_place_id && this.shouldDisplayInput()
+              this.state.data.address && this.state.data.address_lat && this.state.data.address_lng && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :

@@ -1,4 +1,4 @@
-// Compt for copying as a MultiTagSegment
+// Compt for copying as a MultiInputSegment
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -11,50 +11,49 @@ import SubtitlesMachine from './SubtitlesMachine'
 import { isMobile } from '../../../../api/general/general_api'
 import ShortUniqueId from 'short-unique-id'
 const uid = new ShortUniqueId()
-import { Tooltip, Tag, Input } from 'antd'
+import { Tooltip } from 'antd'
 import {
   Toast,
   Icon,
 } from 'antd-mobile'
-import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, BACKGROUND_COLOR } from '../styles/advisor_ui_styles'
+import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR, FONT_FAMILY } from '../styles/advisor_ui_styles'
 
 
 
 /*
-  <MultiTagSegment
-    title='Plain MultiTagSegment'
+  <MultiInputSegment
+    title='Multi Input Segment'
     schema={{ id: '1', endpoint: '2' }}
     texts={[
       { id: '1-1', text: 'Some string to display' },
       { id: '1-2', text: 'The next string to display!' }
     ]}
-    tags={[
-      { id: 'balcony', text: 'Balcony', value: 'true' },
-      { id: 'ensuite_laundry', text: 'Ensuite Laundry', value: 'false' },
+    inputs={[
+      { id: '123', text: 'Web Developer', value: 'Web Developer' },
+      { id: '234', text: 'Chef', value: 'Chef' },
     ]}
-    minTags={2}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
     segmentStyles={{ padding: '30px 0px 0px 0px' }}
     skippable={false}
     skipEndpoint=''
+    inputType={'text', 'textarea', 'number', 'tel', 'email', 'url'}
+    stringInputPlaceholder={'Type something'}
+    numberInputPlaceholder={0}
   />
 */
 
 
 
-class MultiTagSegment extends Component {
+class MultiInputSegment extends Component {
 
   constructor() {
     super()
     this.state = {
       completedSections: [],
 			instantChars: false,
-      new_tag: false,
-      input_string: '',
       data: {
-        all_tags: [],
-        chosen_tags: [],
+        inputs: [],
       }
     }
     this.mobile = false
@@ -81,12 +80,8 @@ class MultiTagSegment extends Component {
     this.setState({
       data: {
         ...this.state.data,
-        all_tags: this.props.tags.sort((a, b) => {
-          let a_value = a.value ? 1 : -1
-          let b_value = b.value ? 1 : -1
-          return b_value - a_value
-        }),
-        ...this.props.initialData
+        inputs: this.props.inputs,
+        ...initialData: this.props.initialData
       }
     })
   }
@@ -155,7 +150,35 @@ class MultiTagSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    if (this.state.data.input_string.length < this.props.minChars) {
+      Toast.info(`Minimum ${this.props.minChars} characters. ${this.props.minChars - this.state.data.input_string.length} left to go.`, 2)
+    } else if (this.props.inputType === 'tel') {
+      if (this.state.data.input_string.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/igm)) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid phone number`, 1)
+      }
+    } else if (this.props.inputType === 'email') {
+      if (this.state.data.input_string.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/igm)) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid email address`, 1)
+      }
+    } else if (this.props.inputType === 'url') {
+      if (this.state.data.input_string.toLowerCase().indexOf('http') > -1 || this.state.data.input_string.toLowerCase().indexOf('www') > -1 || this.state.data.input_string.toLowerCase().indexOf('.') > -1) {
+        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+      } else {
+        Toast.info(`Enter a valid URL`, 1)
+      }
+    } else {
+      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    }
+  }
+
+  focusedInput(id) {
+    if (this.mobile) {
+      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
+    }
   }
 
   renderCustomComponent(text) {
@@ -167,71 +190,9 @@ class MultiTagSegment extends Component {
     return (text.component)
   }
 
-  addedTag(tag_text) {
-    this.setState({
-      input_string: '',
-      new_tag: false,
-      data: {
-        ...this.state.data,
-        all_tags: this.state.data.all_tags.concat([
-          { id: uid.randomUUID(6), text: tag_text, value: true }
-        ])
-      }
-    })
-  }
-
-  tappedTag(e, tag) {
-    console.log(tag)
-    if (e) {
-      e.stopPropagation()
-    }
-    if (tag.value) {
-      this.setState({
-        data: {
-          ...this.state.data,
-          all_tags: this.state.data.all_tags.map(t => {
-            if (t.id === tag.id) {
-              return { ...t, value: false }
-            } else {
-              return t
-            }
-          }),
-        }
-      }, () => console.log(this.state.data))
-    } else {
-      this.setState({
-        data: {
-          ...this.state.data,
-          all_tags: this.state.data.all_tags.map(t => {
-            if (t.id === tag.id) {
-              return { ...t, value: true }
-            } else {
-              return t
-            }
-          }),
-        }
-      }, () => console.log(this.state.data))
-    }
-  }
-
-  focusedInput(id) {
-    if (this.mobile) {
-      document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
-    }
-  }
-
-  clickedAddNew() {
-    this.setState({ new_tag: true }, () => {
-      document.getElementById(`input--add--tag--${this.props.schema.id}`).focus()
-      if (this.mobile) {
-        document.getElementById(`input--add--tag--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "center" })
-      }
-    })
-  }
-
 	render() {
 		return (
-			<div id={`MultiTagSegment--${this.props.schema.id}`} style={{ ...comStyles().container, minHeight: document.documentElement.clientHeight, ...this.props.segmentStyles }}>
+			<div id={`MultiInputSegment--${this.props.schema.id}`} style={{ ...comStyles().container, ...this.props.segmentStyles }}>
         {
           this.props.title
           ?
@@ -255,9 +216,9 @@ class MultiTagSegment extends Component {
                       ?
                       this.renderCustomComponent(text)
                       :
-                        <SubtitlesMachine
+                      <SubtitlesMachine
                         id={`Subtitle--${this.props.schema.id}--${text.id}`}
-                        key={`${text.id}_${txtIndex}`}
+                        key={`${text.id}_${txtIndex}_${this.props.schema.id}`}
         								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
         								speed={0.25}
         								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
@@ -275,9 +236,28 @@ class MultiTagSegment extends Component {
         									margin: '20px 0px 20px 0px',
         								}}
         								doneEvent={() => {
+                          console.log('DONE EVENT TRIGGERED')
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
                               this.props.triggerScrollDown(null, 1000)
+                            }
+                            console.log('shouldDisplayInput: ', this.shouldDisplayInput())
+                            if (this.shouldDisplayInput() || this.state.instantChars) {
+                              if (this.props.inputType === 'textarea') {
+                                // document.getElementById(`textarea_field--${this.props.schema.id}`).focus()
+                              } else {
+                                console.log(this.mobile)
+                                if (!this.mobile) {
+                                  document.getElementById(`input_field--${this.props.schema.id}`).focus()
+                                }
+                                document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
+                                  console.log(e.keyCode)
+                            			if (e.keyCode === 13) {
+                                    document.getElementById(`input_field--${this.props.schema.id}`).blur()
+                                    this.nextSegment()
+                            			}
+                            		})
+                              }
                             }
                           })
         								}}
@@ -296,43 +276,41 @@ class MultiTagSegment extends Component {
           {
             this.shouldDisplayInput() || this.state.instantChars
             ?
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', padding: '20px', minHeight: '100px' }}>
-              <div style={{ height: '50px' }}>
-                {this.state.new_tag && (
-                  <Input
-                    id={`input--add--tag--${this.props.schema.id}`}
-                    type="text"
-                    size="small"
-                    style={{ width: 120 }}
-                    value={this.state.input_string}
-                    onChange={(e) => this.setState({ input_string: e.target.value })}
-                    onBlur={() => this.addedTag(this.state.input_string)}
-                    onPressEnter={() => this.addedTag(this.state.input_string)}
-                  />
-                )}
-                {!this.state.new_tag && (
-                  <div
-                    onClick={() => this.clickedAddNew()}
-                    style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '5px', margin: '5px', color: 'white', cursor: 'pointer', border: '1px dashed white', borderRadius: '5px' }}
-                  >
-                    Add New
-                  </div>
-                )}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', width: '100%' }}>
-                {
-                  this.state.data.all_tags.map((tag) => {
-                    return (
-                      <div onClick={(e) => this.tappedTag(e, tag)} style={tagStyles(tag.value).tag}>
-                        {tag.text}
-                      </div>
-                    )
-                  })
-                }
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {
+                this.props.inputType === 'textarea'
+                ?
+                <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
+                  <textarea
+                    id={`textarea_field--${this.props.schema.id}`}
+                    rows={4}
+                    value={this.state.data.input_string}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                    }}
+                    onFocus={() => this.focusedInput(`textarea_field--${this.props.schema.id}`)}
+                    placeholder={this.props.stringInputPlaceholder}
+                    style={comStyles().textarea}
+                  ></textarea>
                 </div>
+                :
+                <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
+                  <input
+                    id={`input_field--${this.props.schema.id}`}
+                    type={this.props.inputType}
+                    value={this.state.data.input_string}
+                    onChange={(e) => {
+                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                    }}
+                    onFocus={() => this.focusedInput(`input_field--${this.props.schema.id}`)}
+                    placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
+                    style={comStyles().text}
+                  ></input>
+                </div>
+              }
             </div>
             :
-            <div style={{ width: '100%', height: '100px' }}></div>
+            null
           }
         </div>
         <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
@@ -347,7 +325,7 @@ class MultiTagSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.all_tags.filter(t => t.value).length >= this.props.minTags && this.shouldDisplayInput()
+              this.state.data.input_string && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -369,7 +347,7 @@ class MultiTagSegment extends Component {
 }
 
 // defines the types of variables in this.props
-MultiTagSegment.propTypes = {
+MultiInputSegment.propTypes = {
   // GENERIC PROPS FOR ALL SEGMENTS
   title: PropTypes.string,                  // passed in
 	history: PropTypes.object.isRequired,
@@ -396,29 +374,37 @@ MultiTagSegment.propTypes = {
   */
 
   // UNIQUE PROPS FOR COMPONENT
-  tags: PropTypes.array.isRequired,       // passed in
+  inputType: PropTypes.string,              // passed in
   /*
-    tags = [
-      { id: 'balcony', text: 'Balcony', value: 'true' },
-      { id: 'ensuite_laundry', text: 'Ensuite Laundry', value: 'ensuite_laundry' },
-    ]
+    inputType ['text', 'textarea', 'number', 'tel', 'email', 'url']
   */
-  minTags: PropTypes.number,                 // passed in
+  inputs: PropTypes.array,
+  /*
+    inputs = [{ id: '123', text: 'Web Developer', value: 'Web Developer' }]
+  */
+  minChars: PropTypes.number,               // passed in
+  stringInputPlaceholder: PropTypes.string,
+  numberInputPlaceholder: PropTypes.number,
+
 }
 
 // for all optional props, define a default value
-MultiTagSegment.defaultProps = {
+MultiInputSegment.defaultProps = {
+  title: '',
   texts: [],
   initialData: {},
   segmentStyles: {},
   skippable: false,
   skipEndpoint: '',
-  tags: [],
-  minTags: 0,
+  inputType: 'text',
+  inputs: [],
+  minChars: 0,
+  stringInputPlaceholder: '',
+  numberInputPlaceholder: 0,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(MultiTagSegment)
+const RadiumHOC = Radium(MultiInputSegment)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -443,8 +429,48 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
-      minHeight: document.documentElement.clientHeight,
+      // minHeight: document.documentElement.clientHeight,
 		},
+    text: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: '30px',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      WebkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
+    },
+    textarea: {
+      background: INPUT_BACKGROUND,
+      border: 'none',
+      display: 'flex',
+      outline: 'none',
+      width: '100%',
+      fontSize: '1.2rem',
+      height: 'auto',
+      borderRadius: '10px',
+      padding: '20px',
+      color: FONT_COLOR,
+      webkitBoxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      boxShadow: '0 2px 10px 1px rgba(0,0,0,0)',
+      "::placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      },
+      "::-webkit-input-placeholder": {
+        color: INPUT_PLACEHOLDER_COLOR,
+      }
+    },
     skip: {
       padding: '5px',
       minWidth: '50px',
@@ -470,24 +496,4 @@ const comStyles = () => {
 			right: '0px',
 		}
 	}
-}
-
-const tagStyles = (checked) => {
-  let taggedStyles = {
-    color: 'white',
-    backgroundColor: 'rgba(0,0,0,0)'
-  }
-  if (checked) {
-    taggedStyles.color = BACKGROUND_COLOR
-    taggedStyles.backgroundColor = 'white'
-  }
-  return {
-    tag: {
-      padding: '5px',
-      borderRadius: '5px',
-      margin: '10px 5px 10px 5px',
-      cursor: 'pointer',
-      ...taggedStyles,
-    }
-  }
 }
