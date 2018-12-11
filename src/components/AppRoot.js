@@ -117,6 +117,7 @@ class AppRoot extends Component {
               <Route exact path='/onboarding' render={OnboardingDialog} />
               <Route exact path='/group' render={GroupDialog} />
               <Route exact path='/personal' render={RoommatesDialog} />
+              <Route exact path='/finance' render={FinancialDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

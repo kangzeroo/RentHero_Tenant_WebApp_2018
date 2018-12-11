@@ -20,6 +20,7 @@ import MultiOptionsSegment from './Segments/MultiOptionsSegment'
 import DatePickerSegment from './Segments/DatePickerSegment'
 import DateRangeSegment from './Segments/DateRangeSegment'
 import InputSegment from './Segments/InputSegment'
+import MultiInputSegment from './Segments/MultiInputSegment'
 import MessageSegment from './Segments/MessageSegment'
 import ActionSegment from './Segments/ActionSegment'
 import FileUploadSegment from './Segments/FileUploadSegment'
@@ -90,7 +91,7 @@ class AdvisorUI extends Component {
         id: 'y',
         component: (<SegmentTemplate
                                title='Template Segment'
-                               schema={{ id: 'y', endpoint: 'taggy' }}
+                               schema={{ id: 'y', endpoint: 'multi_in' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
                                texts={[
@@ -100,8 +101,26 @@ class AdvisorUI extends Component {
                                  { id: '0-3', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'There are even tooltips that you can get info on! ℹ️id[abc-123] Hover over the info icon.', tooltips: [{ id: 'abc-123', tooltip: (<div onClick={() => window.open('https://renthero.fyi','_blank')} style={{ width: '50px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>Click Me</div>) }] }
                                ]}
                                skippable
-                               skipEndpoint='taggy'
+                               skipEndpoint='multi_in'
                              />) },
+         {
+           id: 'multi_in',
+           component: (<MultiInputSegment
+                                   title='Introductions'
+                                   schema={{ id: 'multi_in', endpoint: 'taggy' }}
+                                   triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                   onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+                                   texts={[
+                                     ...this.addAnyPreMessages('multi_in'),
+                                     { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'We got multiple inputs here!' },
+                                   ]}
+                                   skippable
+                                   skipEndpoint='taggy'
+                                   inputs={[]}
+                                   inputType={'text'}
+                                   stringInputPlaceholder={'Say Something'}
+                                   minChars={5}
+                                /> )},
          {
              id: 'taggy',
              component: (<MultiTagSegment

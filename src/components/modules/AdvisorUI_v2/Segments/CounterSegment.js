@@ -75,6 +75,12 @@ class CounterSegment extends Component {
 
   componentDidMount() {
     this.mobile = isMobile()
+    this.setState({
+      data: {
+        ...this.state.data,
+        ...this.props.initialData,
+      }
+    })
   }
 
   componentDidUpdate(prevProps, prevState) {

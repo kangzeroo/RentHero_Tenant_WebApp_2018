@@ -34,11 +34,6 @@ class OnboardingDialog extends Component {
         scroll_styles: {},
         scrollable_styles: {},
       },
-      data: {
-        name: '',
-        group_size: 1,
-        budget_per_person: 1000,
-      },
       premessages: [
         // { segment_id: 'someSegment', texts: [{ id, textStyles, delay, scrollDown, text, component }] }
       ]
@@ -182,7 +177,7 @@ class OnboardingDialog extends Component {
                                 }}
                                 texts={[
                                   ...this.addAnyPreMessages('6'),
-                                  { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.state.data.group_size} rooms (possibly with other new roommates)?` },
+                                  { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.props.prefs.GROUP.CERTAIN_MEMBERS} rooms (possibly with other new roommates)?` },
                                 ]}
                                 onDone={(original_id, endpoint, data) => this.suitesRoomsDone(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}

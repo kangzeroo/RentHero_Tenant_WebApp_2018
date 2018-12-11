@@ -35,6 +35,7 @@ import { ACCENT_COLOR, FONT_COLOR, FONT_FAMILY, INVERSE_FONT_COLOR, BACKGROUND_C
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
     segmentStyles={{ padding: '100px 0px 100px 0px' }}
+    preselected={[]}
     skippable={false}
     skipEndpoint=''
     multi
