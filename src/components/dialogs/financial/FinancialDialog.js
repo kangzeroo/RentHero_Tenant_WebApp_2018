@@ -636,14 +636,14 @@ class FinancialDialog extends Component {
                         { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Update your personal budget.' },
                       ]}
                       incrementerOptions={{
-                        max: 10000,
+                        max: 3000,
                         min: 0,
                         step: 500,
                         default: 100,
                       }}
                       slider
                       sliderOptions={{
-                        max: 10000,
+                        max: 3000,
                         min: 0,
                         step: 250,
                       }}
@@ -725,7 +725,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       EMPLOYED_AS: data.selected_choices.map(s => s.text),
-      EMPLOYED_AS_SCHEMAS: data.selected_choices,
+      EMPLOYED_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -739,7 +745,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       JOB_TITLES_AS: data.inputs.map(i => i.text),
-      JOB_TITLES_AS_SCHEMAS: data.inputs,
+      JOB_TITLES_AS_SCHEMAS: data.inputs.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -769,7 +781,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       SELF_EMPLOYED_AS: data.selected_choices.map(s => s.text),
-      SELF_EMPLOYED_AS_SCHEMAS: data.selected_choices,
+      SELF_EMPLOYED_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -783,7 +801,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       WELFARE_AS: data.selected_choices.map(s => s.text),
-      WELFARE_AS_SCHEMAS: data.selected_choices,
+      WELFARE_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -797,7 +821,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       OTHER_INCOME_AS: data.selected_choices.map(s => s.text),
-      OTHER_INCOME_AS_SCHEMAS: data.selected_choices,
+      OTHER_INCOME_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -824,7 +854,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       SIGN_LEASE_AS: data.selected_choices.map(s => s.text),
-      SIGN_LEASE_AS_SCHEMAS: data.selected_choices,
+      SIGN_LEASE_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -838,7 +874,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       STUDIED_AS: data.inputs.map(s => s.text),
-      STUDIED_AS_SCHEMAS: data.inputs,
+      STUDIED_AS_SCHEMAS: data.inputs.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {
@@ -901,7 +943,13 @@ class FinancialDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       GUARANTOR_STATUS_AS: data.selected_choices.map(s => s.text),
-      GUARANTOR_STATUS_AS_SCHEMAS: data.selected_choices,
+      GUARANTOR_STATUS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
     }).catch((err) => {

@@ -297,7 +297,13 @@ class OnboardingDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.LOCATION.KEY,
       TRANSPORT_MODES_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
-      TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices
+      TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      })
     }).then((LOCATION) => {
       this.props.updatePreferences(LOCATION)
     }).catch((err) => {
@@ -327,7 +333,13 @@ class OnboardingDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       WHOLE_OR_RANDOM_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
-      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices
+      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      })
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {

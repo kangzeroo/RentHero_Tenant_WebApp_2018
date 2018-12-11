@@ -48,6 +48,20 @@ class GroupDialog extends Component {
     }
     this.all_segments = []
     this.shown_segments = []
+    this.bed_choices = [
+      { id: 'den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only a Den', value: 0.5, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: 'just_room', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Just Rooms', value: 0.9, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: 'studio', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Studio', value: 1, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '1_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '1 Bed', value: 1, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '1+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '1 + Den', value: 1.5, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '2_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 Bed', value: 2, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '2+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 + Den', value: 2.5, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '3_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3 Bed', value: 3, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '3+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3 + Den', value: 4.5, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '4_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '4 Bed', value: 4, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '5_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '5 Bed', value: 5, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+      { id: '5+bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '5+ Beds', value: 6, endpoint: 'finish', tooltip: (<p>Tip</p>) },
+    ]
   }
 
   componentWillMount() {
@@ -100,7 +114,8 @@ class GroupDialog extends Component {
               texts={[
                 { id: '1', scrollDown: true, text: `Who are you searching with?` },
               ]}
-              onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+              preselected={this.props.prefs.GROUP.SEARCHING_AS_SCHEMAS}
+              onDone={(original_id, endpoint, data) => this.doneSearchingAs(original_id, endpoint, data)}
               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
            />) },,
      {
@@ -123,6 +138,9 @@ class GroupDialog extends Component {
                  { id: 'elderly_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Male', value: 0, tooltip: (<p>Older than 60</p>) },
                  { id: 'elderly_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Female', value: 0, tooltip: (<p>Older than 60</p>) },
                ]}
+               initialData={{
+                 counters: this.props.prefs.GROUP.FAMILY_MEMBERS_AS_SCHEMAS
+               }}
             /> )},
      {
        id: 'members_certain_uncertain',
@@ -136,8 +154,8 @@ class GroupDialog extends Component {
                    { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'How many people are 100% certain they want to live together, and how many are uncertain? ℹ️id[uncertain]', tooltips: [{ id: 'uncertain', tooltip: (<div>Depending on price, property or timing.</div>) }] },
                  ]}
                  counters={[
-                   { id: 'CERTAIN_MEMBERS', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Certain', value: 0, tooltip: (<p>100% certain we want to live together/</p>) },
-                   { id: 'UNCERTAIN_MEMBERS', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Not Certain', value: 0, tooltip: (<p>Might live together if a good deal is found.</p>) },
+                   { id: 'CERTAIN_MEMBERS', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: this.props.prefs.GROUP.CERTAIN_MEMBERS }, text: 'Certain', value: this.props.prefs.GROUP.CERTAIN_MEMBERS, tooltip: (<p>100% certain we want to live together/</p>) },
+                   { id: 'UNCERTAIN_MEMBERS', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: this.props.prefs.GROUP.UNCERTAIN_MEMBERS }, text: 'Not Certain', value: this.props.prefs.GROUP.UNCERTAIN_MEMBERS, tooltip: (<p>Might live together if a good deal is found.</p>) },
                  ]}
               /> )},
       {
@@ -153,6 +171,7 @@ class GroupDialog extends Component {
                              ]}
                              inputType={'text'}
                              minChars={1}
+                             inputs={this.props.prefs.GROUP.GROUP_MEMBERS_AS_SCHEMAS}
                           /> )},
       {
         id: 'entire_place_or_roommates',
@@ -162,8 +181,8 @@ class GroupDialog extends Component {
                                   id: 'entire_place_or_roommates',
                                   endpoint: 'furry_friends',
                                   choices: [
-                                    { id: 'want_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Entire Place', value: false, endpoint: 'furry_friends', tooltip: (<p>Just your group, no unknown roommates.</p>) },
-                                    { id: 'open_to_roommates', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Ok With New Roommates', value: false, endpoint: 'max_total_roommates', tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
+                                    { id: 'only_want_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Show Entire Place', value: false, endpoint: 'furry_friends', tooltip: (<p>Just your group, no unknown roommates.</p>) },
+                                    { id: 'only_roommates_no_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Show Partial Places with Roommates', value: false, endpoint: 'max_total_roommates', tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
                                     { id: 'show_both', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Show Me Both', value: false, endpoint: 'max_total_roommates' },
                                   ]
                                 }}
@@ -171,6 +190,7 @@ class GroupDialog extends Component {
                                   { id: '1', text: `Do you want to live in one place all to yourselves, or are you ok with meeting new roommates who are also searching?` },
                                   { id: '2', scrollDown: true, text: `Roommates mean less space for cheaper rent.` },
                                 ]}
+                                preselected={this.props.prefs.GROUP.WHOLE_OR_RANDOMS_AS_SCHEMAS}
                                 onDone={(original_id, endpoint, data) => this.doneEntireOrRoommates(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                              />) },
@@ -189,6 +209,9 @@ class GroupDialog extends Component {
                                    min: 2,
                                    step: 1,
                                    default: 4
+                                 }}
+                                 initialData={{
+                                   count: this.props.prefs.GROUP.MAX_TOTAL_GROUP
                                  }}
                               /> )},
       {
@@ -209,6 +232,7 @@ class GroupDialog extends Component {
                                   { id: '1', text: `Rent can be expensive. Do any roommates want to save money and live in a den?` },
                                   { id: '2', scrollDown: true, text: `I can show you places with that possibility, but the max limit is 1 person in a den.` },
                                 ]}
+                                preselected={this.props.prefs.GROUP.LIVE_IN_DEN_AS_SCHEMAS}
                                 onDone={(original_id, endpoint, data) => this.doneDenOrPrivate(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                              />) },
@@ -224,6 +248,9 @@ class GroupDialog extends Component {
                                    ...this.addAnyPreMessages('group_name'),
                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "What would you like to call your group?" },
                                  ]}
+                                 initialData={{
+                                   input_string: this.props.prefs.GROUP.GROUP_NAME
+                                 }}
                                  inputType={'text'}
                                  stringInputPlaceholder={'Group Name'}
                               />)},
@@ -250,6 +277,10 @@ class GroupDialog extends Component {
                        default: 0,
                        step: 1,
                      }}
+                     initialData={{
+                       counters: this.props.prefs.GROUP.PETS_AS_SCHEMAS
+                     }}
+                     defaultRenderCountValue={(c) => c}
                   /> )},
       {
         id: 'desired_rooms',
@@ -259,26 +290,13 @@ class GroupDialog extends Component {
                                 schema={{
                                   id: 'desired_rooms',
                                   endpoint: 'finish',
-                                  choices: [
-                                    { id: 'den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Den (Partial Room)', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: 'just_room', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Just A Room', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: 'studio', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Studio', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '1_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '1 Bed', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '1+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '1 + Den', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '2_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 Bed', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '2+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 + Den', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '3_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3 Bed', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '3+den', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3 + Den', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '4_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '4 Bed', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '5_bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '5 Bed', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                    { id: '5+bed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '5+ Beds', value: false, endpoint: 'finish', tooltip: (<p>Tip</p>) },
-                                  ]
+                                  choices: this.bed_choices
                                 }}
                                 texts={[
-                                  { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Based on what you said, these are the types of rooms you would be ok to look at.' },
-                                  { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Is this correct?' }
+                                  { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Select all the types of housing you would like to look at.' },
                                 ]}
                                 multi
+                                preselected={this.props.prefs.GROUP.ACCEPTABLE_UNITS_AS_SCHEMAS}
                                 onDone={(original_id, endpoint, data) => this.doneAcceptableUnitTypes(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 other
@@ -306,13 +324,39 @@ class GroupDialog extends Component {
     this.setState({ lastUpdated: moment().unix() })
   }
 
+  doneSearchingAs(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    savePreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      SEARCHING_AS: data.selected_choices.map(c => c.text),
+      SEARCHING_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   doneMeetingFamily(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       FAMILY_MEMBERS_AS: data.counters.map(c => c.text),
-      FAMILY_MEMBERS_AS_SCHEMAS: data.counters,
+      FAMILY_MEMBERS_AS_SCHEMAS: data.counters.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
@@ -342,7 +386,13 @@ class GroupDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       GROUP_MEMBERS_AS: data.inputs.map(c => c.text),
-      GROUP_MEMBERS_AS_SCHEMAS: data.inputs,
+      GROUP_MEMBERS_AS_SCHEMAS: data.inputs.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
@@ -359,7 +409,13 @@ class GroupDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text),
-      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices,
+      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
@@ -376,7 +432,13 @@ class GroupDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       LIVE_IN_DEN_AS: data.selected_choices.map(s => s.text),
-      LIVE_IN_DEN_AS_SCHEMAS: data.selected_choices,
+      LIVE_IN_DEN_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
@@ -407,7 +469,13 @@ class GroupDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       PETS_AS: data.counters.map(c => c.text),
-      PETS_AS_SCHEMAS: data.counters,
+      PETS_AS_SCHEMAS: data.counters.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
@@ -434,7 +502,13 @@ class GroupDialog extends Component {
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       ACCEPTABLE_UNITS_AS: data.selected_choices.map(s => s.text),
-      ACCEPTABLE_UNITS_AS_SCHEMAS: data.selected_choices,
+      ACCEPTABLE_UNITS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
     }).catch((err) => {
