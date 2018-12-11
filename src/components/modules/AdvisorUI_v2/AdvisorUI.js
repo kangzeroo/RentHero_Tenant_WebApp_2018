@@ -74,11 +74,12 @@ class AdvisorUI extends Component {
       {
         id: 'x',
         component: (<MessageSegment
-                               title='Introduction'
+                               // GOTCHA: You cannot use a title in combo with segmentStyles={{ justifyContent: 'space-between' }} without making it look fucked
+                               // title='Introduction'
                                schema={{ id: 'x', endpoint: 'y' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.doneIntro(original_id, endpoint, data)}
-                               action={{ enabled: true, label: 'Ok' }}
+                               action={{ enabled: true, label: 'Ok', actionStyles: { width: '100%' } }}
                                texts={[
                                  ...this.addAnyPreMessages('x'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Welcome to the AdvisorUI Framework 👋 Built by RentHero.' },
@@ -86,6 +87,7 @@ class AdvisorUI extends Component {
                                  { id: '0-3', delay: 500, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, component: (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', margin: '50px 0px 0px 0px' }}><img src='https://pbs.twimg.com/profile_images/962170088941019136/lgpCD8X4_400x400.jpg' height='200px' width='auto' style={{ borderRadius: '20px' }} /></div>) },
                                  { id: '0-4', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Very cool' },
                                ]}
+                               segmentStyles={{ justifyContent: 'space-between' }}
                              />) },
       {
         id: 'y',
@@ -771,7 +773,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100%',
+      minHeight: '100vh',
       justifyContent: 'flex-start',
       alignItems: 'center',
 			background: BACKGROUND_COLOR,

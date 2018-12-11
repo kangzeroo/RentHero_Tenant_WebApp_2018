@@ -52,7 +52,7 @@ class MultiOptionsSegment extends Component {
       show_other_input: false,
       data: {
         selected_choices: [],
-        other_string: '',
+        other_choice: '',
       }
     }
     this.mobile = false
@@ -76,24 +76,7 @@ class MultiOptionsSegment extends Component {
 
   componentDidMount() {
     this.mobile = isMobile()
-    let other_option = this.props.preselected.filter(pre => pre.id === 'other')[0]
-    let other_string = ''
-    if (other_option && other_option.text && other_option.value) {
-      other_string = other_option.text
-    }
-    this.setState({
-      show_other_input: other_string ? true : false,
-      data: {
-        ...this.state.data,
-        selected_choices: this.props.preselected.map(pre => {
-          return {
-            ...pre,
-            value: true
-          }
-        }),
-        other_string: other_string
-      }
-    })
+    this.autoFillOtherSection()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -112,6 +95,26 @@ class MultiOptionsSegment extends Component {
         })
       }
     }
+    if (prevProps.preselected !== this.props.preselected) {
+      this.autoFillOtherSection()
+    }
+  }
+
+  autoFillOtherSection() {
+    console.log(this.props.preselected)
+    let other_option = this.props.preselected.filter(pre => pre.id === 'other')[0]
+    let other_choice = ''
+    if (other_option && other_option.text) {
+      other_choice = other_option.text
+    }
+    this.setState({
+      show_other_input: other_choice ? true : false,
+      data: {
+        ...this.state.data,
+        selected_choices: this.props.preselected,
+        other_choice: other_choice,
+      }
+    }, () => console.log(this.state))
   }
 
   clickedChoice(choice) {
@@ -214,7 +217,8 @@ class MultiOptionsSegment extends Component {
         show_other_input: bool,
         data: {
           ...this.state.data,
-          other_choice: ''
+          other_choice: '',
+          selected_choices: this.state.data.selected_choices.filter(c => c.id !== 'other')
         }
       })
     }
@@ -270,7 +274,7 @@ class MultiOptionsSegment extends Component {
       data: {
         ...this.state.data,
         selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat([
-          { id: 'other', text: this.state.data.other_string || 'other', value: this.state.data.other_string ? true : false }
+          { id: 'other', text: this.state.data.other_choice || 'other', value: this.state.data.other_choice ? true : false }
         ])
       }
     }, () => this.props.onDone(this.props.schema.id, endpoint, this.state.data))
@@ -372,8 +376,11 @@ class MultiOptionsSegment extends Component {
                 {
                   this.props.schema.choices.map((choice) => {
                     return (
-                      <div style={{ margin: '10px 5px 10px 5px', minWidth: '50px' }}>
-                        <span key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>{choice.text}{choice.tooltip ? <Tooltip title={choice.tooltip}><span onClick={(e) => e.stopPropagation()}>&nbsp;&nbsp;&nbsp;ℹ️</span></Tooltip> : null}</span>
+                      <div style={{ margin: '10px 5px 10px 5px' }}>
+                        <div key={choice.id} onClick={() => this.clickedChoice(choice)} style={choiceStyles(this.state.data.selected_choices, choice).choice}>
+                          <div style={{ width: '90%' }}>{choice.text}</div>
+                          {choice.tooltip ? <Tooltip title={choice.tooltip} style={{ width: '10%' }}><span onClick={(e) => e.stopPropagation()}>&nbsp;&nbsp;&nbsp;ℹ️</span></Tooltip> : null}
+                        </div>
                       </div>
                     )
                   })
@@ -387,7 +394,7 @@ class MultiOptionsSegment extends Component {
                       ?
                       null
                       :
-                      <span key='other' onClick={() => this.clickedOther(true)} style={choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice}>Other</span>
+                      <div key='other' onClick={() => this.clickedOther(true)} style={{ ...choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice, textAlign: 'center' }}>Other</div>
                     }
                   </div>
                   :
@@ -397,10 +404,10 @@ class MultiOptionsSegment extends Component {
               {
                 this.props.other && this.state.show_other_input
                 ?
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                   <input
                     id={`other_input--${this.props.schema.id}`}
-                    value={this.state.data.other_string}
+                    value={this.state.data.other_choice}
                     onChange={(e) => {
                       this.setState({ data: { ...this.state.data, other_choice: e.target.value } })
                     }}
@@ -439,7 +446,7 @@ class MultiOptionsSegment extends Component {
               ?
               <div>
                 {
-                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_string : false)
+                  (this.state.data.selected_choices && this.state.data.selected_choices.length > 0) || (this.props.other ? this.state.show_other_input && this.state.data.other_choice : false)
                   ?
                   <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
                   :
@@ -551,6 +558,7 @@ const comStyles = () => {
       display: 'flex',
       outline: 'none',
       width: '100%',
+      maxWidth: '300px',
       fontSize: '1rem',
       height: '30px',
       borderRadius: '10px',
@@ -603,6 +611,10 @@ const choiceStyles = (selected_choices, choice) => {
   return {
     choice: {
       width: '200px',
+      minWidth: '100px',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
       borderRadius: '10px',
       border: `1px solid ${FONT_COLOR}`,
       color: FONT_COLOR,
@@ -610,6 +622,7 @@ const choiceStyles = (selected_choices, choice) => {
       backgroundColor: INPUT_BACKGROUND,
       fontSize: '1rem',
       cursor: 'pointer',
+      textAlign: 'center',
       ...selectedStyle,
       // ":hover": {
       //   opacity: 0.5

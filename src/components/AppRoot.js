@@ -103,6 +103,7 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
+              <Route exact path='/sandbox' render={FinancialDialog} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/prefs' render={SearchPrefs} />

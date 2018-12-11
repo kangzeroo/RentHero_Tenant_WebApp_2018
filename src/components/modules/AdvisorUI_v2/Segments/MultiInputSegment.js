@@ -174,13 +174,15 @@ class MultiInputSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    this.setState({
-      data: {
-        ...this.state.data,
-        inputs: this.state.data.inputs.concat([{ id: uid.randomUUID(6), text: this.state.input_string, value: true }])
-      },
-      input_string: '',
-    })
+    if (this.state.input_string) {
+      this.setState({
+        data: {
+          ...this.state.data,
+          inputs: this.state.data.inputs.concat([{ id: uid.randomUUID(6), text: this.state.input_string, value: true }])
+        },
+        input_string: '',
+      })
+    }
     const input_field = document.getElementById(`input_field--${this.props.schema.id}`)
     const textarea_field = document.getElementById(`textarea_field--${this.props.schema.id}`)
     if (input_field) {
@@ -295,11 +297,12 @@ class MultiInputSegment extends Component {
                       <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
                         <textarea
                           id={`${input.id}---textarea_field--${this.props.schema.id}`}
+                          disabled
                           rows={4}
                           value={this.state.data.inputs.filter(i => i.id === input.id)[0] ? this.state.data.inputs.filter(i => i.id === input.id)[0].text : ''}
                           onChange={(e) => {}}
                           onFocus={() => this.focusedInput(`${input.id}---textarea_field--${this.props.schema.id}`)}
-                          style={comStyles().textarea}
+                          style={{ ...comStyles().textarea, cursor: 'not-allowed' }}
                         ></textarea>
                         <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
                           <Ionicon icon="md-remove" onClick={(e) => this.clickedRemove(e, input.id)} fontSize="35px" color={FONT_COLOR}/>
@@ -311,12 +314,13 @@ class MultiInputSegment extends Component {
                       <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
                         <input
                           id={`${input.id}---input_field--${this.props.schema.id}`}
+                          disabled
                           type={this.props.inputType}
                           value={this.state.data.inputs.filter(i => i.id === input.id)[0] ? this.state.data.inputs.filter(i => i.id === input.id)[0].text : ''}
                           onChange={(e) => {}}
                           onFocus={() => this.focusedInput(`${input.id}---input_field--${this.props.schema.id}`)}
                           placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
-                          style={comStyles().text}
+                          style={{ ...comStyles().text, cursor: 'not-allowed' }}
                         ></input>
                         <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
                           <Ionicon icon="md-remove" onClick={(e) => this.clickedRemove(e, input.id)} fontSize="35px" color={FONT_COLOR}/>
@@ -484,6 +488,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
+      height: '100vh',
       // minHeight: document.documentElement.clientHeight,
 		},
     text: {

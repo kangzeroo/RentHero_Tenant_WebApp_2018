@@ -17,6 +17,7 @@ import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
 import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
 import CounterSegment from '../../modules/AdvisorUI_v2/Segments/CounterSegment'
 import MultiOptionsSegment from '../../modules/AdvisorUI_v2/Segments/MultiOptionsSegment'
+import { Progress } from 'antd'
 import {
   Icon,
 } from 'antd-mobile'
@@ -36,16 +37,38 @@ class OnboardingDialog extends Component {
       },
       premessages: [
         // { segment_id: 'someSegment', texts: [{ id, textStyles, delay, scrollDown, text, component }] }
-      ]
+      ],
+      show_progress: false,
+      progress_percent: 0,
     }
     this.all_segments = []
     this.shown_segments = []
+    this.lastScrollTop = 0
   }
 
   componentWillMount() {
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
     this.setState({ lastUpdated: moment().unix() })
+  }
+
+  componentDidMount() {
+    const scrollable = document.getElementById('scrollable')
+    if (scrollable) {
+      scrollable.addEventListener("scroll", () => { // or window.addEventListener("scroll"....
+         const st = scrollable.scrollTop
+         if (st > this.lastScrollTop){
+            this.setState({
+              show_progress: false
+            })
+         } else {
+            this.setState({
+              show_progress: true
+            })
+         }
+         this.lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+      }, false);
+    }
   }
 
   addAnyPreMessages(segment_id) {
@@ -77,6 +100,7 @@ class OnboardingDialog extends Component {
                                  { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
                                ]}
                                action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%' } }}
+                               segmentStyles={{ justifyContent: 'space-between' }}
                              />) },
      {
        id: '2',
@@ -352,10 +376,16 @@ class OnboardingDialog extends Component {
         setTimeout(() => {
           // add next segment
           this.shown_segments = this.shown_segments.concat(this.all_segments.filter(seg => seg.id === endpoint))
-          this.setState({ lastUpdated: moment().unix() }, () => this.redrawContainer())
+          this.setState({ lastUpdated: moment().unix() }, () => {
+            this.redrawContainer()
+          })
         }, 700)
       })
     }
+  }
+
+  calcProgress() {
+    return this.shown_segments.length/this.all_segments.length*100
   }
 
   action(original_id, urlDestination, data) {
@@ -381,6 +411,17 @@ class OnboardingDialog extends Component {
   }
 
   redrawContainer(duration = 500) {
+    setTimeout(() => {
+      this.setState({
+        progress_percent: this.calcProgress(),
+        show_progress: true
+      })
+      setTimeout(() => {
+        this.setState({
+          show_progress: false
+        })
+      }, 3000)
+    }, duration + 250)
     // scroll down
     const prevScrollHeight = document.getElementById('containment').offsetHeight
     const screenHeight = document.documentElement.clientHeight
@@ -473,6 +514,13 @@ class OnboardingDialog extends Component {
             return (<img src={cssURL} style={{ display: 'none' }} />)
           })
         }
+        {/*
+          this.state.show_progress
+          ?
+          <Progress strokeColor='#2faded' percent={this.state.progress_percent} showInfo={false} style={{ position: 'fixed', bottom: '5px', width: '95%' }} />
+          :
+          null
+        */}
 			</div>
 		)
 	}

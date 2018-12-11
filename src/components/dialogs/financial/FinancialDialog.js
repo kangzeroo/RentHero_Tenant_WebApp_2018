@@ -55,6 +55,12 @@ class FinancialDialog extends Component {
     this.setState({ lastUpdated: moment().unix() })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.prefs !== this.props.prefs) {
+      this.rehydrateSegments()
+    }
+  }
+
   addAnyPreMessages(segment_id) {
     const prem = this.state.premessages.filter((pre) => {
       return pre.segment_id === segment_id
@@ -80,6 +86,7 @@ class FinancialDialog extends Component {
             { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `These details will not be shared unless you choose to put it on your rent applications.` },
           ]}
           action={{ enabled: true, label: 'Continue', actionStyles: { width: '100%' } }}
+          segmentStyles={{ justifyContent: 'space-between' }}
         />) },
       {
         id: 'ideal_budget',
@@ -328,7 +335,7 @@ class FinancialDialog extends Component {
                              ...this.addAnyPreMessages('welfare_assistance'),
                              { id: '1', text: `Do you receive any corporate, government or social assistance payments?` },
                            ]}
-                           preselected={this.props.prefs.WELFARE_AS_SCHEMAS}
+                           preselected={this.props.prefs.FINANCIALS.WELFARE_AS_SCHEMAS}
                            onDone={(original_id, endpoint, data) => this.doneTypeWelfare(original_id, endpoint, data)}
                            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                            multi
@@ -1169,7 +1176,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100%',
+      minHeight: '100vh',
       justifyContent: 'flex-start',
       alignItems: 'center',
 			background: BACKGROUND_COLOR,
