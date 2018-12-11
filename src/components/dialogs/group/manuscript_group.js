@@ -10,10 +10,15 @@
         GROUP_NAME: 'Winter 2019 Crew',
         CERTAIN_MEMBERS: 2,
         UNCERTAIN_MEMBERS: 3,
+        MAX_TOTAL_GROUP: 1,
 
         // acceptable room types
-        ROOM_TYPES_AS: ['2 bed', '2+den', 'solo'],                                        // save as CSV string
-        ROOM_TYPES_AS_SCHEMAS: [{ id, text, value }]                                     // saved as stringified JSON
+        ACCEPTABLE_UNITS_AS: ['2 bed', '2+den'],                                        // save as CSV string
+        ACCEPTABLE_UNITS_AS_SCHEMAS: [{ id, text, value }]
+
+        // names of group members
+        GROUP_MEMBERS_AS: ['Jessica', 'Steven'],                                        // save as CSV string
+        GROUP_MEMBERS_AS_SCHEMAS: [{ id, text, value }]                                     // saved as stringified JSON
 
         // group description
         SEARCHING_AS: ['2 friends'],                                                      // save as CSV string
@@ -41,6 +46,7 @@
   // -------------------------- DIALOG #2 --------------------------- //
 
 
+  MessageSegment                  0. Let's get more specific on what kind of rentals are suitable for your group!
 
   MultiOptionsSegment             1. So who are you searching with?
                                             a. just myself
@@ -51,14 +57,16 @@
 
   MultiCounterSegment             1b/c. How many people are 100% certain they want to live together, and how many are uncertain (depending on price, property or timing)? (male and female)
 
-  MultiOptionsSegment             1b/c_2. Do you want to live in one place all to yourselves, or are you ok with meeting new roommates who are also searching? Roommates mean less space for cheaper rent.
+  MultiInputSegment               1b/c_2. What are the names of your certain group members?
+
+  MultiOptionsSegment             1b/c_2_3. Do you want to live in one place all to yourselves, or are you ok with meeting new roommates who are also searching? Roommates mean less space for cheaper rent.
                                             a. a place all to ourselves
                                             b. ok to meet new roommates
                                             c. show me both
 
-  CounterSegment                  1b/c_2b. Be sure to fill out your roommate matching criteria later!
+  CounterSegment                  1b/c_2_3b. Be sure to fill out your roommate matching criteria later!
 
-  MultiOptionsSegment             1b/c_2_3. Rent can be expensive. Do any roommates want to save money and live in a den? I can show you places with that possibility, but the max limit is 1 person in a den.
+  MultiOptionsSegment             1b/c_2_3_4. Rent can be expensive. Do any roommates want to save money and live in a den? I can show you places with that possibility, but the max limit is 1 person in a den.
                                             a. no, we all want our own room
                                             b. yes, show me dens
                                             c. show me both
