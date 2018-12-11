@@ -10,6 +10,7 @@ import { withRouter } from 'react-router-dom'
 import SubtitlesMachine from './SubtitlesMachine'
 import { isMobile } from '../../../../api/general/general_api'
 import ShortUniqueId from 'short-unique-id'
+import Ionicon from 'react-ionicons'
 const uid = new ShortUniqueId()
 import { Tooltip } from 'antd'
 import {
@@ -29,8 +30,8 @@ import { ACCENT_COLOR, FONT_COLOR, INPUT_BACKGROUND, INPUT_PLACEHOLDER_COLOR, FO
       { id: '1-2', text: 'The next string to display!' }
     ]}
     inputs={[
-      { id: '123', text: 'Web Developer', value: 'Web Developer' },
-      { id: '234', text: 'Chef', value: 'Chef' },
+      { id: '123', text: 'Web Developer', value: true },
+      { id: '234', text: 'Chef', value: true },
     ]}
     onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
     triggerScrollDown={() => this.triggerScrollDown()}
@@ -52,6 +53,7 @@ class MultiInputSegment extends Component {
     this.state = {
       completedSections: [],
 			instantChars: false,
+      input_string: '',
       data: {
         inputs: [],
       }
@@ -81,7 +83,7 @@ class MultiInputSegment extends Component {
       data: {
         ...this.state.data,
         inputs: this.props.inputs,
-        ...initialData: this.props.initialData
+        ...this.props.initialData
       }
     })
   }
@@ -150,29 +152,7 @@ class MultiInputSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    if (this.state.data.input_string.length < this.props.minChars) {
-      Toast.info(`Minimum ${this.props.minChars} characters. ${this.props.minChars - this.state.data.input_string.length} left to go.`, 2)
-    } else if (this.props.inputType === 'tel') {
-      if (this.state.data.input_string.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/igm)) {
-        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
-      } else {
-        Toast.info(`Enter a valid phone number`, 1)
-      }
-    } else if (this.props.inputType === 'email') {
-      if (this.state.data.input_string.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/igm)) {
-        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
-      } else {
-        Toast.info(`Enter a valid email address`, 1)
-      }
-    } else if (this.props.inputType === 'url') {
-      if (this.state.data.input_string.toLowerCase().indexOf('http') > -1 || this.state.data.input_string.toLowerCase().indexOf('www') > -1 || this.state.data.input_string.toLowerCase().indexOf('.') > -1) {
-        this.props.onDone(this.props.schema.id, endpoint, this.state.data)
-      } else {
-        Toast.info(`Enter a valid URL`, 1)
-      }
-    } else {
-      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
-    }
+    this.props.onDone(this.props.schema.id, endpoint, this.state.data)
   }
 
   focusedInput(id) {
@@ -188,6 +168,40 @@ class MultiInputSegment extends Component {
       this.setState({ completedSections: this.state.completedSections.concat([text.id]) })
     }
     return (text.component)
+  }
+
+  clickedAdd(e) {
+    if (e) {
+      e.stopPropagation()
+    }
+    if (this.state.input_string) {
+      this.setState({
+        data: {
+          ...this.state.data,
+          inputs: this.state.data.inputs.concat([{ id: uid.randomUUID(6), text: this.state.input_string, value: true }])
+        },
+        input_string: '',
+      })
+    }
+    const input_field = document.getElementById(`input_field--${this.props.schema.id}`)
+    const textarea_field = document.getElementById(`textarea_field--${this.props.schema.id}`)
+    if (input_field) {
+      input_field.scrollIntoView({ behavior: "smooth", block: "top" })
+    } else if (textarea_field) {
+      textarea_field.scrollIntoView({ behavior: "smooth", block: "top" })
+    }
+  }
+
+  clickedRemove(e, id) {
+    if (e) {
+      e.stopPropagation()
+    }
+    this.setState({
+      data: {
+        ...this.state.data,
+        inputs: this.state.data.inputs.filter(i => i.id !== id)
+      }
+    })
   }
 
 	render() {
@@ -251,10 +265,9 @@ class MultiInputSegment extends Component {
                                   document.getElementById(`input_field--${this.props.schema.id}`).focus()
                                 }
                                 document.getElementById(`input_field--${this.props.schema.id}`).addEventListener('keyup', (e) => {
-                                  console.log(e.keyCode)
                             			if (e.keyCode === 13) {
-                                    document.getElementById(`input_field--${this.props.schema.id}`).blur()
-                                    this.nextSegment()
+                                    // document.getElementById(`input_field--${this.props.schema.id}`).blur()
+                                    this.clickedAdd()
                             			}
                             		})
                               }
@@ -278,34 +291,80 @@ class MultiInputSegment extends Component {
             ?
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {
+                this.state.data.inputs.map((input) => {
+                  if (this.props.inputType === 'textarea') {
+                    return (
+                      <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
+                        <textarea
+                          id={`${input.id}---textarea_field--${this.props.schema.id}`}
+                          disabled
+                          rows={4}
+                          value={this.state.data.inputs.filter(i => i.id === input.id)[0] ? this.state.data.inputs.filter(i => i.id === input.id)[0].text : ''}
+                          onChange={(e) => {}}
+                          onFocus={() => this.focusedInput(`${input.id}---textarea_field--${this.props.schema.id}`)}
+                          style={{ ...comStyles().textarea, cursor: 'not-allowed' }}
+                        ></textarea>
+                        <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
+                          <Ionicon icon="md-remove" onClick={(e) => this.clickedRemove(e, input.id)} fontSize="35px" color={FONT_COLOR}/>
+                        </div>
+                      </div>
+                    )
+                  } else {
+                    return (
+                      <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
+                        <input
+                          id={`${input.id}---input_field--${this.props.schema.id}`}
+                          disabled
+                          type={this.props.inputType}
+                          value={this.state.data.inputs.filter(i => i.id === input.id)[0] ? this.state.data.inputs.filter(i => i.id === input.id)[0].text : ''}
+                          onChange={(e) => {}}
+                          onFocus={() => this.focusedInput(`${input.id}---input_field--${this.props.schema.id}`)}
+                          placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
+                          style={{ ...comStyles().text, cursor: 'not-allowed' }}
+                        ></input>
+                        <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
+                          <Ionicon icon="md-remove" onClick={(e) => this.clickedRemove(e, input.id)} fontSize="35px" color={FONT_COLOR}/>
+                        </div>
+                      </div>
+                    )
+                  }
+                })
+              }
+              {
                 this.props.inputType === 'textarea'
                 ?
                 <div style={{ position: 'relative', width: '100%', minHeight: '100px' }}>
                   <textarea
                     id={`textarea_field--${this.props.schema.id}`}
                     rows={4}
-                    value={this.state.data.input_string}
+                    value={this.state.input_string}
                     onChange={(e) => {
-                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                      this.setState({ input_string: e.target.value })
                     }}
                     onFocus={() => this.focusedInput(`textarea_field--${this.props.schema.id}`)}
                     placeholder={this.props.stringInputPlaceholder}
                     style={comStyles().textarea}
                   ></textarea>
+                  <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
+                    <Ionicon icon="md-add" onClick={(e) => this.clickedAdd(e)} fontSize="35px" color={FONT_COLOR}/>
+                  </div>
                 </div>
                 :
                 <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
                   <input
                     id={`input_field--${this.props.schema.id}`}
                     type={this.props.inputType}
-                    value={this.state.data.input_string}
+                    value={this.state.input_string}
                     onChange={(e) => {
-                      this.setState({ data: { ...this.state.data, input_string: e.target.value } })
+                      this.setState({ input_string: e.target.value })
                     }}
                     onFocus={() => this.focusedInput(`input_field--${this.props.schema.id}`)}
                     placeholder={this.props.inputType === 'number' ? this.props.numberInputPlaceholder : this.props.stringInputPlaceholder}
                     style={comStyles().text}
                   ></input>
+                  <div style={{ position: 'absolute', top: '3px', right: '15px' }}>
+                    <Ionicon icon="md-add" onClick={(e) => this.clickedAdd(e)} fontSize="35px" color={FONT_COLOR}/>
+                  </div>
                 </div>
               }
             </div>
@@ -325,7 +384,7 @@ class MultiInputSegment extends Component {
           </div>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
             {
-              this.state.data.input_string && this.shouldDisplayInput()
+              this.state.data.inputs && this.state.data.inputs.length && this.shouldDisplayInput()
               ?
               <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
               :
@@ -429,6 +488,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
+      height: '100vh',
       // minHeight: document.documentElement.clientHeight,
 		},
     text: {

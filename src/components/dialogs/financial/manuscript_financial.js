@@ -29,17 +29,16 @@
 
       // employment status
       EMPLOYED_AS: ['part_time', 'full_time', 'self_employed', 'unemployed', 'student'],    // save as CSV string
-      EMPLOYED_AS_SCHEMAS: [{ id, text, value }],                                          // saved as stringified JSON
+      EMPLOYED_AS_SCHEMAS: [{ id, text, value }],                                       // saved as stringified JSON
+      JOB_TITLES: ['chef', 'repairman'],                                              // saved as stringified JSON
 
       // student info
       STUDIED_AS: ['phd cs uwaterloo', 'CFA'],                                              // save as CSV string
-      STUDIED_AS_SCHEMAS: [{ id, text, value }],                                           // saved as stringified JSON
-      STUDYING: '',
+      STUDIED_AS_SCHEMAS: [{ id, text, value }],
 
       // self employed info
       SELF_EMPLOYED_AS: ['gig worker', 'small business']                                    // save as CSV string
-      SELF_EMPLOYED_AS_SCHEMAS: [{ id, text, value }],                                     // saved as stringified JSON
-      JOB_TITLES: ['chef', 'repairman'],                                                    // save as CSV string
+      SELF_EMPLOYED_AS_SCHEMAS: [{ id, text, value }],                                             // save as CSV string
 
       // welfare info
       WELFARE_AS: ['odsp', 'osap'],                                                         // save as CSV string
@@ -75,14 +74,15 @@
 
   CounterSegment             3a/b_1. What is your monthly total income after tax from all your jobs?
 
-  MultiTagSegment            3a/b_2. What is your job title? You can put multiple. (eg. Welder at a Machine Shop, Manager at Costco)
+  MultiInputSegment          3a/b_2. What is your job title? You can put multiple. (eg. Welder at a Machine Shop, Manager at Costco)
 
   MultiOptionsSegment        3a/b_2_3. Are you able to provide proof of income from your job? Select any that you can obtain.
                                         a. Paycheque from Employer
                                         b. Employment Letter with Salary
                                         c. Personal Income Tax Filing
                                         d. Bank Deposits Activity
-                                        e. Other
+                                        e. None
+                                        f. Other
                                         multi
 
 
@@ -117,7 +117,8 @@
                                         b. OSAP - Ontario Student Assistance Plan
                                         c. Ontario Works - Unemployment Assistance
                                         d. Retirement Pension
-                                        e. Other
+                                        e. None
+                                        f. Other
                                         multi
 
   CounterSegment             3ef_1b/c/d/e. What is your monthly total from all those assistance programmes?
@@ -135,28 +136,23 @@
                                         c. Cash Jobs
                                         multi
 
+  CounterSegment             3e_1_2_3. What is the monthly total of your family, investments and other income sources?
+
   MultiOptionsSegment        4a_1. If your rent is too high to personally pay, is your family willing to sign your lease as a guarantor?
                                    This means they are legally liable for rent if you do not pay it.
                                    In order to be your guarantor, that family member has to be a Canadian Citizen or Permanent Resident.
                                      a. Yes, I have Canadian Guarantor
                                      b. No, I have International Guarantor
                                      c. No, I do not have a Guarantor
-                                     d. No, I do not need a Guarantor
 
-  CounterSegment             3e_1_2_3. What is the monthly total of your family, investments and other income sources?
 
   MultiCounterSegment        4. Your monthly income is seperated into regular and adhoc income.
                                 Based on your answers, are these are your correct amounts? Please modify if necessary.
 
-  MultiOptionsSegment        5. Landlords in Ontario typically expect 2 months of rent as deposit. Do you have $_____ of cash available in your bank for deposit?
-                                        a. Yes, I have that right now ($_____)
-                                        b. No, but I will have it in time ($_____)
-                                        c. No, I am not sure if I can get that in time ($_____)
+  CounterSegment             5. Landlords in Ontario typically expect 2 months of rent as deposit. How much cash do you have in your bank to cover your $_____ portion of the deposit? A guess is fine.
 
-  MultiOptionsSegment        5-NoIncome-NoGuarantor. Since you have no income and no guarantor, landlords will expect a higher rent deposit as a form of security.
-                                                     Are you able to get $_______ (4 months of rent) in cash?
-                                        a. Yes
-                                        b. No
+  CounterSegment             5-NoIncome-NoGuarantor. Since you have no income and no guarantor, landlords will expect a higher rent deposit as a form of security.
+                                                     How many months of rent are you able to put for a cash deposit?
 
   MultiOptionsSegment        6. Some rentals allow multiple names on the lease, but others only allow 1 name.
                                 Who's name will legally be on the lease agreement? Whoever's names it is signed under is responsible for rent payment, damages and legal responsibility.
@@ -169,17 +165,10 @@
                                      If your own personal income is not enough to cover the entire lease, you will need to tell the landlord that your roommates are paying you.
                                      They will all need to provide proof of income too.
 
- MultiOptionsSegment         7. Select all the levels of education you have completed or in process of completing.
-                                         a. High School
-                                         b. Apprenticeship
-                                         c. Undergraduate
-                                         d. Graduate
-                                         e. PhD
-                                         f. Professional Certification
-                                         g. Other
-                                         multi
-
-  InputSegment               7b/c/d/e/f. What do you study and where? (eg. Accounting at Sheraton, Nursing at Ryerson)
+ MultiInputSegment         7. Enter any education you have completed or in process of completing.
+                              Include your status (current or graduated), level of education (eg. diploma or undergrad), school and field of study.
+                              Professional designations such as CFA, General Practitioner and Certified Paralegal count too!
+                              For example, "Current undergraduate at Ryerson Nursing"
 
   MultiOptionsSegment        8. Based on your financial status, your target rent price of $_____ is (very affordable/affordable/too expensive).
                                 You are spending ___% of your monthly income on rent, whereas the max recommended is 30%.

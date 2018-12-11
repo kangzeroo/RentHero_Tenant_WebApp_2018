@@ -163,6 +163,9 @@ class MapSegment extends Component {
     if(!this.mobile) {
       document.getElementById(`address--${this.props.schema.id}`).focus()
     }
+    if (this.state.data.address_lat && this.state.data.address_lng) {
+      this.renderMap(parseFloat(this.state.data.address_lat), parseFloat(this.state.data.address_lng))
+    }
   }
 
   fillInAddress() {
@@ -179,17 +182,21 @@ class MapSegment extends Component {
     }, () => {
 			document.getElementById(`address--${this.props.schema.id}`).blur()
 			setTimeout(() => {
-        document.getElementById(`map--${this.props.schema.id}`).style.height = '250px'
-				const coords = { lat: parseFloat(place.geometry.location.lat().toFixed(7)), lng: parseFloat(place.geometry.location.lng().toFixed(7)) }
-				const map = new google.maps.Map(document.getElementById(`map--${this.props.schema.id}`), {
-					center: coords,
-					zoom: 13,
-					disableDefaultUI: true,
-				})
-				const marker = new google.maps.Marker({position: coords, map: map})
-        document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "top" })
+        this.renderMap(parseFloat(place.geometry.location.lat().toFixed(7)), parseFloat(place.geometry.location.lng().toFixed(7)))
 			}, 500)
 		})
+  }
+
+  renderMap(lat, lng) {
+    document.getElementById(`map--${this.props.schema.id}`).style.height = '250px'
+    const coords = { lat, lng }
+    const map = new google.maps.Map(document.getElementById(`map--${this.props.schema.id}`), {
+      center: coords,
+      zoom: 13,
+      disableDefaultUI: true,
+    })
+    const marker = new google.maps.Marker({position: coords, map: map})
+    document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "top" })
   }
 
   focusedInput(id) {

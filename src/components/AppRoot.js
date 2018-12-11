@@ -43,6 +43,7 @@ import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
 import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
+import CoverPage from './pages/CoverPage'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
@@ -63,11 +64,12 @@ class AppRoot extends Component {
 
 	render() {
     const sidebar = [
+      <List.Item key={9} onClick={() => this.clickedDrawerOption('/cover')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Cover Page</span></List.Item>,
       <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Browse</span></List.Item>,
       <List.Item key={1} onClick={() => this.clickedDrawerOption('/heatmap')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Heat Map</span></List.Item>,
       <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Search Options</span></List.Item>,
       <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Favorites</span></List.Item>,
-      <List.Item key={3} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Sandbox</span></List.Item>,
+      <List.Item key={4} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Sandbox</span></List.Item>,
     ]
     if (this.props.authentication_loaded) {
       return (
@@ -101,6 +103,7 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
+              <Route exact path='/sandbox' render={FinancialDialog} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/prefs' render={SearchPrefs} />
@@ -108,13 +111,14 @@ class AppRoot extends Component {
               <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
               <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
-              <Route exact path='/sandbox' render={FinancialDialog} />
+              <Route exact path='/cover' render={CoverPage} />
               <Route exact path='/movein' render={MoveInDialog} />
               <Route exact path='/sample' render={AdvisorUI} />
               <Route exact path='/sino' render={ChineseDialogOnboarding} />
               <Route exact path='/onboarding' render={OnboardingDialog} />
               <Route exact path='/group' render={GroupDialog} />
               <Route exact path='/personal' render={RoommatesDialog} />
+              <Route exact path='/finance' render={FinancialDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

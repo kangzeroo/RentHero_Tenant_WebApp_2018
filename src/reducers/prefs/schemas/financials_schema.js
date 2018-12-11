@@ -5,6 +5,7 @@ export const FINANCIALS = {
     TENANT_ID: '',
 
     IDEAL_PER_PERSON: 0,
+    DEPOSIT_CASH_BID: 0,
     DEPOSIT_CASH: 0,
     BUDGET_FLEXIBILITY: 0,
 
@@ -36,13 +37,16 @@ export const FINANCIALS = {
     EMPLOYED_AS: [],    // save as CSV string
     EMPLOYED_AS_SCHEMAS: [],                                          // saved as stringified JSON
 
+    // job titles
+    JOB_TITLES_AS: [],                                                    // save as CSV string
+    JOB_TITLES_AS_SCHEMAS: [],                                            // save as stringified JSON
+
     // student info
     // STUDIED_AS: ['phd cs uwaterloo', 'CFA'],                                              // save as CSV string
     // STUDIED_AS_SCHEMAS: [{ id, text, value }],                                           // saved as stringified JSON
     // STUDYING: '',
     STUDIED_AS: [],                                              // save as CSV string
     STUDIED_AS_SCHEMAS: [],                                           // saved as stringified JSON
-    STUDYING: '',
 
     // self employed info
     // SELF_EMPLOYED_AS: ['gig worker', 'small business']                                    // save as CSV string
@@ -50,7 +54,6 @@ export const FINANCIALS = {
     // JOB_TITLES: ['chef', 'repairman'],                                                    // save as CSV string
     SELF_EMPLOYED_AS: [],                                    // save as CSV string
     SELF_EMPLOYED_AS_SCHEMAS: [],                                     // saved as stringified JSON
-    JOB_TITLES: [],                                                    // save as CSV string
 
     // welfare info
     // WELFARE_AS: ['odsp', 'osap'],                                                         // save as CSV string
