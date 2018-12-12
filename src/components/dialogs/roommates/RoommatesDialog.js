@@ -80,26 +80,94 @@ class RoommatesDialog extends Component {
                          ]}
                          action={{ enabled: true, label: 'Begin', actionStyles: { width: '100%' } }}
                        />) },
-      {
-        id: 'first_time_renting',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.utoronto.ca/sites/default/files/zia-syed-Toronto-unsplash%28weblead0.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-        component: (<MultiOptionsSegment
-
-                        schema={{
-                          id: 'first_time_renting',
-                          endpoint: 'how_long_searching',
-                          choices: [
-                            { id: 'first_time_ever', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'First Time Ever', value: 'first_time_ever', endpoint: 'how_long_searching' },
-                            { id: 'first_time_in_city', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'First Time in Toronto', value: 'first_time_in_city', endpoint: 'how_long_searching' },
-                            { id: 'no', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'No', value: 'no', endpoint: 'how_long_searching' },
-                          ]
-                        }}
-                        texts={[
-                          { id: '1', scrollDown: true, text: `Is this your first time renting?` },
-                        ]}
-                        onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-                        triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                     />) },
+ {
+   id: 'roommate_gender',
+   scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn.freshome.com/wp-content/uploads/2018/07/balcony-how.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+   component: (<MultiOptionsSegment
+                           title='ROOMMATE GENDERS'
+                           schema={{
+                             id: 'roommate_gender',
+                             endpoint: 'roommate_age_limits',
+                             choices: [
+                               { id: 'female_only', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Females Only', value: 'female_only', endpoint: 'roommate_age_limits' },
+                               { id: 'male_only', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Males Only', value: 'male_only', endpoint: 'roommate_age_limits' },
+                               { id: 'mixed', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Any Gender', value: 'mixed', endpoint: 'roommate_age_limits' },
+                             ]
+                           }}
+                           texts={[
+                             { id: '1', text: `What gender of roommates are you comfortable living with?` },
+                           ]}
+                           onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                        />) },
+{
+  id: 'roommate_age_limits',
+  component: (<MultiCounterSegment
+            title='ROOMMATE AGES'
+            schema={{ id: 'roommate_age_limits', endpoint: 'lgbt_friendly' }}
+            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+            onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+            texts={[
+              { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What age range of roommates are you comfortable with?' },
+            ]}
+            counters={[
+              { id: 'min_age', renderCountValue: (c) => c, incrementerOptions: { min: 18, max: 99, step: 1, default: 20 }, text: 'Min Age', value: 20 },
+              { id: 'max_age', renderCountValue: (c) => c, incrementerOptions: { min: 18, max: 99, step: 1, default: 30 }, text: 'Max Age', value: 30 },
+            ]}
+         /> )},
+// {
+//  id: 'lgbt_friendly',
+//  component: (<MultiOptionsSegment
+//        title='LGBT Friendliness'
+//        schema={{
+//          id: 'lgbt_friendly',
+//          endpoint: 'allergies_medical_conditions',
+//          choices: [
+//            { id: 'yes', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes', value: 'yes', endpoint: 'allergies_medical_conditions' },
+//            { id: 'no', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'No', value: 'no', endpoint: 'allergies_medical_conditions' },
+//          ]
+//        }}
+//        texts={[
+//          { id: '1', scrollDown: true, text: `Are you LGBT friendly?` },
+//        ]}
+//        onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+//        triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+//        other
+//     />) },
+// {
+//   id: 'allergies_medical_conditions',
+//   scrollStyles: { scroll_styles: { backgroundImage: `url('https://foodrevolution.org/wp-content/uploads/2018/04/blog-featured-diabetes-20180406-1330.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+//   component: (<InputSegment
+//          title='Allergies & Medical'
+//          schema={{ id: 'allergies_medical_conditions', endpoint: 'furry_friends' }}
+//          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+//          onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+//          texts={[
+//            { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Do you have any allergies or medical conditions?` },
+//          ]}
+//          inputType={'textarea'}
+//          stringInputPlaceholder={'Tell me as much as you are comfortable sharing'}
+//       /> )},
+//       {
+//         id: 'first_time_renting',
+//         scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.utoronto.ca/sites/default/files/zia-syed-Toronto-unsplash%28weblead0.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+//         component: (<MultiOptionsSegment
+//
+//                         schema={{
+//                           id: 'first_time_renting',
+//                           endpoint: 'how_long_searching',
+//                           choices: [
+//                             { id: 'first_time_ever', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'First Time Ever', value: 'first_time_ever', endpoint: 'how_long_searching' },
+//                             { id: 'first_time_in_city', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'First Time in Toronto', value: 'first_time_in_city', endpoint: 'how_long_searching' },
+//                             { id: 'no', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'No', value: 'no', endpoint: 'how_long_searching' },
+//                           ]
+//                         }}
+//                         texts={[
+//                           { id: '1', scrollDown: true, text: `Is this your first time renting?` },
+//                         ]}
+//                         onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+//                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+//                      />) },
       {
         id: 'how_long_searching',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.theglobeandmail.com/resizer/E5UhKkd9oC1MiABKrCh5VYjADG8=/1200x0/filters:quality(80)/arc-anglerfish-tgam-prod-tgam.s3.amazonaws.com/public/ESXSYJOCIBAOPEMRC2KIKRMOSY')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },

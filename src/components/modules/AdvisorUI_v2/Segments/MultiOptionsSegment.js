@@ -394,7 +394,7 @@ class MultiOptionsSegment extends Component {
                       ?
                       null
                       :
-                      <div key='other' onClick={() => this.clickedOther(true)} style={{ ...choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice, textAlign: 'center' }}>Other</div>
+                      <div key='other' onClick={() => this.clickedOther(true)} style={{ ...choiceStyles(this.state.data.selected_choices, { id: 'other' }).choice, justifyContent: 'center' }}>Other</div>
                     }
                   </div>
                   :

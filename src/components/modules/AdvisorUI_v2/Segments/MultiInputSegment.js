@@ -152,7 +152,10 @@ class MultiInputSegment extends Component {
     if (e) {
       e.stopPropagation()
     }
-    this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    this.clickedAdd(e)
+    setTimeout(() => {
+      this.props.onDone(this.props.schema.id, endpoint, this.state.data)
+    }, 200)
   }
 
   focusedInput(id) {
@@ -186,9 +189,9 @@ class MultiInputSegment extends Component {
     const input_field = document.getElementById(`input_field--${this.props.schema.id}`)
     const textarea_field = document.getElementById(`textarea_field--${this.props.schema.id}`)
     if (input_field) {
-      input_field.scrollIntoView({ behavior: "smooth", block: "top" })
+      input_field.scrollIntoView({ behavior: "smooth", block: "center" })
     } else if (textarea_field) {
-      textarea_field.scrollIntoView({ behavior: "smooth", block: "top" })
+      textarea_field.scrollIntoView({ behavior: "smooth", block: "center" })
     }
   }
 

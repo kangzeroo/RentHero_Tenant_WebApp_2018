@@ -66,12 +66,34 @@ class MultiCounterSegment extends Component {
 
   componentWillMount() {
     if (this.props.initialData) {
-      this.setState({
-        data: {
-          ...this.state.data,
-          ...this.props.initialData
-        }
-      })
+      if (this.props.initialData.counters) {
+        const counters = this.props.counters.map(c => {
+          let existing_value = c.value
+          this.props.initialData.counters.forEach(ct => {
+            if (ct.id === c.id) {
+              existing_value = ct.value
+            }
+          })
+          return {
+            ...c,
+            value: existing_value
+          }
+        })
+        this.setState({
+          data: {
+            ...this.state.data,
+            ...this.state.initialData,
+            counters: counters
+          }
+        })
+      } else {
+        this.setState({
+          data: {
+            ...this.state.data,
+            ...this.state.initialData,
+          }
+        })
+      }
     }
     if (this.props.instant_chars_segment_id === this.props.schema.id) {
       this.setState({
@@ -84,6 +106,28 @@ class MultiCounterSegment extends Component {
     this.mobile = isMobile()
     console.log(typeof this.props.counters)
     console.log(this.props.counters)
+    if (this.props.initialData.counters) {
+      const counters = this.props.counters.map(c => {
+        let existing_value = c.value
+        this.props.initialData.counters.forEach(ct => {
+          if (ct.id === c.id) {
+            existing_value = ct.value
+          }
+        })
+        return {
+          ...c,
+          value: existing_value
+        }
+      })
+      this.setState({
+        data: {
+          ...this.state.data,
+          counters: [].concat(this.props.counters),
+          ...this.props.initialData,
+          counters: counters
+        }
+      }, () => console.log(this.state.data))
+    } else {
     this.setState({
       data: {
         ...this.state.data,
@@ -91,6 +135,7 @@ class MultiCounterSegment extends Component {
         ...this.props.initialData,
       }
     }, () => console.log(this.state.data))
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -422,6 +467,10 @@ MultiCounterSegment.propTypes = {
       step: 1,
     }
   */
+  defaultRenderCountValue: PropTypes.func,
+  /*
+    (c) => c
+  */
 }
 
 // for all optional props, define a default value
@@ -432,7 +481,8 @@ MultiCounterSegment.defaultProps = {
   skippable: false,
   skipEndpoint: '',
   other: false,
-  otherIncrementerOptions: {}
+  otherIncrementerOptions: {},
+  defaultRenderCountValue: (c) => c,
 }
 
 // Wrap the prop in Radium to allow JS styling

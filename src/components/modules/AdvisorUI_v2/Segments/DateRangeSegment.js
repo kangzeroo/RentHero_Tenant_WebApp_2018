@@ -59,6 +59,7 @@ class DateRangeSegment extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.initialData)
     if (this.props.initialData) {
       this.setState({
         data: {

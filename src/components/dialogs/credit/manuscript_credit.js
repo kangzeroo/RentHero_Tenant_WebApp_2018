@@ -12,8 +12,8 @@
     PAST_CREDIT_EXP_AS_SCHEMAS: [{ id, text, value }],                                // save as stringified json
 
     // what the tenant guessed their credit provider was
-    GUESSED_CREDIT_AS: ['canadian credit', 'american credit'],                        // save as CSV string
-    GUESSED_CREDIT_AS_SCHEMAS: [{ id, text, value }],                                // save as stringified json
+    PAST_CREDIT_BRANDS_AS: ['canadian credit', 'american credit'],                        // save as CSV string
+    PAST_CREDIT_BRANDS_AS_SCHEMAS: [{ id, text, value }],                                // save as stringified json
 
   }
 
@@ -21,11 +21,13 @@
   // -------------------------- DIALOG #4 --------------------------- //
 
 
-  MultiOptionsSegment             1. Let's talk about credit scores.
-                                     Is this the first time you've done a credit report?
-                                            a. Yes
-                                            b. No, but I forgot
-                                            b. No, never
+  MessageSegment                  1. Let's talk about credit scores.
+                                     Don't worry it will be fast!
+
+  MultiOptionsSegment             2. Have you ever done a credit report ever?
+                                            a. Yes, recently
+                                            b. Yes, but I don't remember
+                                            c. No, never
 
   MultiOptionsSegment             2. A credit score is a measurement of how well you pay back your debts....
                                      It is mandatory, all landlords expect it as security and reassurance...
