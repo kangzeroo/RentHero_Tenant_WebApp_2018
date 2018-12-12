@@ -46,6 +46,7 @@ import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
+import CreditDialog from './dialogs/credit/CreditDialog'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
 import GroupDialog from './dialogs/group/GroupDialog'
 import RoommatesDialog from './dialogs/roommates/RoommatesDialog'
@@ -119,6 +120,7 @@ class AppRoot extends Component {
               <Route exact path='/group' render={GroupDialog} />
               <Route exact path='/personal' render={RoommatesDialog} />
               <Route exact path='/finance' render={FinancialDialog} />
+              <Route exact path='/credit' render={CreditDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

@@ -1187,7 +1187,7 @@ class FinancialDialog extends Component {
 FinancialDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
-  prefs: PropTypes.array,
+  prefs: PropTypes.object.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   tenant_id: PropTypes.string.isRequired,
 }

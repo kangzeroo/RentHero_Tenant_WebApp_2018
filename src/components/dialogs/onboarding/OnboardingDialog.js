@@ -543,7 +543,7 @@ OnboardingDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
   updatePreferences: PropTypes.func.isRequired,
-  prefs: PropTypes.array.isRequired,
+  prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
 }
 

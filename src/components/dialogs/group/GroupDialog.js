@@ -117,7 +117,7 @@ class GroupDialog extends Component {
               preselected={this.props.prefs.GROUP.SEARCHING_AS_SCHEMAS}
               onDone={(original_id, endpoint, data) => this.doneSearchingAs(original_id, endpoint, data)}
               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-           />) },,
+           />) },
      {
        id: 'meet_the_family',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/mado5ne/birthday-party-family-eating-cake-in-the-park-next-to-inscription-happy-birthday_4jlwyrudxl__F0000.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
@@ -673,7 +673,7 @@ class GroupDialog extends Component {
 GroupDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
-  prefs: PropTypes.array,
+  prefs: PropTypes.object.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   tenant_id: PropTypes.string.isRequired,
 }
