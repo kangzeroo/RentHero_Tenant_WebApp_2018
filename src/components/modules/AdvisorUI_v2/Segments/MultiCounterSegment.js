@@ -67,10 +67,16 @@ class MultiCounterSegment extends Component {
   componentWillMount() {
     if (this.props.initialData) {
       if (this.props.initialData.counters) {
-        const counters = this.props.initialData.counters.map(c => {
+        const counters = this.props.counters.map(c => {
+          let existing_value = c.value
+          this.props.initialData.counters.forEach(ct => {
+            if (ct.id === c.id) {
+              existing_value = ct.value
+            }
+          })
           return {
             ...c,
-            renderCountValue: this.props.defaultRenderCountValue
+            value: existing_value
           }
         })
         this.setState({
@@ -101,10 +107,16 @@ class MultiCounterSegment extends Component {
     console.log(typeof this.props.counters)
     console.log(this.props.counters)
     if (this.props.initialData.counters) {
-      const counters = this.props.initialData.counters.map(c => {
+      const counters = this.props.counters.map(c => {
+        let existing_value = c.value
+        this.props.initialData.counters.forEach(ct => {
+          if (ct.id === c.id) {
+            existing_value = ct.value
+          }
+        })
         return {
           ...c,
-          renderCountValue: this.props.defaultRenderCountValue
+          value: existing_value
         }
       })
       this.setState({

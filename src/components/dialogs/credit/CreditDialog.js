@@ -80,6 +80,7 @@ class CreditDialog extends Component {
                            { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Don't worry, this is short!` },
                          ]}
                          action={{ enabled: true, label: 'Begin', actionStyles: { width: '100%' } }}
+                         segmentStyles={{ justifyContent: 'space-between' }}
                        />) },
          {
            id: 'ever_done_credit',

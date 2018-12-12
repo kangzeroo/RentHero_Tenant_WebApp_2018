@@ -170,7 +170,7 @@ class OnboardingDialog extends Component {
                                  title='Group Size'
                                  schema={{ id: '5', endpoint: '6' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 onDone={(original_id, endpoint, data) => this.donePersons(original_id, endpoint, data)}
+                                 onDone={(original_id, endpoint, data) => this.doneGroupSize(original_id, endpoint, data)}
                                  texts={[
                                    ...this.addAnyPreMessages('5'),
                                    { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'And how many people are looking for a rental? 🙋 Just you, or more?' },
@@ -296,7 +296,7 @@ class OnboardingDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.LOCATION.KEY,
-      TRANSPORT_MODES_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
+      TRANSPORT_MODES_AS: data.selected_choices.map(s => s.text),
       TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -311,7 +311,7 @@ class OnboardingDialog extends Component {
     })
   }
 
-  donePersons(original_id, endpoint, data) {
+  doneGroupSize(original_id, endpoint, data) {
     console.log(data)
     this.done(original_id, endpoint, data)
     savePreferences({
@@ -332,7 +332,7 @@ class OnboardingDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      WHOLE_OR_RANDOM_AS: data.selected_choices.reduce((acc, curr) => `${acc}, ${curr.text}` , ''),
+      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text),
       WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,

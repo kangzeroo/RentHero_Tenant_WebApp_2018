@@ -7,7 +7,7 @@
   2. FinancialDialog          [DONE]                       // identifies the budget and finances of tenant
   3. GroupDialog              [DONE]                       // identifies the group size and flexibility
   4. MoveInDialog             [    ]                       // identifies the movein date and urgency
-  5. CreditDialog             [    ]                       // explains and asks for the credit score and report
+  5. CreditDialog             [DONE]                       // explains and asks for the credit score and report
   6. DocumentsDialog          [PARTIAL]                    // updates tenant contact info and uploads documents
   8. LocationDialog                         // narrows down the geographic areas and desired nearby features
   9. AmenitiesDialog                        // identifies suite and building amenities that sweeten the deal
