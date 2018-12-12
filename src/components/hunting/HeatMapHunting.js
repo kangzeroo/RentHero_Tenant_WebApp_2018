@@ -185,9 +185,9 @@ class HeatMapHunting extends Component {
 	render() {
 		return (
 			<div id='HeatMapHunting' style={comStyles().container}>
-        <div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 4, color: 'white', cursor: 'pointer' }}>
+        {/*<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 4, color: 'white', cursor: 'pointer' }}>
           <Ionicon icon="md-menu" color='#117bc7b3' fontSize='2rem' />
-        </div>
+        </div>*/}
         <div id="map" style={comStyles().map}></div>
         {
           this.state.nearby_stats.matches && this.state.nearby_stats.matches.length
@@ -283,13 +283,13 @@ const comStyles = () => {
 const statStyles = () => {
   return {
     popup: {
-      width: '95vw',
+      width: '95%',
       height: '40vh',
       minHeight: '300px',
       backgroundColor: 'white',
       position: 'absolute',
       bottom: '0px',
-      left: '2.5vw',
+      left: '2.5%',
       borderRadius: '20px 20px 0px 0px',
     },
     pop_container: {

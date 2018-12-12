@@ -3,7 +3,7 @@ import {
   CLEAN_PAPER,
 } from './color_packs'
 
-const PACKAGE = BLUE_PACKAGE
+const PACKAGE = CLEAN_PAPER
 
 export const FONT_FAMILY = PACKAGE.FONT_FAMILY
 export const FONT_FAMILY_ACCENT = PACKAGE.FONT_FAMILY_ACCENT

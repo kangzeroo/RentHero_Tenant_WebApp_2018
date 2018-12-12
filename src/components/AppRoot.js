@@ -44,6 +44,7 @@ import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
+import DualityPage from './pages/DualityPage'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import CreditDialog from './dialogs/credit/CreditDialog'
@@ -105,6 +106,7 @@ class AppRoot extends Component {
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
               <Route exact path='/sandbox' render={FinancialDialog} />
+              <Route exact path='/duality' render={DualityPage} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/prefs' render={SearchPrefs} />

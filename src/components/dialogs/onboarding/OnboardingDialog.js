@@ -443,6 +443,7 @@ class OnboardingDialog extends Component {
         scrollTop: prevScrollHeight
     }, duration);
     // change background image if applicable
+    /*
     const current_segment = this.shown_segments[this.shown_segments.length - 1]
     if (current_segment.scrollStyles && current_segment.scrollStyles.scroll_styles && current_segment.scrollStyles.scrollable_styles) {
       let darkenCount = 0
@@ -502,13 +503,14 @@ class OnboardingDialog extends Component {
         }, 25)
       }, duration + 250)
     }
+    */
   }
 
 	render() {
 		return (
-			<div id='OnboardingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
-        <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
-          <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
+			<div id='OnboardingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
+        <div id='scroll' style={scrollStyles(this.state.scrollStyles, this.props.width).scroll}>
+          <div id='scrollable' style={scrollStyles(this.state.scrollStyles, this.props.width).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
               {
                 this.shown_segments.map((seg) => {
@@ -545,6 +547,7 @@ OnboardingDialog.propTypes = {
   updatePreferences: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
+  width: PropTypes.string,                  // passed in
 }
 
 // for all optional props, define a default value
@@ -574,12 +577,13 @@ export default withRouter(
 // ===============================
 
 // the JS function that returns Radium JS styling
-const comStyles = () => {
+const comStyles = (width) => {
 	return {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100%',
+      height: '100vh',
+      width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
 			background: BACKGROUND_COLOR,
@@ -589,7 +593,7 @@ const comStyles = () => {
 	}
 }
 
-const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
+const scrollStyles = ({ scroll_styles, scrollable_styles }, width) => {
   return {
     scroll: {
       display: 'flex',
@@ -597,7 +601,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
       minHeight: '100vh',
       position: 'fixed',
 			bottom: '0px',
-      width: '100vw',
+      width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
       backgroundSize: 'cover',
@@ -608,7 +612,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
-      width: '100%',
+      width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
 			overflowY: 'scroll',
