@@ -210,7 +210,7 @@ class HeatMapHunting extends Component {
             </div>
           </div>
           :
-          this.renderActionBar()
+          null //this.renderActionBar()
         }
 			</div>
 		)

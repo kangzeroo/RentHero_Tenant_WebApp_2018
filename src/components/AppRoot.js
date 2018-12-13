@@ -78,7 +78,7 @@ class AppRoot extends Component {
         <LocaleProvider locale={enUS}>
           <Switch>
 
-            <Route exact path='/' render={WelcomeScreen} />
+            <Route exact path='/' render={DualityPage} />
             <Route exact path='/login' render={HomePage} />
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />
