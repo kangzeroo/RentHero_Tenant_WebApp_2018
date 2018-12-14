@@ -11,6 +11,7 @@
         CERTAIN_MEMBERS: 2,
         UNCERTAIN_MEMBERS: 3,
         MAX_TOTAL_GROUP: 1,
+        BIO: '',
 
         // acceptable room types
         ACCEPTABLE_UNITS_AS: ['2 bed', '2+den'],                                        // save as CSV string

@@ -149,10 +149,10 @@ class OnboardingDialog extends Component {
                                   id: '4',
                                   endpoint: '5',
                                   choices: [
-                                    { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
-                                    { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
-                                    { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
-                                    { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
+                                    { id: 'driving', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
+                                    { id: 'transit', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
+                                    { id: 'walking', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
+                                    { id: 'bicycling', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
                                   ]
                                 }}
                                 texts={[
@@ -296,7 +296,7 @@ class OnboardingDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.LOCATION.KEY,
-      TRANSPORT_MODES_AS: data.selected_choices.map(s => s.text),
+      TRANSPORT_MODES_AS: data.selected_choices.map(s => s.text).join(', '),
       TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -332,7 +332,7 @@ class OnboardingDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text),
+      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text).join(', '),
       WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,

@@ -724,7 +724,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      EMPLOYED_AS: data.selected_choices.map(s => s.text),
+      EMPLOYED_AS: data.selected_choices.map(s => s.text).join(', '),
       EMPLOYED_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -744,7 +744,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      JOB_TITLES_AS: data.inputs.map(i => i.text),
+      JOB_TITLES_AS: data.inputs.map(i => i.text).join(', '),
       JOB_TITLES_AS_SCHEMAS: data.inputs.map(s => {
         return {
           id: s.id,
@@ -780,7 +780,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      SELF_EMPLOYED_AS: data.selected_choices.map(s => s.text),
+      SELF_EMPLOYED_AS: data.selected_choices.map(s => s.text).join(', '),
       SELF_EMPLOYED_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -800,7 +800,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      WELFARE_AS: data.selected_choices.map(s => s.text),
+      WELFARE_AS: data.selected_choices.map(s => s.text).join(', '),
       WELFARE_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -820,7 +820,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      OTHER_INCOME_AS: data.selected_choices.map(s => s.text),
+      OTHER_INCOME_AS: data.selected_choices.map(s => s.text).join(', '),
       OTHER_INCOME_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -853,7 +853,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      SIGN_LEASE_AS: data.selected_choices.map(s => s.text),
+      SIGN_LEASE_AS: data.selected_choices.map(s => s.text).join(', '),
       SIGN_LEASE_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -873,7 +873,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      STUDIED_AS: data.inputs.map(s => s.text),
+      STUDIED_AS: data.inputs.map(s => s.text).join(', '),
       STUDIED_AS_SCHEMAS: data.inputs.map(s => {
         return {
           id: s.id,
@@ -942,7 +942,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      GUARANTOR_STATUS_AS: data.selected_choices.map(s => s.text),
+      GUARANTOR_STATUS_AS: data.selected_choices.map(s => s.text).join(', '),
       GUARANTOR_STATUS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -983,7 +983,7 @@ class FinancialDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
-      PROOF_OF_INCOMES_AS: newProofs.map(s => s.text),
+      PROOF_OF_INCOMES_AS: newProofs.map(s => s.text).join(', '),
       PROOF_OF_INCOMES_AS_SCHEMAS: newProofs,
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
