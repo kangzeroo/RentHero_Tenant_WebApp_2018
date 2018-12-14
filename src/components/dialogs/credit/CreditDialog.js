@@ -200,7 +200,7 @@ class CreditDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.CREDIT.KEY,
-      PAST_CREDIT_EXP_AS: data.selected_choices.map(s => s.text),
+      PAST_CREDIT_EXP_AS: data.selected_choices.map(s => s.text).join(', '),
       PAST_CREDIT_EXP_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -220,7 +220,7 @@ class CreditDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.CREDIT.KEY,
-      PAST_CREDIT_BRANDS_AS: data.selected_choices.map(s => s.text),
+      PAST_CREDIT_BRANDS_AS: data.selected_choices.map(s => s.text).join(', '),
       PAST_CREDIT_BRANDS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,

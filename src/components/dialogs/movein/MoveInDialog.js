@@ -362,7 +362,7 @@ class MoveInDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
-      URGENCY_AS: data.selected_choices.map(s => s.text),
+      URGENCY_AS: data.selected_choices.map(s => s.text).join(', '),
       URGENCY_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -440,7 +440,7 @@ class MoveInDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
-      CURRENT_LEASE_AS: data.selected_choices.map(s => s.text),
+      CURRENT_LEASE_AS: data.selected_choices.map(s => s.text).join(', '),
       CURRENT_LEASE_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -460,7 +460,7 @@ class MoveInDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
-      NOTICE_GIVEN_AS: data.selected_choices.map(s => s.text),
+      NOTICE_GIVEN_AS: data.selected_choices.map(s => s.text).join(', '),
       NOTICE_GIVEN_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -493,7 +493,7 @@ class MoveInDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
-      TOUR_REP_AS: data.selected_choices.map(s => s.text),
+      TOUR_REP_AS: data.selected_choices.map(s => s.text).join(', '),
       TOUR_REP_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -539,7 +539,7 @@ class MoveInDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
-      DECISION_FACTORS_AS: data.selected_choices.map(s => s.text),
+      DECISION_FACTORS_AS: data.selected_choices.map(s => s.text).join(', '),
       DECISION_FACTORS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,

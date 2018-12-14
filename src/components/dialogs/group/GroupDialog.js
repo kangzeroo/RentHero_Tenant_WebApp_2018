@@ -329,7 +329,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      SEARCHING_AS: data.selected_choices.map(c => c.text),
+      SEARCHING_AS: data.selected_choices.map(c => c.text).join(', '),
       SEARCHING_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -349,7 +349,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      FAMILY_MEMBERS_AS: data.counters.map(c => c.text),
+      FAMILY_MEMBERS_AS: data.counters.map(c => c.text).join(', '),
       FAMILY_MEMBERS_AS_SCHEMAS: data.counters.map(s => {
         return {
           id: s.id,
@@ -385,7 +385,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      GROUP_MEMBERS_AS: data.inputs.map(c => c.text),
+      GROUP_MEMBERS_AS: data.inputs.map(c => c.text).join(', '),
       GROUP_MEMBERS_AS_SCHEMAS: data.inputs.map(s => {
         return {
           id: s.id,
@@ -408,7 +408,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text),
+      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text).join(', '),
       WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -431,7 +431,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      LIVE_IN_DEN_AS: data.selected_choices.map(s => s.text),
+      LIVE_IN_DEN_AS: data.selected_choices.map(s => s.text).join(', '),
       LIVE_IN_DEN_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
@@ -468,7 +468,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      PETS_AS: data.counters.map(c => c.text),
+      PETS_AS: data.counters.map(c => c.text).join(', '),
       PETS_AS_SCHEMAS: data.counters.map(s => {
         return {
           id: s.id,
@@ -501,7 +501,7 @@ class GroupDialog extends Component {
     savePreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
-      ACCEPTABLE_UNITS_AS: data.selected_choices.map(s => s.text),
+      ACCEPTABLE_UNITS_AS: data.selected_choices.map(s => s.text).join(', '),
       ACCEPTABLE_UNITS_AS_SCHEMAS: data.selected_choices.map(s => {
         return {
           id: s.id,
