@@ -1,4 +1,4 @@
-// Compt for copying as a DualityPage
+// Compt for copying as a TenantDuality
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -10,16 +10,15 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd-mobile'
-import OnboardingDialog from '../dialogs/onboarding/OnboardingDialog'
 import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
 import HeatMap from '../hunting/HeatMapHunting'
 
 
-class DualityPage extends Component {
+class TenantDuality extends Component {
 
 	render() {
 		return (
-			<div id='DualityPage' style={comStyles().container}>
+			<div id='TenantDuality' style={comStyles().container}>
         <div style={{ width: '40vw' }}>
 				    <TenantInfoDialog width='40vw' />
         </div>
@@ -32,17 +31,17 @@ class DualityPage extends Component {
 }
 
 // defines the types of variables in this.props
-DualityPage.propTypes = {
+TenantDuality.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-DualityPage.defaultProps = {
+TenantDuality.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DualityPage)
+const RadiumHOC = Radium(TenantDuality)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
