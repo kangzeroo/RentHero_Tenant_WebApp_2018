@@ -5,7 +5,7 @@
 
       TENANT_ID: 'abc123',
       KEY: 'AMENITIES',
-      DESCRIPTION: '',
+      LOOKING_FOR: '',
 
       // sqft sizes of rooms
       SIZE_PREF_AS: ['defined area', 'open to recommendations'],                   // save as CSV string
