@@ -56,6 +56,7 @@ import LoginPage from './login/LoginPage'
 import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
+import AdPage from './hunting/AdPage'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -115,7 +116,7 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
-              <Route exact path='/sandbox' render={FinancialDialog} />
+              <Route exact path='/sandbox' render={AdPage} />
               <Route exact path='/duality' render={DualityPage} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
