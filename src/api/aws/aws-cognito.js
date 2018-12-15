@@ -3,10 +3,16 @@
 
 import uuid from 'uuid'
 import AWS from 'aws-sdk/global'
-import { CognitoUserPool, CognitoUserAttribute, CognitoUser, AuthenticationDetails, CognitoIdentityCredentials, WebIdentityCredentials } from 'amazon-cognito-identity-js';
-import { staffPool, STAFF_USERPOOL_ID, generate_LANDLORD_IDENTITY_POOL_ID } from './aws-profile'
+// import { CognitoUserPool, CognitoUserAttribute, CognitoUser, AuthenticationDetails, CognitoIdentityCredentials, WebIdentityCredentials } from 'amazon-cognito-identity-js';
+import 'amazon-cognito-js'
+import { staffPool, STAFF_USERPOOL_ID, generate_TENANT_IDENTITY_POOL_ID } from './aws-profile'
 // import AWS_CognitoIdentity from 'aws-sdk/clients/cognitoidentity'
 // import AWS_CognitoSyncManager from 'aws-sdk/clients/cognitosync'
+import { AWS_FEDERATED_IDENTITY_ENV } from '../ENV_CREDS'
+
+AWS.config.update({
+	region: 'us-east-1'
+})
 
 export const retrieveStaffFromLocalStorage = () => {
   const p = new Promise((res, rej) => {
@@ -24,7 +30,7 @@ export const retrieveStaffFromLocalStorage = () => {
       }
       if (login_token) {
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-          IdentityPoolId: generate_LANDLORD_IDENTITY_POOL_ID(),
+          IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
           Logins: login_token,
         })
         console.log(AWS.config.credentials)
@@ -65,9 +71,10 @@ export function registerGoogleLoginWithCognito(accessToken) {
       }
 
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: generate_LANDLORD_IDENTITY_POOL_ID(),
+        IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
         Logins: loginItem,
       })
+      console.log(AWS.config.credentials)
 
       // dno if we need this right now
       localStorage.setItem('login_token', JSON.stringify(loginItem))
@@ -89,6 +96,84 @@ export function registerGoogleLoginWithCognito(accessToken) {
    })
   return p
 }
+
+export function registerPasswordlessAuth0WithCognito(id_token){
+	const p = new Promise((res, rej) => {
+		// console.log('registerFacebookLoginWithCognito')
+		// console.log(response)
+		// Check if the user logged in successfully.
+		  if (id_token) {
+
+		    // console.log('You are now logged in.');
+		    const cognitoidentity = new AWS.CognitoIdentity();
+				const loginItem = {
+					 'renthero.auth0.com': id_token
+				}
+
+		    // Add the Facebook access token to the Cognito credentials login map.
+		    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+		      IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
+		      Logins: loginItem,
+		    })
+
+        AWS.config.credentials.refresh(() => {
+          console.log(AWS.config.credentials)
+          localStorage.setItem('renthero_tenant_token', JSON.stringify(loginItem))
+          localStorage.setItem('header_token', JSON.stringify(id_token))
+          // AWS Cognito Sync to sync Facebook
+          AWS.config.credentials.get(function(err) {
+            console.log(err)
+            const client = new AWS.CognitoSyncManager();
+
+              console.log(AWS.config.credentials)
+              if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
+                localStorage.setItem('user_id', AWS.config.credentials.data.IdentityId)
+                res({
+                  IdentityId: AWS.config.credentials.data.IdentityId
+                })
+              } else {
+                res({
+                  IdentityId: 'UNSIGNED'
+                })
+              }
+
+          })
+        })
+
+
+		  } else {
+		    // console.log('There was a problem logging you in.');
+				rej('No access token found')
+		  }
+	})
+	return p
+}
+
+export const unauthRoleTenant = () => {
+	const p = new Promise((res, rej) => {
+		// Add the unauthenticated_staff user to the Cognito credentials login map.
+		AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+			IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID()
+		})
+		// AWS Cognito Sync to sync Facebook
+		AWS.config.credentials.get(() => {
+			const client = new AWS.CognitoSyncManager()
+			// console.log(generate_TENANT_IDENTITY_POOL_ID())
+			if (AWS.config.credentials.expired) {
+				localStorage.removeItem('fbToken')
+			}
+			res({
+				tenant_id: AWS.config.credentials.data.IdentityId,
+				unauthRoleStudent: true,
+			})
+		})
+		// res({
+		// 	id: 'COGNITO_UNAUTH_USER'
+		// })
+	})
+	return p
+}
+
 
 export const signOutLandlord = () => {
 	const p = new Promise((res, rej) => {

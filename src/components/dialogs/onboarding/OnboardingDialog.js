@@ -23,8 +23,9 @@ import {
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
-
-
+import { PASSWORDLESS_LOGIN_REDIRECT, AUTH0_CLIENT_ID, AUTH0_DOMAIN } from '../../../api/ENV_CREDs'
+import { verifyPhone } from '../../../api/phone/phone_api'
+import auth0 from 'auth0-js'
 class OnboardingDialog extends Component {
 
   constructor() {
@@ -40,6 +41,7 @@ class OnboardingDialog extends Component {
       ],
       show_progress: false,
       progress_percent: 0,
+      phone: '',
     }
     this.all_segments = []
     this.shown_segments = []
@@ -102,164 +104,254 @@ class OnboardingDialog extends Component {
                                action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%' } }}
                                segmentStyles={{ justifyContent: 'space-between' }}
                              />) },
-     {
-       id: '2',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
-       component: (<InputSegment
-                               title='Introductions'
-                               schema={{ id: '2', endpoint: '3' }}
-                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                               onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
-                               texts={[
-                                 ...this.addAnyPreMessages('2'),
-                                 { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "Let's get to know each other better 😊 What's your name?" },
-                               ]}
-                               inputType={'text'}
-                               stringInputPlaceholder={'Full Name'}
-                               initialData={{
-                                 input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
-                               }}
-                            />)},
+       {
+         id: '2',
+         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+         component: (<InputSegment
+                                 title='Phone Number'
+                                 schema={{ id: '2', endpoint: '3' }}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                 onDone={(original_id, endpoint, data) => this.donePhone(original_id, endpoint, data)}
+                                 texts={[
+                                   ...this.addAnyPreMessages('2'),
+                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Number is" },
+                                 ]}
+                                 inputType={'tel'}
+                                 stringInputPlaceholder={'Phone Number'}
+                                 initialData={{
+                                   input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
+                                 }}
+                              />)},
       {
         id: '3',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://connectassetmanagement.com/wp-content/uploads/2016/04/toronto-sunset-city-view.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
-        component: (<MapSegment
-                                title='Frequently Travelled'
+        scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+        component: (<InputSegment
+                                title='Verify Code'
                                 schema={{ id: '3', endpoint: '4' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
+                                onDone={(original_id, endpoint, data) => this.doneVerify(original_id, endpoint, data)}
                                 texts={[
-                                  ...this.addAnyPreMessages('3'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.prefs.DOCUMENTS.PREFERRED_NAME} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
+                                  ...this.addAnyPreMessages('2'),
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Code is" },
                                 ]}
+                                inputType={'number'}
+                                stringInputPlaceholder={'Verification Code'}
                                 initialData={{
-                                  address_components: [],
-                                  address_lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
-                                  address_lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
-                                  address_place_id: '',
-                                  address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
+                                  // input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
                                 }}
-                             /> )},
-      {
-        id: '4',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/FqOAKHzVpaw/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-        component: (<MultiOptionsSegment
-                                title='Travel Mode'
-                                schema={{
-                                  id: '4',
-                                  endpoint: '5',
-                                  choices: [
-                                    { id: 'driving', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
-                                    { id: 'transit', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
-                                    { id: 'walking', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
-                                    { id: 'bicycling', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
-                                  ]
-                                }}
-                                texts={[
-                                  ...this.addAnyPreMessages('4'),
-                                  { id: '4-1', scrollDown: true, text: 'What is your primary means of transportation?' },
-                                ]}
-                                onDone={(original_id, endpoint, data) => this.travelModeDone(original_id, endpoint, data)}
-                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                preselected={this.props.prefs.LOCATION.TRANSPORT_MODES_AS_SCHEMAS}
-                             />) },
-       {
-         id: '5',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://byba.co.uk/wp-content/uploads/bella-london-concrete-lazio.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
-         component: (<CounterSegment
-                                 title='Group Size'
-                                 schema={{ id: '5', endpoint: '6' }}
-                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 onDone={(original_id, endpoint, data) => this.doneGroupSize(original_id, endpoint, data)}
-                                 texts={[
-                                   ...this.addAnyPreMessages('5'),
-                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'And how many people are looking for a rental? 🙋 Just you, or more?' },
-                                   { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `It's ok if you're not sure. We can get less specific later.` }
-                                 ]}
-                                 incrementerOptions={{
-                                   max: 7,
-                                   min: 1,
-                                   step: 1
-                                 }}
-                                 initialData={{
-                                   count: parseFloat(this.props.prefs.GROUP.CERTAIN_MEMBERS)
-                                 }}
-                              /> )},
-      {
-        id: '6',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.globexdevelopments.com/Custom-Homes-Photo-Portfolio/14-Casa/big/Hallway-EntryDoor.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
-        component: (<MultiOptionsSegment
-                                title='Suites or Rooms'
-                                schema={{
-                                  id: '6',
-                                  endpoint: '7',
-                                  choices: [
-                                    { id: 'entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: false, endpoint: '7', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
-                                    { id: 'just_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: false, endpoint: '7', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) },
-                                    { id: 'both_place_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BOTH', value: false, endpoint: '7', tooltip: (<p>You are open to entire units and random roommates.</p>) },
-                                  ]
-                                }}
-                                texts={[
-                                  ...this.addAnyPreMessages('6'),
-                                  { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.props.prefs.GROUP.CERTAIN_MEMBERS} rooms (possibly with other new roommates)?` },
-                                ]}
-                                onDone={(original_id, endpoint, data) => this.suitesRoomsDone(original_id, endpoint, data)}
-                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                preselected={this.props.prefs.GROUP.WHOLE_OR_RANDOMS_AS_SCHEMAS}
-                             />) },
-     {
-       id: '7',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/yzWqIH9NBZE/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-       component: (<CounterSegment
-                               title='Budget Per Person'
-                               schema={{ id: '7', endpoint: '8' }}
-                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                               onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
-                               texts={[
-                                 ...this.addAnyPreMessages('7'),
-                                 { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
-                               ]}
-                               incrementerOptions={{
-                                 max: 3000,
-                                 min: 300,
-                                 step: 25,
-                                 default: 1000,
-                               }}
-                               slider
-                               sliderOptions={{
-                                 min: 300,
-                                 max: 3000,
-                                 step: 50,
-                                 vertical: false,
-                               }}
-                               renderCountValue={(count) => `$ ${count}`}
-                               initialData={{
-                                 count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON
-                               }}
-                            /> )},
-     {
-       id: '8',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-       component: (<ActionSegment
-                               title='FINISH'
-                               schema={{
-                                 id: '8',
-                                 endpoint: null,
-                                 choices: [
-                                   { id: 'ok', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'VIEW MATCHES', value: 'abort', endpoint: '/matches' },
-                                 ]
-                               }}
-                               texts={[
-                                 ...this.addAnyPreMessages('8'),
-                                 { id: '1-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `And that's it! Ready to see your matches? 👀` },
-                                 { id: '1-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `( By the way, these aren't your matches. That part isn't hooked up yet 😅 )` }
-                               ]}
-                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                               onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
-                             />) },
+                             />)},
+     // {
+     //   id: '3',
+     //   scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+     //   component: (<InputSegment
+     //                           title='Introductions'
+     //                           schema={{ id: '2', endpoint: '3' }}
+     //                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                           onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
+     //                           texts={[
+     //                             ...this.addAnyPreMessages('2'),
+     //                             { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "Let's get to know each other better 😊 What's your name?" },
+     //                           ]}
+     //                           inputType={'text'}
+     //                           stringInputPlaceholder={'Full Name'}
+     //                           initialData={{
+     //                             input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
+     //                           }}
+     //                        />)},
+     //  {
+     //    id: '4',
+     //    scrollStyles: { scroll_styles: { backgroundImage: `url('https://connectassetmanagement.com/wp-content/uploads/2016/04/toronto-sunset-city-view.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+     //    component: (<MapSegment
+     //                            title='Frequently Travelled'
+     //                            schema={{ id: '3', endpoint: '4' }}
+     //                            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                            onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
+     //                            texts={[
+     //                              ...this.addAnyPreMessages('3'),
+     //                              { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.prefs.DOCUMENTS.PREFERRED_NAME} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
+     //                            ]}
+     //                            initialData={{
+     //                              address_components: [],
+     //                              address_lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
+     //                              address_lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
+     //                              address_place_id: '',
+     //                              address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
+     //                            }}
+     //                         /> )},
+     //  {
+     //    id: '5',
+     //    scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/FqOAKHzVpaw/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+     //    component: (<MultiOptionsSegment
+     //                            title='Travel Mode'
+     //                            schema={{
+     //                              id: '4',
+     //                              endpoint: '5',
+     //                              choices: [
+     //                                { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
+     //                                { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
+     //                                { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
+     //                                { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
+     //                              ]
+     //                            }}
+     //                            texts={[
+     //                              ...this.addAnyPreMessages('4'),
+     //                              { id: '4-1', scrollDown: true, text: 'What is your primary means of transportation?' },
+     //                            ]}
+     //                            onDone={(original_id, endpoint, data) => this.travelModeDone(original_id, endpoint, data)}
+     //                            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                            preselected={this.props.prefs.LOCATION.TRANSPORT_MODES_AS_SCHEMAS}
+     //                         />) },
+     //   {
+     //     id: '6',
+     //     scrollStyles: { scroll_styles: { backgroundImage: `url('https://byba.co.uk/wp-content/uploads/bella-london-concrete-lazio.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+     //     component: (<CounterSegment
+     //                             title='Group Size'
+     //                             schema={{ id: '5', endpoint: '6' }}
+     //                             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                             onDone={(original_id, endpoint, data) => this.doneGroupSize(original_id, endpoint, data)}
+     //                             texts={[
+     //                               ...this.addAnyPreMessages('5'),
+     //                               { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'And how many people are looking for a rental? 🙋 Just you, or more?' },
+     //                               { id: '0-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `It's ok if you're not sure. We can get less specific later.` }
+     //                             ]}
+     //                             incrementerOptions={{
+     //                               max: 7,
+     //                               min: 1,
+     //                               step: 1
+     //                             }}
+     //                             initialData={{
+     //                               count: parseFloat(this.props.prefs.GROUP.CERTAIN_MEMBERS)
+     //                             }}
+     //                          /> )},
+     //  {
+     //    id: '7',
+     //    scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.globexdevelopments.com/Custom-Homes-Photo-Portfolio/14-Casa/big/Hallway-EntryDoor.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+     //    component: (<MultiOptionsSegment
+     //                            title='Suites or Rooms'
+     //                            schema={{
+     //                              id: '6',
+     //                              endpoint: '7',
+     //                              choices: [
+     //                                { id: 'entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: false, endpoint: '7', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
+     //                                { id: 'just_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: false, endpoint: '7', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) },
+     //                                { id: 'both_place_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BOTH', value: false, endpoint: '7', tooltip: (<p>You are open to entire units and random roommates.</p>) },
+     //                              ]
+     //                            }}
+     //                            texts={[
+     //                              ...this.addAnyPreMessages('6'),
+     //                              { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.props.prefs.GROUP.CERTAIN_MEMBERS} rooms (possibly with other new roommates)?` },
+     //                            ]}
+     //                            onDone={(original_id, endpoint, data) => this.suitesRoomsDone(original_id, endpoint, data)}
+     //                            triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                            preselected={this.props.prefs.GROUP.WHOLE_OR_RANDOMS_AS_SCHEMAS}
+     //                         />) },
+     // {
+     //   id: '8',
+     //   scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/yzWqIH9NBZE/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+     //   component: (<CounterSegment
+     //                           title='Budget Per Person'
+     //                           schema={{ id: '7', endpoint: '8' }}
+     //                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                           onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
+     //                           texts={[
+     //                             ...this.addAnyPreMessages('7'),
+     //                             { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
+     //                           ]}
+     //                           incrementerOptions={{
+     //                             max: 3000,
+     //                             min: 300,
+     //                             step: 25,
+     //                             default: 1000,
+     //                           }}
+     //                           slider
+     //                           sliderOptions={{
+     //                             min: 300,
+     //                             max: 3000,
+     //                             step: 50,
+     //                             vertical: false,
+     //                           }}
+     //                           renderCountValue={(count) => `$ ${count}`}
+     //                           initialData={{
+     //                             count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON
+     //                           }}
+     //                        /> )},
+     // {
+     //   id: '9',
+     //   scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+     //   component: (<ActionSegment
+     //                           title='FINISH'
+     //                           schema={{
+     //                             id: '8',
+     //                             endpoint: null,
+     //                             choices: [
+     //                               { id: 'ok', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'VIEW MATCHES', value: 'abort', endpoint: '/matches' },
+     //                             ]
+     //                           }}
+     //                           texts={[
+     //                             ...this.addAnyPreMessages('8'),
+     //                             { id: '1-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `And that's it! Ready to see your matches? 👀` },
+     //                             { id: '1-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `( By the way, these aren't your matches. That part isn't hooked up yet 😅 )` }
+     //                           ]}
+     //                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //                           onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
+     //                         />) },
     ]
     this.setState({ lastUpdated: moment().unix() })
   }
+
+  donePhone(original_id, endpoint, data) {
+    // this.done(original_id, endpoint, data)
+    const self = this
+    const webAuth = new auth0.WebAuth({
+       domain:       AUTH0_DOMAIN,
+       clientID:     AUTH0_CLIENT_ID,
+       responseType: 'token id_token'
+    })
+
+    verifyPhone(data.input_string)
+      .then((data) => {
+        console.log(data)
+        localStorage.setItem('phone', JSON.stringify(data))
+        self.setState({
+          phone: data.phoneNumber,
+        })
+        webAuth.passwordlessStart({
+          connection: 'sms',
+          send: 'code',
+          phoneNumber: data.phoneNumber
+        }, function (err,res) {
+          console.log(err)
+          console.log(res)
+          self.done(original_id, endpoint, data)
+          // handle errors or continue
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  doneVerify(original_id, endpoint, data) {
+    // this.done(original_id, endpoint, data)
+    const webAuth = new auth0.WebAuth({
+       domain:       AUTH0_DOMAIN,
+       clientID:     AUTH0_CLIENT_ID,
+       responseType: 'token id_token',
+       redirectUri: PASSWORDLESS_LOGIN_REDIRECT
+    })
+
+    webAuth.passwordlessLogin({
+      connection: 'sms',
+      phoneNumber: this.state.phone,
+      verificationCode: data.input_string
+    }, function (err,res) {
+      // handle errors or continue
+      console.log(err)
+      console.log(res)
+    })
+
+  }
+
 
   doneName(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)

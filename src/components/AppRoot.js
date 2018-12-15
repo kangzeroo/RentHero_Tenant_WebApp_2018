@@ -52,6 +52,10 @@ import MoveInDialog from './dialogs/movein/MoveInDialog'
 import GroupDialog from './dialogs/group/GroupDialog'
 import RoommatesDialog from './dialogs/roommates/RoommatesDialog'
 import ChineseDialogOnboarding from './dialogs/onboarding/ChineseDialogOnboarding'
+import LoginPage from './login/LoginPage'
+import LoginPasswordless from './auth/LoginPasswordless'
+import Passwordless from './auth/Passwordless'
+import TenantDuality from './pages/TenantDuality'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -79,7 +83,13 @@ class AppRoot extends Component {
           <Switch>
 
             <Route exact path='/' render={DualityPage} />
-            <Route exact path='/login' render={HomePage} />
+            <Route exact path='/intro' render={TenantDuality} />
+            {
+              //<Route exact path='/login' render={HomePage} />
+            }
+            <Route exact path='/aaa' render={LoginPasswordless} />
+            <Route exact path='/passwordless' render={Passwordless} />
+
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />
             <Route exact path='/existing_session' render={ContinueSession} />

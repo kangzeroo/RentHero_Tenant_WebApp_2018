@@ -39,3 +39,8 @@ export const TYPEFORMS = {
 //   advanced_form_id: 'wYKJkp',
 //   seeking_form_id: 'CAEphf',
 // }
+
+export const AWS_FEDERATED_IDENTITY_ENV = 'us-east-1:d47bfcd4-1309-40df-99c2-80165784ffc8'
+export const PASSWORDLESS_LOGIN_REDIRECT = 'https://localhost:8888/passwordless'
+export const AUTH0_CLIENT_ID = '2XMiF3cupqjTTnnClv4QoSlRsnSC2DRc'
+export const AUTH0_DOMAIN = 'renthero.auth0.com'

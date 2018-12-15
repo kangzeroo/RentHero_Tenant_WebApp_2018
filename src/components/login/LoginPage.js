@@ -1,4 +1,4 @@
-// Compt for copying as a DualityPage
+// Compt for copying as a template
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -9,40 +9,32 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
 
-} from 'antd-mobile'
-import OnboardingDialog from '../dialogs/onboarding/OnboardingDialog'
-import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
-import HeatMap from '../hunting/HeatMapHunting'
+} from 'antd'
 
 
-class DualityPage extends Component {
+class LoginPage extends Component {
 
 	render() {
 		return (
-			<div id='DualityPage' style={comStyles().container}>
-        <div style={{ width: '40vw' }}>
-				    <TenantInfoDialog width='40vw' />
-        </div>
-        <div style={{ width: '60vw' }}>
-          <HeatMap />
-        </div>
+			<div id='LoginPage' style={comStyles().container}>
+				LoginPage
 			</div>
 		)
 	}
 }
 
 // defines the types of variables in this.props
-DualityPage.propTypes = {
+LoginPage.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-DualityPage.defaultProps = {
+LoginPage.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DualityPage)
+const RadiumHOC = Radium(LoginPage)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -65,7 +57,7 @@ const comStyles = () => {
 	return {
 		container: {
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'column',
 		}
 	}
 }

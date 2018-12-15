@@ -1,7 +1,7 @@
 import { CognitoUserPool } from 'amazon-cognito-identity-js'
 import 'amazon-cognito-js'
 import AWS from 'aws-sdk/global'
-import { AWS_FEDERATED_IDENTITY_ENV } from '../API_URLS'
+import { AWS_FEDERATED_IDENTITY_ENV } from '../ENV_CREDS'
 
 const REGION = 'us-east-1'
 // const USER_POOL_ID = 'us-east-1_YSySxXy4r'
@@ -35,6 +35,6 @@ export const STAFF_USERPOOL_ID = `cognito-idp.${REGION}.amazonaws.com/${CORPORAT
 // export const studentPool = new CognitoUserPool(studentData);
 // export const STUDENT_USERPOOL_ID = `cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}`
 
-export const generate_LANDLORD_IDENTITY_POOL_ID = () => {
+export const generate_TENANT_IDENTITY_POOL_ID = () => {
 	return AWS_FEDERATED_IDENTITY_ENV
 }
