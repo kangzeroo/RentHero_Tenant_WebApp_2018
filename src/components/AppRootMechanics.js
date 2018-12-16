@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { retrieveStaffFromLocalStorage } from '../api/aws/aws-cognito'
+import { retrieveTenantFromLocalStorage, unauthRoleTenant } from '../api/aws/aws-cognito'
 import { dispatchActionsToRedux } from '../actions/system/system_actions'
 import {
 	saveStaffProfileToRedux,
@@ -12,6 +12,7 @@ import {
 	authenticationLoaded,
 	forwardUrlLocation,
 	saveCorporationProfileToRedux,
+	saveTenantProfileToRedux,
 } from '../actions/auth/auth_actions'
 import { saveLoadingCompleteToRedux } from '../actions/app/app_actions'
 import {
@@ -25,7 +26,7 @@ import {
 	checkIfPartOfRoutes,
 } from '../api/general/general_api'
 import {
-	getStaffProfile,
+	getTenantFromSQL,
 	getCorporationProfile,
 } from '../api/auth/auth_api'
 import {
@@ -55,7 +56,7 @@ export default (ComposedComponent) => {
 				this.grabPrefs()
 			}, 100)
 			// check if staff is already authenticated
-			this.checkIfStaffLoggedIn()
+			this.checkIfTenantLoggedIn()
 
 			// do stuff based on the URL
 			this.executeOnURL()
@@ -107,18 +108,18 @@ export default (ComposedComponent) => {
 					})
 		}
 
-		checkIfStaffLoggedIn() {
+		checkIfTenantLoggedIn() {
 			// grab the url that was given, will be used in this,saveStaffProfileToRedux()
 			let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
 			if (location === '/login') {
 				location = '/'
 			}
-			retrieveStaffFromLocalStorage()
-				.then((staff) => {
-					console.log(staff)
+			retrieveTenantFromLocalStorage()
+				.then((tenant) => {
+					console.log(tenant)
 					console.log('kz trippin balls')
 					console.log(location)
-					return getStaffProfile(staff.IdentityId, {})
+					return getTenantFromSQL(tenant.IdentityId, {})
 				})
 				.then((data) => {
 					console.log(data)
@@ -128,12 +129,17 @@ export default (ComposedComponent) => {
 					// if they have, then we'll auto log them in
 					this.props.history.push(location)
 					this.props.authenticationLoaded()
-					return this.saveStaffProfileToRedux(data.profile, location)
+					this.props.saveTenantProfileToRedux(data)
+					// return this.saveStaffProfileToRedux(data.profile, location)
 				})
 				.catch((err) => {
-					// if not then we do nothing
 					console.log('kz tripping shit')
 					console.log(err)
+					// if not, then we do nothing
+					unauthRoleTenant().then((unauthUser) => {
+						console.log(unauthUser)
+						this.props.saveTenantProfileToRedux(unauthUser)
+					})
 					this.props.forwardUrlLocation(location)
 					this.props.history.push(location)
 					this.props.authenticateStaff(null)
@@ -141,33 +147,33 @@ export default (ComposedComponent) => {
 				})
 		}
 
-		saveStaffProfileToRedux(staff, location) {
-			let app_location = location
-			this.props.saveStaffProfileToRedux(staff)
-			this.props.authenticateStaff(staff)
-
-			return getCorporationProfile(staff.corporation_id)
-				.then((corp) => {
-					if (corp === '') {
-						console.log('corp is nth')
-						this.props.saveCorporationProfileToRedux({})
-						app_location = '/app/registration'
-						this.props.history.push('/app/registration')
-					} else {
-						this.props.saveCorporationProfileToRedux(corp)
-						return this.grabAllInitialData(corp.corporation_id)
-					}
-				})
-				.then((results) => {
-					console.log(results)
-					this.props.saveLoadingCompleteToRedux()
-					this.props.history.push(app_location)
-				})
-				.catch((err) => {
-					console.log('nooooo')
-					console.log(err)
-				})
-		}
+		// saveStaffProfileToRedux(staff, location) {
+		// 	let app_location = location
+		// 	this.props.saveStaffProfileToRedux(staff)
+		// 	this.props.authenticateStaff(staff)
+		//
+		// 	return getCorporationProfile(staff.corporation_id)
+		// 		.then((corp) => {
+		// 			if (corp === '') {
+		// 				console.log('corp is nth')
+		// 				this.props.saveCorporationProfileToRedux({})
+		// 				app_location = '/app/registration'
+		// 				this.props.history.push('/app/registration')
+		// 			} else {
+		// 				this.props.saveCorporationProfileToRedux(corp)
+		// 				return this.grabAllInitialData(corp.corporation_id)
+		// 			}
+		// 		})
+		// 		.then((results) => {
+		// 			console.log(results)
+		// 			this.props.saveLoadingCompleteToRedux()
+		// 			this.props.history.push(app_location)
+		// 		})
+		// 		.catch((err) => {
+		// 			console.log('nooooo')
+		// 			console.log(err)
+		// 		})
+		// }
 
 		grabAllInitialData(corporation_id) {
 			const initials = [
@@ -218,6 +224,7 @@ export default (ComposedComponent) => {
 		prefs: PropTypes.object.isRequired,
 		loadLocalStorageAccount: PropTypes.func.isRequired,
 		updatePreferences: PropTypes.func.isRequired,
+		saveTenantProfileToRedux: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -246,6 +253,7 @@ export default (ComposedComponent) => {
 			saveListingsToRedux,
 			loadLocalStorageAccount,
 			updatePreferences,
+			saveTenantProfileToRedux,
     })(AppRootMechanics)
 	)
 }

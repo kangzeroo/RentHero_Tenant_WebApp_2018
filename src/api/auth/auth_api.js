@@ -43,3 +43,31 @@ export const getCorporationProfile = (corporation_id) => {
   })
   return p
 }
+
+export const saveTenantToSQL = ({ tenant_id, first_name, last_name, phone, email, }) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/create_tenant`, { tenant_id, first_name, last_name, phone, email, }, authHeaders())
+      .then((data) => {
+        // once we have the response, only then do we dispatch an action to Redux
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}
+
+export const getTenantFromSQL = (tenant_id) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/get_tenant`, { tenant_id, }, authHeaders())
+      .then((data) => {
+        // once we have the response, only then do we dispatch an action to Redux
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}

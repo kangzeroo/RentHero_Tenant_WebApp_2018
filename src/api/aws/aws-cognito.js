@@ -14,20 +14,23 @@ AWS.config.update({
 	region: 'us-east-1'
 })
 
-export const retrieveStaffFromLocalStorage = () => {
+export const retrieveTenantFromLocalStorage = () => {
   const p = new Promise((res, rej) => {
-    const x = localStorage.getItem('login_token')
-    if (x) {
-      const login_token = JSON.parse(x)
+    // const x = localStorage.getItem('renthero_tenant_token')
+		const x = localStorage.getItem('tenant_id')
+		if (x) {
+      // const login_token = JSON.parse(x)
+			const login_token = x
       const cognitoIdentity = new AWS.CognitoIdentity()
-      let loginsObj = null
-      if (login_token.type === 'passwordless') {
-        loginsObj = { 'renthero.auth0.com': login_token.accessToken }
-      } else if (login_token.type === 'google') {
-        loginsObj = { 'accounts.google.com': login_token.accessToken }
-      } else if (login_token.type === 'cognito') {
-        loginsObj = { [STAFF_USERPOOL_ID]: login_token.accessToken }
-      }
+      // let loginsObj = null
+      // if (login_token.type === 'passwordless') {
+      //   loginsObj = { 'renthero.auth0.com': login_token.accessToken }
+      // } else if (login_token.type === 'google') {
+      //   loginsObj = { 'accounts.google.com': login_token.accessToken }
+      // } else if (login_token.type === 'cognito') {
+      //   loginsObj = { [STAFF_USERPOOL_ID]: login_token.accessToken }
+      // }
+			const loginsObj = { 'renthero.auth0.com': login_token.accessToken }
       if (login_token) {
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
@@ -41,7 +44,7 @@ export const retrieveStaffFromLocalStorage = () => {
           if (AWS.config.credentials.expired) {
             rej('Expired credentials')
           } else {
-            localStorage.setItem('user_id', AWS.config.credentials.data.IdentityId)
+            localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
             res({
               IdentityId: AWS.config.credentials.data.IdentityId,
             })
@@ -162,6 +165,7 @@ export const unauthRoleTenant = () => {
 			if (AWS.config.credentials.expired) {
 				localStorage.removeItem('fbToken')
 			}
+			localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
 			res({
 				tenant_id: AWS.config.credentials.data.IdentityId,
 				unauthRoleStudent: true,

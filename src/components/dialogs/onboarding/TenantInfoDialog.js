@@ -22,6 +22,7 @@ import {
   Icon,
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
+import { saveTenantToSQL } from '../../../api/auth/auth_api'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 class OnboardingDialog extends Component {
@@ -245,10 +246,16 @@ class OnboardingDialog extends Component {
 
   doneName(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
-      KEY: this.props.prefs.DOCUMENTS.KEY,
-      PREFERRED_NAME: data.input_string,
+    saveTenantToSQL({
+      first_name: data.input_string,
+      ...this.props.tenant_profile,
+    })
+    .then((data) => {
+      return savePreferences({
+              TENANT_ID: this.props.tenant_id,
+              KEY: this.props.prefs.DOCUMENTS.KEY,
+              PREFERRED_NAME: data.input_string,
+              })
     }).then((DOCUMENTS) => {
       console.log(DOCUMENTS)
       this.props.updatePreferences(DOCUMENTS)
@@ -530,6 +537,7 @@ OnboardingDialog.propTypes = {
   prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
   width: PropTypes.string,                  // passed in
+  tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -545,6 +553,7 @@ const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
     tenant_id: redux.tenant.tenant_id,
+    tenant_profile: redux.auth.tenant_profile,
 	}
 }
 
