@@ -13,7 +13,12 @@ import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, s
 import {
 
 } from 'antd-mobile'
-import { addToFavoritesToSQL } from '../../api/tenant/tenant_api'
+import AdCoverSection from './sections/AdCoverSection'
+import AdFurnishSection from './sections/AdFurnishSection'
+import AdBuildingSection from './sections/AdBuildingSection'
+import AdFinePrintSection from './sections/AdFinePrintSection'
+import AdNearbySection from './sections/AdNearbySection'
+
 
 class AdPage extends Component {
 
@@ -188,36 +193,94 @@ class AdPage extends Component {
   }
 
 	render() {
-		return (
-			<div id='AdPage' style={comStyles().container}>
-				AdPage
-        <button onClick={() => this.props.nextListing()}>Next</button>
-        <button onClick={() => this.addToFavorites()}>Favorite</button>
-        {
-          this.props.current_listing
-          ?
-          <div>
-            {
-              this.state.orderedImages.map((img) => {
-                return (
-                  <div>
-                    <h6>{img.caption}</h6>
-                    <img src={img.url} style={{ width: '100%', minWidth: '100%', height: 'auto' }} />
-                  </div>
-                )
-              })
-            }
-          </div>
-          :
-          null
-        }
-        {/*<div style={{ display: 'flex', flexDirection: 'column' }}>
+    if (this.props.current_listing) {
+  		return (
+  			<div id='AdPage' style={comStyles().container}>
+          <h1>${this.props.current_listing.PRICE}</h1>
+  				<h2>{this.props.current_listing.ADDRESS}</h2>
+          <button onClick={() => this.props.nextListing()}>Next</button>
           {
-            this.showCount()
+            this.state.orderedImages[0]
+            ?
+            <AdCoverSection
+              current_listing={this.props.current_listing}
+              cover_image={this.state.orderedImages[0].url}
+              beds={this.props.current_listing.BEDS}
+              baths={this.props.current_listing.BATHS}
+              seller={this.props.current_listing.SELLER}
+              main_destination={this.props.main_destination.split(',')[0]}
+              arrival_time={'10am'}
+            />
+            :
+            null
           }
-        </div>*/}
-			</div>
-		)
+          {console.log(this.state.orderedImages)}
+          {
+            this.state.orderedImages[0]
+            ?
+            <AdFurnishSection
+              current_listing={this.props.current_listing}
+              images={this.state.orderedImages.slice(1, 4).map(img => img.url)}
+            />
+            :
+            null
+          }
+          {
+            this.state.orderedImages[0]
+            ?
+            <AdBuildingSection
+              current_listing={this.props.current_listing}
+              images={this.state.orderedImages.slice(4).map(img => img.url)}
+            />
+            :
+            null
+          }
+          {
+            this.state.orderedImages[0]
+            ?
+            <AdFinePrintSection
+              current_listing={this.props.current_listing}
+            />
+            :
+            null
+          }
+          {
+            this.state.orderedImages[0]
+            ?
+            <AdNearbySection
+              current_listing={this.props.current_listing}
+            />
+            :
+            null
+          }
+          {/*
+            this.props.current_listing
+            ?
+            <div>
+              {
+                this.state.orderedImages.map((img) => {
+                  return (
+                    <div>
+                      <h6>{img.caption}</h6>
+                      <img src={img.url} style={{ width: '100%', minWidth: '100%', height: 'auto' }} />
+                    </div>
+                  )
+                })
+              }
+            </div>
+            :
+            null
+          */}
+          {/*<div style={{ display: 'flex', flexDirection: 'column' }}>
+            {
+              this.showCount()
+            }
+          </div>*/}
+  			</div>
+  		)
+    } else {
+      return (<div></div>)
+    }
 	}
 }
 
@@ -227,8 +290,7 @@ AdPage.propTypes = {
 	current_listing: PropTypes.object,
 	all_listings: PropTypes.array.isRequired,
 	nextListing: PropTypes.func.isRequired,
-	destination: PropTypes.string,
-  tenant_profile: PropTypes.object.isRequired,
+	main_destination: PropTypes.string,
 }
 
 // for all optional props, define a default value
@@ -244,8 +306,7 @@ const mapReduxToProps = (redux) => {
 	return {
 		current_listing: redux.listings.current_listing,
     all_listings: redux.listings.all_listings,
-		destination: redux.tenant.prefs.destination.address,
-    tenant_profile: redux.auth.tenant_profile,
+		main_destination: redux.tenant.prefs.destination.address,
 	}
 }
 
