@@ -57,6 +57,7 @@ import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
 import AdPage from './hunting/AdPage'
+import TenantFavorites from './favorites/TenantFavorites'
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -88,6 +89,7 @@ class AppRoot extends Component {
             {
               //<Route exact path='/login' render={HomePage} />
             }
+            <Route exact path='/favorites' render={TenantFavorites} />
             <Route exact path='/aaa' render={LoginPasswordless} />
             <Route exact path='/passwordless' render={Passwordless} />
 

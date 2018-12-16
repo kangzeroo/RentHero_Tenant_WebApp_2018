@@ -6,6 +6,7 @@ import {
   SAVE_CORPORATION_PROFILE,
   LOCATION_FORWARDING,
   REMOVE_STAFF_PROFILE,
+  SAVE_TENANT_PROFILE,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -30,6 +31,7 @@ const INITIAL_STATE = {
   // browser_fingerprint: '',    // unique identifier for web browser
   // s3_corporation: '',
   // staffs: [],
+  tenant_profile: {},
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -72,6 +74,11 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         staff_profile: {},
         corporation_profile: {},
+      }
+    case SAVE_TENANT_PROFILE:
+      return {
+        ...state,
+        tenant_profile: action.payload,
       }
     default:
       return {

@@ -6,6 +6,7 @@ import {
   SAVE_CORPORATION_PROFILE,
   LOCATION_FORWARDING,
   REMOVE_STAFF_PROFILE,
+  SAVE_TENANT_PROFILE,
 } from '../action_types'
 
 // authenticate the staff member's account
@@ -73,6 +74,15 @@ export const removeStaffProfile = () => {
     localStorage.removeItem('cognito_staff_token')
 		dispatch({
 			type: REMOVE_STAFF_PROFILE,
+		})
+	}
+}
+
+export const saveTenantProfileToRedux = (tenant) => {
+	return (dispatch) => {
+		dispatch({
+			type: SAVE_TENANT_PROFILE,
+      payload: tenant,
 		})
 	}
 }
