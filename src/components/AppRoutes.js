@@ -19,7 +19,7 @@ import DesktopSkeleton from './format/desktop/DesktopSkeleton'
 import MobileSkeleton from './format/mobile/MobileSkeleton'
 import RequireAuth from './auth/RequireAuth'
 import AppHome from './home/AppHome'
-import AdsPage from './ads/AdsPage'
+import AdPage from './ad/AdPage'
 import SettingsPage from './settings/SettingsPage'
 import RegistrationHome from './registration/RegistrationHome'
 
@@ -74,7 +74,7 @@ class AppRoutes extends Component {
 		return (
 			<Switch>
         <Route exact path='/app/home' component={RequireAuth(AppHome)} />
-        <Route exact path='/app/ads' component={RequireAuth(AdsPage)} />
+        <Route exact path='/app/ads' component={RequireAuth(AdPage)} />
         <Route exact path='/app/settings' component={RequireAuth(SettingsPage)} />
         <Route exact path='/app/registration' component={RequireAuth(RegistrationHome)} />
       </Switch>

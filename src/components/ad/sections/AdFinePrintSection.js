@@ -1,10 +1,11 @@
-// Compt for copying as a template
+// Compt for copying as a AdFinePrintSection
 // This compt is used for...
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
@@ -12,29 +13,53 @@ import {
 } from 'antd-mobile'
 
 
-class AdsPage extends Component {
+class AdFinePrintSection extends Component {
+
+  renderFinePrintTitle() {
+    return (
+      <h3>The Fine Print</h3>
+    )
+  }
+
+  renderQuickDetails() {
+    return (
+      <div>
+        <div>MOVEIN {moment(this.props.current_listing.MOVEIN).format('MM dd')}</div>
+        <div>{this.props.current_listing.LEASE_LENGTH} month lease</div>
+        <div>{this.props.current_listing.UTILITIES}</div>
+      </div>
+    )
+  }
+
+  renderDetails() {
+    return (
+      <div>{`For rent available to a young professional. Requires a credit check and proof of employment.`}</div>
+    )
+  }
 
 	render() {
 		return (
-			<div id='AdsPage' style={comStyles().container}>
-				AdsPage
+			<div id='AdFinePrintSection' style={comStyles().container}>
+				{this.renderFinePrintTitle()}
+        {this.renderQuickDetails()}
+        {this.renderDetails()}
 			</div>
 		)
 	}
 }
 
 // defines the types of variables in this.props
-AdsPage.propTypes = {
+AdFinePrintSection.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-AdsPage.defaultProps = {
+AdFinePrintSection.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(AdsPage)
+const RadiumHOC = Radium(AdFinePrintSection)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
