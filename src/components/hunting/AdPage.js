@@ -13,7 +13,7 @@ import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, s
 import {
 
 } from 'antd-mobile'
-
+import { addToFavoritesToSQL } from '../../api/tenant/tenant_api'
 
 class AdPage extends Component {
 
@@ -37,6 +37,24 @@ class AdPage extends Component {
       this.organizePhotos()
 		}
 	}
+
+  addToFavorites() {
+    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
+      addToFavoritesToSQL({
+        tenant_id: this.props.tenant_profile.tenant_id,
+        property_id: this.props.current_listing.REFERENCE_ID,
+        meta: JSON.stringify(this.props.current_listing)
+      })
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } else {
+      alert('Sign In First!')
+    }
+  }
 
   organizePhotos() {
     const pics = rankOrderPics(this.props.current_listing.IMAGES)
@@ -174,6 +192,7 @@ class AdPage extends Component {
 			<div id='AdPage' style={comStyles().container}>
 				AdPage
         <button onClick={() => this.props.nextListing()}>Next</button>
+        <button onClick={() => this.addToFavorites()}>Favorite</button>
         {
           this.props.current_listing
           ?
@@ -209,6 +228,7 @@ AdPage.propTypes = {
 	all_listings: PropTypes.array.isRequired,
 	nextListing: PropTypes.func.isRequired,
 	destination: PropTypes.string,
+  tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -225,6 +245,7 @@ const mapReduxToProps = (redux) => {
 		current_listing: redux.listings.current_listing,
     all_listings: redux.listings.all_listings,
 		destination: redux.tenant.prefs.destination.address,
+    tenant_profile: redux.auth.tenant_profile,
 	}
 }
 
