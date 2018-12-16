@@ -7,6 +7,7 @@ import {
   SET_NAME,
   LOAD_LOCAL_STORAGE_ACCOUNT,
   RESTART_SEARCH,
+  SAVE_TENANT_FAVORITES,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -24,7 +25,8 @@ const INITIAL_STATE = {
       commute_mode: 'transit',
       gps: { lat: 43.6601025, lng: -79.3850843 }
     }
-  }
+  },
+  favorites: [],
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -95,6 +97,11 @@ export default (state = INITIAL_STATE, action) => {
       }
       localStorage.setItem('acct_details', JSON.stringify(new_state))
       return new_state
+    case SAVE_TENANT_FAVORITES:
+      return {
+        ...state,
+        favorites: action.payload,
+      }
     default:
       return {
         ...state,
