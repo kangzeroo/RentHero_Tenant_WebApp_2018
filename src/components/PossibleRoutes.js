@@ -10,4 +10,5 @@ export default [
   '/register/verify',
   '/passwordless',
   '/intro',
+  '/sandbox'
 ]

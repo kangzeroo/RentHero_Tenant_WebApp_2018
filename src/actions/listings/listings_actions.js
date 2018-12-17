@@ -7,39 +7,9 @@ import {
   CHANGE_COMMUTE_MODE,
   CHANGE_CARD_SECTION_SHOWN,
   SET_CURRENT_LISTING,
-  SET_NAME,
-  LOAD_LOCAL_STORAGE_ACCOUNT,
-  RESTART_SEARCH,
   SET_CURRENT_LISTINGS_STACK,
 } from '../action_types'
 
-
-export const loadLocalStorageAccount = () => {
-  return (dispatch) => {
-    dispatch({
-      type: LOAD_LOCAL_STORAGE_ACCOUNT
-    })
-  }
-}
-
-export const restartSearch = () => {
-  return (dispatch) => {
-    dispatch({
-      type: RESTART_SEARCH
-    })
-  }
-}
-
-// names
-export const saveNameToRedux = (name) => {
-  // dispatch lets you send actions to Redux
-  return (dispatch) => {
-    dispatch({
-      type: SET_NAME,
-      payload: name,
-    })
-  }
-}
 
 // change the language of the app
 export const saveListingsToRedux = (listings) => {

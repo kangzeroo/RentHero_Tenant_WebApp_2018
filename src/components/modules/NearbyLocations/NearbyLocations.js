@@ -24,7 +24,7 @@ class NearbyLocations extends Component {
     this.state = {
       nearbys: [],
       current_location: null,
-      nearbys_string: 'all',
+      nearbys_string: 'groceries',
     }
     this.map = null
   }
@@ -46,10 +46,10 @@ class NearbyLocations extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.card_section_shown !== this.props.card_section_shown && this.props.card_section_shown === 'nearby') || (prevProps.current_listing !== this.props.current_listing)) {
+    if ((prevProps.card_section_shown !== this.props.card_section_shown && this.props.card_section_shown === 'nearby') || (prevProps.current_listing !== this.props.current_listing && this.props.card_section_shown === 'nearby')) {
       this.renderNearby()
     }
-    if ((prevState.nearbys_string !== this.state.nearbys_string) || (prevProps.current_listing !== this.props.current_listing)) {
+    if ((prevState.nearbys_string !== this.state.nearbys_string && this.props.card_section_shown === 'nearby') || (prevProps.current_listing !== this.props.current_listing && this.props.card_section_shown === 'nearby')) {
       this.getNearby()
         .then((nearbys) => {
           this.setState({
@@ -80,11 +80,9 @@ class NearbyLocations extends Component {
       let params = {
   			location: location,
   			radius: 2000,
-  			rankby: 'distance'
+  			rankby: 'distance',
+        keyword: this.state.nearbys_string
   		}
-      if (this.state.nearbys_string !== 'all' && this.state.nearbys_string) {
-        params.keyword = this.state.nearbys_string
-      }
   		placeService.nearbySearch(params, (results, status) => {
   			if (status === 'OK') {
   				console.log('-------> Got nearby stuff')
@@ -141,28 +139,13 @@ class NearbyLocations extends Component {
     if (this.props.card_section_shown === 'nearby') {
   		return (
   			<div id='NearbyLocations' style={comStyles().container}>
-          {
-            // <div id='controls' style={comStyles().controls}>
-            //   <Button onClick={() => this.selectedNearby('cafes')} type={this.state.nearbys_string === 'cafes' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Cafés</Button>
-            //   <Button onClick={() => this.selectedNearby('groceries')} type={this.state.nearbys_string === 'groceries' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Groceries</Button>
-            //   <Button onClick={() => this.selectedNearby('stores')} type={this.state.nearbys_string === 'stores' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Stores</Button>
-            //   <Button onClick={() => this.selectedNearby('resturants')} type={this.state.nearbys_string === 'resturants' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Resturants</Button>
-            //   <Button onClick={() => this.selectedNearby('bars')} type={this.state.nearbys_string === 'bars' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bars</Button>
-            //   <Button onClick={() => this.selectedNearby('banks')} type={this.state.nearbys_string === 'banks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Banks</Button>
-            //   <Button onClick={() => this.selectedNearby('bus')} type={this.state.nearbys_string === 'bus' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Bus Stops</Button>
-            //   <Button onClick={() => this.selectedNearby('subway')} type={this.state.nearbys_string === 'subway' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Subway</Button>
-            //   <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parking</Button>
-            //   <Button onClick={() => this.selectedNearby('daycare')} type={this.state.nearbys_string === 'daycare' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Daycare</Button>
-            //   <Button onClick={() => this.selectedNearby('parks')} type={this.state.nearbys_string === 'parks' ? 'primary' : 'ghost'} inline size="small" style={{ margin: '3px' }}>Parks</Button>
-            // </div>
-          }
           <div id='controls' style={{ width: '100%', padding: '10px' }}>
-            <p style={{ fontWeight: 'bold' }}>Show Nearby...</p>
             <Select
               size='large'
               style={{ width: '100%', }}
               onChange={(a) => this.selectedNearby(a)}
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              placeholder='Search Nearby'
             >
               <Select.Option key='cafes' value='cafes'>Cafes</Select.Option>
               <Select.Option key='groceries' value='groceries'>Groceries</Select.Option>

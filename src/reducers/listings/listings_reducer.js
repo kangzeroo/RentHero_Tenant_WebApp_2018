@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         current_listings_stack: action.payload,
         all_listings: action.payload,
-        current_listing: action.payload[0]
+        current_listing: state.current_listing ? state.current_listing : action.payload[0]
       }
     case SET_CURRENT_LISTING:
       return {

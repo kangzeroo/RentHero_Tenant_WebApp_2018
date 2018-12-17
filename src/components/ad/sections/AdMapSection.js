@@ -23,6 +23,7 @@ class AdMapSection extends Component {
     super()
     this.state = {
       location_tab_index: 0,
+      card_section_shown: 'commute',
 			commute_state: {
 				commute_time: 0,
 				commute_distance: 0,
@@ -143,28 +144,25 @@ class AdMapSection extends Component {
           tabs={location_tabs}
           swipeable={false}
           initialPage={this.state.location_tab_index}
-          onChange={(tab, index) => { console.log('onChange', index, tab); }}
+          page={this.state.location_tab_index}
           onTabClick={(tab, index) => {
-            this.setState({ location_tab_index: index })
-            this.props.changeShownSectionCards(location_tabs[index].section)
+            this.setState({ location_tab_index: index, card_section_shown: location_tabs[index].section })
             // document.getElementById('location_info').scrollIntoView()
           }}
         >
           <CommuteMap
             current_listing={this.props.current_listing}
-            commute_mode={this.props.commute_mode}
-            destination={this.props.main_destination}
-            card_section_shown={this.props.card_section_shown}
+            card_section_shown={this.state.card_section_shown}
             setCommuteState={(commute_state) => this.setCommute(commute_state)}
           />
           <NearbyLocations
             current_listing={this.props.current_listing}
-            card_section_shown={this.props.card_section_shown}
+            card_section_shown={this.state.card_section_shown}
             setNearbyState={(nearby_state) => this.setState({ nearby_state: nearby_state })}
           />
           <StreetView
             current_listing={this.props.current_listing}
-            card_section_shown={this.props.card_section_shown}
+            card_section_shown={this.state.card_section_shown}
           />
         </Tabs>
 			</div>
