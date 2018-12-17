@@ -149,7 +149,6 @@ export default (ComposedComponent) => {
 					// this.props.history.push(location)
 					this.props.saveTenantProfileToRedux(data)
 					this.props.authenticationLoaded()
-					res(data.tenant_id)
 				})
 				.catch((err) => {
 					console.log('kz tripping shit')
@@ -169,11 +168,9 @@ export default (ComposedComponent) => {
 						// tenant_id exists, relogin
 						console.log('RELOGIN')
 						this.props.authenticationLoaded()
-						res()
 					} else {
 						// tenant_id does not exists. start new session
 						this.props.authenticationLoaded()
-						res()
 						// unauthRoleTenant()
 						// 	.then((unauthUser) => {
 						// 		console.log(unauthUser)
