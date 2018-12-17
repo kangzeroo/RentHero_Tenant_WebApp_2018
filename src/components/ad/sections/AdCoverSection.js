@@ -7,6 +7,7 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
+import moment from 'moment'
 import {
   Badge,
   Carousel,
@@ -49,7 +50,7 @@ class AdCoverSection extends Component {
         {/*<LikeableImage img={this.props.cover_image} />*/}
         <div style={{ position: 'relative' }}>
           <div onClick={(e) => this.turnImageCarousel(e, -1)} style={{ height: '100%', position: 'absolute', left: '10px', top: '45%', zIndex: '3', borderRadius: '0% 30% 30% 0%', cursor: 'pointer' }}>
-            <i className='ion-chevron-left' style={{ fontSize: '1.3rem' }}></i>
+            <i className='ion-chevron-left' style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'white' }}></i>
           </div>
           <Carousel
               autoplay={true}
@@ -67,7 +68,8 @@ class AdCoverSection extends Component {
                   key={img.url}
                   style={{ display: 'inline-block', width: '100%' }}
                   onClick={() => {
-                    history.pushState(null, null, `${this.props.location.pathname}?show=images`)
+                    this.props.scrollDownToImages()
+                    // history.pushState(null, null, `${this.props.location.pathname}?show=images`)
                   }}
                 >
                   <img
@@ -101,7 +103,7 @@ class AdCoverSection extends Component {
             }
           </Carousel>
           <div onClick={(e) => this.turnImageCarousel(e, 1)} style={{ height: '100%', position: 'absolute', right: '10px', top: '45%', zIndex: '3', borderRadius: '30% 0% 0% 30%', cursor: 'pointer' }}>
-            <i className='ion-chevron-right' style={{ fontSize: '1.3rem' }}></i>
+            <i className='ion-chevron-right' style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'white' }}></i>
           </div>
         </div>
       </div>
@@ -114,10 +116,57 @@ class AdCoverSection extends Component {
         <div style={descriptionStyles().left}>
           <div style={descriptionStyles().beds_baths}>{`${this.props.beds} BEDS • ${this.props.baths} BATHS`}</div>
           <div style={descriptionStyles().price_by}>{`By ${this.props.seller}`.toUpperCase()}</div>
+          <br/>
+          <div style={{ fontSize: '0.7rem' }}><i className='ion-ios-box' style={{ fontSize: '1rem', margin: '0px 10px 0px 0px' }} />
+            {
+              moment(this.props.current_listing.MOVEIN).diff(moment()) > 0
+              ?
+              `MOVE IN ${moment(this.props.current_listing.MOVEIN).format('MMM DD').toUpperCase()}`
+              :
+              'MOVE IN ASAP'
+            }
+          </div>
+          <div style={{ fontSize: '0.7rem' }}><i className='ion-calendar' style={{ margin: '0px 10px 0px 0px' }} />{this.props.current_listing.LEASE_LENGTH} MONTHS</div>
+          {
+            this.props.current_listing.SQFT
+            ?
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-cube' style={{ margin: '0px 10px 0px 0px' }} />{this.props.current_listing.SQFT} SQFT</div>
+            :
+            null
+          }
+          {
+            this.props.current_listing.PET_FRIENDLY
+            ?
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-ios-paw' style={{ margin: '0px 10px 0px 0px' }} />{this.props.current_listing.SQFT} SQFT</div>
+            :
+            null
+          }
+          {
+            this.props.current_listing.FURNISHED
+            ?
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-ios-home' style={{ margin: '0px 10px 0px 0px' }} />FURNISHED</div>
+            :
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-close-round' style={{ margin: '0px 10px 0px 0px' }} />NOT FURNISHED</div>
+          }
+          {
+            this.props.current_listing.UTILITIES
+            ?
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-outlet' style={{ margin: '0px 10px 0px 0px' }} />UTILITIES INCLUDED</div>
+            :
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-close-round' style={{ margin: '0px 10px 0px 0px' }} />UTILITIES SEPERATE</div>
+          }
+          {
+            this.props.current_listing.PARKING
+            ?
+            <div style={{ fontSize: '0.7rem' }}><i className='ion-model-s' style={{ margin: '0px 10px 0px 0px' }} />PARKING INCLUDED</div>
+            :
+            null
+          }
         </div>
         <div style={descriptionStyles().right}>
           <div style={descriptionStyles().price}>{`$${this.props.current_listing.PRICE}`}</div>
-          <div style={descriptionStyles().commute}>{`${(this.props.commute_time/60).toFixed(0)} mins`}</div>
+          <div style={descriptionStyles().commute}>{`${(this.props.commute_time/60).toFixed(0)} MINS`}</div>
+          {/*<div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={descriptionStyles().original}>VIEW ORIGINAL</div>*/}
         </div>
       </div>
     )
@@ -141,6 +190,7 @@ AdCoverSection.propTypes = {
   seller: PropTypes.string.isRequired,     // passed in
   commute_time: PropTypes.number.isRequired,     // passed in
   current_listing: PropTypes.object.isRequired,     // passed in
+  scrollDownToImages: PropTypes.func.isRequired,    // passed in
 }
 
 // for all optional props, define a default value
@@ -184,7 +234,7 @@ const coverStyles = () => {
       overflow: 'hidden',
       padding: '10px',
       borderRadius: '10px',
-    }
+    },
   }
 }
 
@@ -235,8 +285,8 @@ const descriptionStyles = () => {
       margin: '0px 0px 5px 0px',
 		},
     commute: {
-      width: '100%',
-      backgroundColor: 'green',
+      width: '100px',
+      backgroundColor: '#0ca20c',
       color: 'white',
       borderRadius: '5px',
       display: 'center',
@@ -245,6 +295,21 @@ const descriptionStyles = () => {
       fontSize: '0.8rem',
       fontWeight: 'normal',
       padding: '2px',
+    },
+    original: {
+      width: '100px',
+      height: '50px',
+      border: '1px solid #2faded',
+      color: '#2faded',
+      borderRadius: '5px',
+      display: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      fontSize: '0.8rem',
+      fontWeight: 'normal',
+      padding: '5px',
+      margin: '5px 0px 0px 0px',
+      cursor: 'pointer',
     },
   }
 }

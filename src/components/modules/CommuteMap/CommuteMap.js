@@ -39,7 +39,7 @@ class CommuteMap extends Component {
   }
 
   componentDidMount() {
-    this.grabDirections(this.props.commute_mode)
+    this.grabDirections()
       .then((directions) => {
         this.setState({
           directions: directions
@@ -54,10 +54,8 @@ class CommuteMap extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.card_section_shown !== this.props.card_section_shown && this.props.card_section_shown === 'commute') || (prevProps.current_listing !== this.props.current_listing)) {
-      this.renderDirections()
-    }
-    if ((prevProps.commute_mode !== this.props.commute_mode) || (prevProps.current_listing !== this.props.current_listing)) {
+    console.log(this.props)
+    if ((prevProps.current_listing !== this.props.current_listing || prevProps.card_section_shown !== this.props.card_section_shown) && this.props.card_section_shown === 'commute') {
       this.grabDirections(this.props.commute_mode)
         .then((directions) => {
   				this.setState({
@@ -71,34 +69,40 @@ class CommuteMap extends Component {
     }
   }
 
-  grabDirections(commute_mode) {
+  grabDirections() {
     const self = this
     const p = new Promise((res, rej) => {
-  		const directionsService = new google.maps.DirectionsService
-  		directionsService.route({
-  			origin: this.props.current_listing.ADDRESS,
-  			destination: this.props.destination,
-  			travelMode: commute_mode.toUpperCase()
-  		}, function(response, status) {
-  			if (status === 'OK') {
-  				self.props.setCommuteState({
-  					commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
-  					commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
-  				})
-          self.setState({
-            commute_state: {
+      this.setState({
+        address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
+        commute_mode: 'TRANSIT',
+        arrival_time: this.props.prefs.LOCATION.DESTINATION_ARRIVAL,
+      }, () => {
+    		const directionsService = new google.maps.DirectionsService
+    		directionsService.route({
+    			origin: this.props.current_listing.ADDRESS,
+    			destination: this.state.address,
+    			travelMode: this.state.commute_mode
+    		}, function(response, status) {
+    			if (status === 'OK') {
+    				self.props.setCommuteState({
     					commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
     					commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
-            }
-          })
-  				console.log('-------> Got directions')
-  				console.log(response)
-          res(response)
-  			} else {
-          rej(status)
-  				window.alert('Directions request failed due to ' + status);
-  			}
-  	 })
+    				})
+            self.setState({
+              commute_state: {
+      					commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
+      					commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
+              }
+            })
+    				console.log('-------> Got directions')
+    				console.log(response)
+            res(response)
+    			} else {
+            rej(status)
+    				window.alert('Directions request failed due to ' + status);
+    			}
+    	 })
+      })
     })
     return p
   }
@@ -125,62 +129,35 @@ class CommuteMap extends Component {
     }
   }
 
+  updateDestinationCommute() {
+
+  }
+
 	render() {
     if (this.props.card_section_shown === 'commute') {
   		return (
   			<div id='CommuteMap' style={comStyles().container}>
-          <div id='controls' style={comStyles().controls}>
+          {/*<div id='controls' style={comStyles().controls}>
             <Select
               size='large'
               style={{ width: '30%', }}
               onChange={(a) => this.setState({ commute_mode: mode })}
+              value={this.state.commute_mode}
             >
-              <Select.Option key='transit' value='transit'>Transit</Select.Option>
-              <Select.Option key='driving' value='driving'>Driving</Select.Option>
-              <Select.Option key='walking' value='walking'>Walking</Select.Option>
-              <Select.Option key='bicycling' value='bicycling'>Bicycling</Select.Option>
+              <Select.Option key='transit' value='TRANSIT'>Transit</Select.Option>
+              <Select.Option key='driving' value='DRIVING'>Driving</Select.Option>
+              <Select.Option key='walking' value='WALKING'>Walking</Select.Option>
+              <Select.Option key='bicycling' value='BICYCLING'>Bicycling</Select.Option>
             </Select>
-            <input id='destination_address' value={(e) => this.setState({ address: e.target.value })} />
-
-            {/*<div id='options' style={comStyles().options}>
-              <Button onClick={() => this.setCommuteMode('DRIVING')} type={this.props.commute_mode.toUpperCase() === 'DRIVING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
-                {
-                  this.props.commute_mode.toUpperCase() === 'DRIVING'
-                  ?
-                  `${(this.state.commute_state.commute_time/60).toFixed(0)} MINS DRIVING`
-                  :
-                  'DRIVING'
-                }
-              </Button>
-              <Button onClick={() => this.setCommuteMode('TRANSIT')} type={this.props.commute_mode.toUpperCase() === 'TRANSIT' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
-                {
-                  this.props.commute_mode.toUpperCase() === 'TRANSIT'
-                  ?
-                  `${(this.state.commute_state.commute_time/60).toFixed(0)} MINS TRANSIT`
-                  :
-                  'TRANSIT'
-                }
-              </Button>
-              <Button onClick={() => this.setCommuteMode('WALKING')} type={this.props.commute_mode.toUpperCase() === 'WALKING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
-                {
-                  this.props.commute_mode.toUpperCase() === 'WALKING'
-                  ?
-                  `${(this.state.commute_state.commute_time/60).toFixed(0)} MINS WALKING`
-                  :
-                  'WALKING'
-                }
-              </Button>
-              <Button onClick={() => this.setCommuteMode('BICYCLING')} type={this.props.commute_mode.toUpperCase() === 'BICYCLING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
-                {
-                  this.props.commute_mode.toUpperCase() === 'BICYCLING'
-                  ?
-                  `${(this.state.commute_state.commute_time/60).toFixed(0)} MINS BICYCLING`
-                  :
-                  'BICYCLING'
-                }
-              </Button>
-            </div>*/}
-          </div>
+            <input
+              id='destination_address'
+              value={this.state.address}
+              onChange={(e) => this.setState({ address: e.target.value })}
+              style={comStyles().address_input}
+            />
+            <div style={{ width: '20%' }}>Arrive By</div>
+            <i onClick={() => this.updateDestinationCommute()} className='ion-android-send' style={{ fontSize: '1.6rem' }} />
+          </div>*/}
   				<div id='map' style={comStyles().map}></div>
   			</div>
   		)
@@ -194,10 +171,9 @@ class CommuteMap extends Component {
 CommuteMap.propTypes = {
 	history: PropTypes.object.isRequired,
   setCommuteState: PropTypes.func.isRequired,       // passed in
-	destination: PropTypes.string.isRequired,           // passed in
-	commute_mode: PropTypes.string.isRequired,      // passed in
 	current_listing: PropTypes.object.isRequired,       // passed in
   card_section_shown: PropTypes.string.isRequired,    // passed in
+  prefs: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -211,7 +187,7 @@ const RadiumHOC = Radium(CommuteMap)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+    prefs: redux.prefs,
 	}
 }
 
@@ -241,8 +217,8 @@ const comStyles = () => {
     },
     controls: {
       display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
+      flexDirection: 'row',
+      justifyContent: 'center',
       alignItems: 'center',
       height: '100px',
       textAlign: 'center',
@@ -250,5 +226,11 @@ const comStyles = () => {
 		map: {
 			height: '250px',
 		},
+    address_input: {
+      padding: '10px',
+      backgroundColor: 'rgba(0,0,0,0.05)',
+      border: '0px solid black',
+      margin: '0px 10px 0px 10px',
+    }
 	}
 }

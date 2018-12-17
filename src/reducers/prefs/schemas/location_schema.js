@@ -18,7 +18,7 @@ export const LOCATION = {
     // daily commute info
     DESTINATION_ADDRESS: 'Toronto, ON M5J 1E6, Canada',
     DESTINATION_GEOPOINT: '43.6451889,-79.3806131',
-    DESTINATION_ARRIVAL: 600,
+    DESTINATION_ARRIVAL: 540,
 
     // modes of transportation
     TRANSPORT_MODES_AS: '',                          // save as CSV string

@@ -7,12 +7,15 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import _ from 'lodash'
+import $ from 'jquery'
 import { withRouter } from 'react-router-dom'
 import { rankOrderPics } from '../../api/ad/ad_api'
+import { getCurrentListingByReference } from '../../api/listings/listings_api'
 import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, setCurrentListing } from '../../actions/listings/listings_actions'
 import {
 
 } from 'antd-mobile'
+import { triggerDrawerNav } from '../../actions/app/app_actions'
 import AdCoverSection from './sections/AdCoverSection'
 import AdFurnishSection from './sections/AdFurnishSection'
 import AdBuildingSection from './sections/AdBuildingSection'
@@ -42,6 +45,17 @@ class AdPage extends Component {
     if (this.props.current_listing) {
       this.organizePhotos()
     }
+    if (this.props.location.search.indexOf('ref=') > -1) {
+			const ref_id = this.props.location.search.slice(this.props.location.search.indexOf('ref=') + 'ref='.length)
+			console.log('ref_id: ', ref_id)
+			getCurrentListingByReference(ref_id)
+				.then((data) => {
+					this.props.setCurrentListing(data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+		}
     const scrollable = document.getElementById('AdPage')
     if (scrollable) {
       scrollable.addEventListener("scroll", () => { // or window.addEventListener("scroll"....
@@ -217,6 +231,14 @@ class AdPage extends Component {
     )
   }
 
+  scrollDownToImages() {
+    // console.log('scrollDownToImages')
+    // $('#AdPage').animate({
+    //     scrollTop: document.getElementById("AdPage").scrollHeight - $(`#all_images`).position().top
+    // }, 1000);
+    document.getElementById('all_images').scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
 	render() {
     if (this.props.current_listing) {
   		return (
@@ -225,10 +247,10 @@ class AdPage extends Component {
             this.state.show_header
             ?
             <div style={headerStyles().container}>
-              <div style={headerStyles().menu}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
+              <div onClick={() => this.props.triggerDrawerNav(true)} style={headerStyles().menu}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
       				<div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
               {/*<div style={headerStyles().price}>${this.props.current_listing.PRICE}</div>*/}
-              <div onClick={() => this.props.nextListing()} style={headerStyles().more}><i className='ion-android-more-vertical' style={{ fontSize: '1.3rem' }}></i></div>
+              {/*<div onClick={() => this.props.nextListing()} style={headerStyles().more}><i className='ion-android-more-vertical' style={{ fontSize: '1.3rem' }}></i></div>*/}
             </div>
             :
             null
@@ -240,6 +262,7 @@ class AdPage extends Component {
             seller={this.props.current_listing.SELLER}
             commute_time={this.state.commute_state.commute_time}
             arrival_time={'10am'}
+            scrollDownToImages={() => this.scrollDownToImages()}
           />
           <AdMapSection
             setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
@@ -247,7 +270,8 @@ class AdPage extends Component {
             arrival_time={123}
             current_listing={this.props.current_listing}
           />
-          <div style={{ height: 'auto', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ width: '100%', height: '70px' }}></div>
+          <div id='all_images' style={{ height: 'auto', display: 'flex', flexDirection: 'column' }}>
               {
                 this.props.current_listing.IMAGES.map((img, index) => {
                     return (
@@ -267,78 +291,18 @@ class AdPage extends Component {
                 })
               }
           </div>
-          {/*
-            this.state.orderedImages[0]
-            ?
-            <AdFurnishSection
-              current_listing={this.props.current_listing}
-              images={this.state.orderedImages.slice(1, 4).map(img => img.url)}
-            />
-            :
-            null
-          */}
-          {/*
-            this.state.orderedImages[0]
-            ?
-            <AdBuildingSection
-              current_listing={this.props.current_listing}
-              images={this.state.orderedImages.slice(4).map(img => img.url)}
-            />
-            :
-            null
-          */}
-          {/*
-            this.state.orderedImages[0]
-            ?
-            <AdFinePrintSection
-              current_listing={this.props.current_listing}
-            />
-            :
-            null
-          */}
-          {/*
-            this.state.orderedImages[0]
-            ?
-            <AdNearbySection
-              current_listing={this.props.current_listing}
-            />
-            :
-            null
-          */}
-          {/*
-            this.state.orderedImages[0]
-            ?
-            <AdStreetView
-              current_listing={this.props.current_listing}
-            />
-            :
-            null
-          */}
-          {/*<div onClick={() => this.props.nextListing()} style={{ height: '50px', width: '80%', margin: '20px 10% 0px 10%', position: 'fixed', backgroundColor: 'blue', bottom: '20px' }}>NEXT LISTING</div>
-          <div style={{ height: '50px', width: '100%' }}></div>*/}
-          {/*
-            this.props.current_listing
-            ?
-            <div>
-              {
-                this.state.orderedImages.map((img) => {
-                  return (
-                    <div>
-                      <h6>{img.caption}</h6>
-                      <img src={img.url} style={{ width: '100%', minWidth: '100%', height: 'auto' }} />
-                    </div>
-                  )
-                })
-              }
+          <div style={{ width: '100%', height: '70px' }}></div>
+          <div style={actionStyles().container}>
+            <div onClick={() => this.props.nextListing()} style={actionStyles().dislike}>
+              <i className='ion-thumbsdown' style={{ fontSize: '2rem', color: '#f23939' }} />
             </div>
-            :
-            null
-          */}
-          {/*<div style={{ display: 'flex', flexDirection: 'column' }}>
-            {
-              this.showCount()
-            }
-          </div>*/}
+            <div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={actionStyles().contact}>
+              VIEW ORIGINAL
+            </div>
+            <div onClick={() => this.props.nextListing()} style={actionStyles().like}>
+              <i className='ion-thumbsup' style={{ fontSize: '2rem', color: '#0ca20c' }} />
+            </div>
+          </div>
   			</div>
   		)
     } else {
@@ -354,6 +318,7 @@ AdPage.propTypes = {
 	all_listings: PropTypes.array.isRequired,
 	nextListing: PropTypes.func.isRequired,
 	main_destination: PropTypes.string,
+  setCurrentListing: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -370,6 +335,7 @@ const mapReduxToProps = (redux) => {
 		current_listing: redux.listings.current_listing,
     all_listings: redux.listings.all_listings,
 		main_destination: redux.prefs.LOCATION.DESTINATION_ADDRESS,
+  	triggerDrawerNav: PropTypes.func.isRequired,
 	}
 }
 
@@ -377,6 +343,8 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
 		nextListing,
+    setCurrentListing,
+    triggerDrawerNav,
 	})(RadiumHOC)
 )
 
@@ -418,7 +386,7 @@ const headerStyles = () => {
       padding: '10px 10px 10px 10px',
     },
     address: {
-      width: '80%',
+      width: '90%',
       fontSize: '1.1rem',
       fontWeight: 'bold',
       display: 'flex',
@@ -435,5 +403,53 @@ const headerStyles = () => {
       alignItems: 'flex-start',
       padding: '10px 10px 10px 10px',
     }
+  }
+}
+
+const actionStyles = () => {
+  return {
+    container: {
+      position: 'fixed',
+      width: '100%',
+      height: '70px',
+      bottom: '0px',
+      left: '0px',
+      backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      borderRadius: '0px 0px 0px 0px',
+      zIndex: 5,
+    },
+    dislike: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '25%',
+      border: '1px solid #f23939',
+      borderRadius: '10px',
+    },
+    like: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '25%',
+      border: '1px solid #0ca20c',
+      borderRadius: '10px',
+    },
+    contact: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '30%',
+      border: '1px solid #2faded',
+      borderRadius: '10px',
+      color: '#2faded',
+      fontWeight: 'regular',
+    },
   }
 }

@@ -17,7 +17,6 @@ import {
 import { saveLoadingCompleteToRedux } from '../actions/app/app_actions'
 import {
 	saveListingsToRedux,
-	loadLocalStorageAccount,
 } from '../actions/listings/listings_actions'
 import { updatePreferences } from '../actions/prefs/prefs_actions'
 import {
@@ -50,17 +49,11 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
     componentWillMount() {
-			this.props.loadLocalStorageAccount()
 
 			// check if tenant is already authenticated
 			this.checkIfTenantLoggedIn()
 				.then((data) => {
-					setTimeout(() => {
-						this.grabListings()
-						this.grabPrefs(data.tenant_id)
-
-					}, 100)
-
+					this.grabPrefs(data.tenant_id)
 					// do stuff based on the URL
 					this.executeOnURL()
 				})
@@ -104,6 +97,9 @@ export default (ComposedComponent) => {
 						keys.filter(key => key).forEach((key) => {
 							this.props.updatePreferences(prefs[key] || {})
 						})
+						setTimeout(() => {
+							this.grabListings()
+						}, 250)
 					}).catch((err) => {
 						console.log(err)
 					})
@@ -121,9 +117,11 @@ export default (ComposedComponent) => {
 					console.log('PASSWORDLESS')
 					this.props.authenticationLoaded()
 					res({ tenant_id: this.props.tenant_id })
-
 				} else {
 					this.startLoginForTenant(location)
+					.then((data) => {
+						res(data)
+					})
 				}
 
 			})
@@ -260,7 +258,6 @@ export default (ComposedComponent) => {
 		tenant_id: PropTypes.string.isRequired,
 		tenant_profile: PropTypes.object.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
-		loadLocalStorageAccount: PropTypes.func.isRequired,
 		updatePreferences: PropTypes.func.isRequired,
 		saveTenantProfileToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
@@ -291,7 +288,6 @@ export default (ComposedComponent) => {
 			saveLoadingCompleteToRedux,
 			authenticationLoaded,
 			saveListingsToRedux,
-			loadLocalStorageAccount,
 			updatePreferences,
 			saveTenantProfileToRedux,
     })(AppRootMechanics)
