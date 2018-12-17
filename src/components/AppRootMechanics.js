@@ -8,7 +8,7 @@ import { retrieveTenantFromLocalStorage, unauthRoleTenant } from '../api/aws/aws
 import { dispatchActionsToRedux } from '../actions/system/system_actions'
 import {
 	saveStaffProfileToRedux,
-	authenticateStaff,
+	authenticateTenant,
 	authenticationLoaded,
 	forwardUrlLocation,
 	saveCorporationProfileToRedux,
@@ -42,6 +42,8 @@ import { AMENITIES } from '../reducers/prefs/schemas/amenities_schema'
 import { TOUR } from '../reducers/prefs/schemas/tour_schema'
 import { DOCUMENTS } from '../reducers/prefs/schemas/documents_schema'
 import { ROOMMATES } from '../reducers/prefs/schemas/roommates_schema'
+import { isMobile } from '../api/general/general_api'
+import { isMobileRedux } from '../actions/app/app_actions'
 
 
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
@@ -50,6 +52,8 @@ export default (ComposedComponent) => {
 	class AppRootMechanics extends Component {
 
     componentWillMount() {
+			this.checkIfMobile()
+
 			this.props.loadLocalStorageAccount()
 
 			// check if tenant is already authenticated
@@ -70,6 +74,11 @@ export default (ComposedComponent) => {
 					// this.props.history.push('/aaa')
 				})
     }
+
+		checkIfMobile() {
+			console.log('IS MOBILE', isMobile())
+			this.props.isMobileRedux(isMobile())
+		}
 
 		grabListings() {
 			getListings(this.props.prefs)
@@ -112,10 +121,10 @@ export default (ComposedComponent) => {
 		checkIfTenantLoggedIn() {
 			const p = new Promise((res, rej) => {
 				// grab the url that was given, will be used in this,saveStaffProfileToRedux()
-				// let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
-				// if (location === '/login') {
-				// 	location = '/'
-				// }
+				let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
+				if (location === '/login') {
+					location = '/'
+				}
 				console.log(this.props.location)
 				if (this.props.location.pathname === '/passwordless') {
 					console.log('PASSWORDLESS')
@@ -124,6 +133,9 @@ export default (ComposedComponent) => {
 
 				} else {
 					this.startLoginForTenant(location)
+						.then((data) => {
+							res(data)
+						})
 				}
 
 			})
@@ -141,25 +153,27 @@ export default (ComposedComponent) => {
 					})
 					.then((data) => {
 						console.log(data)
-						// if (location === '/') {
-						// 	location = '/app/home'
-						// }
+						if (location === '/') {
+							location = '/app/home'
+						}
+						console.log(location)
 						// // if they have, then we'll auto log them in
-						// this.props.history.push(location)
-						this.props.saveTenantProfileToRedux(data)
-						this.props.authenticationLoaded()
+						this.props.authenticateTenant(true)
+						this.props.authenticationLoaded(true)
+						return this.props.saveTenantProfileToRedux(data)
+					})
+					.then(() => {
+						console.log(location)
+						this.props.history.push(location)
 					})
 					.catch((err) => {
 						console.log('kz tripping shit')
 						console.log(err)
 						// if not, then we do nothing
-						// unauthRoleTenant().then((unauthUser) => {
-						// 	console.log(unauthUser)
-						// 	this.props.saveTenantProfileToRedux(unauthUser)
-						// })
+
 						// this.props.forwardUrlLocation(location)
 						// this.props.history.push(location)
-						// this.props.authenticateStaff(null)
+						// this.props.authenticateTenant(null)
 						// this.props.authenticationLoaded()
 
 						const tenant_id = localStorage.getItem('tenant_id')
@@ -188,7 +202,7 @@ export default (ComposedComponent) => {
 		// saveStaffProfileToRedux(staff, location) {
 		// 	let app_location = location
 		// 	this.props.saveStaffProfileToRedux(staff)
-		// 	this.props.authenticateStaff(staff)
+		// 	this.props.authenticateTenant(staff)
 		//
 		// 	return getCorporationProfile(staff.corporation_id)
 		// 		.then((corp) => {
@@ -252,7 +266,7 @@ export default (ComposedComponent) => {
   	history: PropTypes.object.isRequired,
 		forwardUrlLocation: PropTypes.func.isRequired,
 		saveStaffProfileToRedux: PropTypes.func.isRequired,
-		authenticateStaff: PropTypes.func.isRequired,
+		authenticateTenant: PropTypes.func.isRequired,
 		saveCorporationProfileToRedux: PropTypes.func.isRequired,
 		dispatchActionsToRedux: PropTypes.func.isRequired,
 		saveLoadingCompleteToRedux: PropTypes.func.isRequired,
@@ -264,6 +278,7 @@ export default (ComposedComponent) => {
 		updatePreferences: PropTypes.func.isRequired,
 		saveTenantProfileToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
+		isMobileRedux: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -285,7 +300,7 @@ export default (ComposedComponent) => {
 		connect(mapStateToProps, {
 			forwardUrlLocation,
 			saveStaffProfileToRedux,
-			authenticateStaff,
+			authenticateTenant,
 			saveCorporationProfileToRedux,
 			dispatchActionsToRedux,
 			saveLoadingCompleteToRedux,
@@ -294,6 +309,7 @@ export default (ComposedComponent) => {
 			loadLocalStorageAccount,
 			updatePreferences,
 			saveTenantProfileToRedux,
+			isMobileRedux,
     })(AppRootMechanics)
 	)
 }

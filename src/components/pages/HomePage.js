@@ -15,7 +15,7 @@ import SubtitlesMachine from '../modules/SubtitlesMachine'
 import { GOOGLE_CLIENT_AUTH_CREDS } from '../../api/ENV_CREDS'
 import { registerGoogleLoginWithCognito } from '../../api/aws/aws-cognito'
 import { getStaffProfile } from '../../api/auth/auth_api'
-import { authenticateStaff, saveStaffProfileToRedux } from '../../actions/auth/auth_actions'
+import { authenticateTenant, saveStaffProfileToRedux } from '../../actions/auth/auth_actions'
 
 class HomePage extends Component {
 
@@ -69,7 +69,7 @@ class HomePage extends Component {
         })
         .then((data) => {
           console.log(data)
-          self.props.authenticateStaff('something')
+          self.props.authenticateTenant('something')
           self.props.saveStaffProfileToRedux(data.profile)
           if (data.new_entry) {
             self.props.history.push('/onboarding/checkstaff')
@@ -121,7 +121,7 @@ class HomePage extends Component {
 // defines the types of variables in this.props
 HomePage.propTypes = {
 	history: PropTypes.object.isRequired,
-	authenticateStaff: PropTypes.func.isRequired,
+	authenticateTenant: PropTypes.func.isRequired,
 	saveStaffProfileToRedux: PropTypes.func.isRequired,
 }
 
@@ -143,7 +143,7 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-		authenticateStaff,
+		authenticateTenant,
 		saveStaffProfileToRedux,
 	})(RadiumHOC)
 )

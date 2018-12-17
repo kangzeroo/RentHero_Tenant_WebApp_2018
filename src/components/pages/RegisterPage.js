@@ -1,4 +1,4 @@
-// Compt for copying as a DualityPage
+// Compt for copying as a RegisterPage
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -13,39 +13,72 @@ import {
 import TenantRegistrationDialog from '../dialogs/onboarding/TenantRegistrationDialog'
 import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
 import HeatMap from '../hunting/HeatMapHunting'
+import { isMobile } from '../../api/general/general_api'
 
+class RegisterPage extends Component {
 
-class DualityPage extends Component {
+	constructor() {
+		super()
+		this.state = {
+			mobile: false,
+		}
+	}
+
+	componentWillMount() {
+		this.setState({
+			mobile: isMobile()
+		})
+	}
+
+	componentDidUpdate() {
+		if (isMobile() !== this.state.mobile) {
+			console.log('mobile changed....')
+			this.setState({
+				mobile: isMobile(),
+			})
+		}
+	}
 
 	render() {
-		return (
-			<div id='DualityPage' style={comStyles().container}>
-        <div style={{ width: '40vw' }}>
-				    <TenantRegistrationDialog width='40vw' />
-        </div>
-        <div style={{ width: '60vw' }}>
-					{
-						// <HeatMap />
-					}
+		if (this.state.mobile) {
+			return (
+				<div id='RegisterPage' style={comStyles().container}>
+	        <div style={{ width: '100vw' }}>
+					    <TenantRegistrationDialog width='100vw' />
+	        </div>
+				</div>
+			)
+		} else {
+			return (
+				<div id='RegisterPage' style={comStyles().container}>
+	        <div style={{ width: '40vw' }}>
+					    <TenantRegistrationDialog width='40vw' />
+	        </div>
+	        <div style={{ width: '60vw' }}>
+						{
+							// <HeatMap />
+						}
 
-        </div>
-			</div>
-		)
+	        </div>
+				</div>
+			)
+		}
+
 	}
 }
 
 // defines the types of variables in this.props
-DualityPage.propTypes = {
+RegisterPage.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-DualityPage.defaultProps = {
+RegisterPage.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(DualityPage)
+const RadiumHOC = Radium(RegisterPage)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

@@ -298,9 +298,9 @@ class PhoneOrEmailRegister extends Component {
         <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
           <div style={{ width: '50%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'relative' }}>
             {
-              this.props.skippable && this.props.skipEndpoint && this.shouldDisplayInput()
+              this.props.skippable && this.shouldDisplayInput()
               ?
-              <Button type='default' id={`skip--${this.props.schema.id}`} onClick={(e) => this.nextSegment(e, this.props.skipEndpoint)} style={comStyles().skip}>Skip</Button>
+              <Button type='default' id={`skip--${this.props.schema.id}`} onClick={(e) => this.props.onSkip()} style={comStyles().skip}>Skip</Button>
               :
               null
             }
@@ -379,6 +379,7 @@ PhoneOrEmailRegister.propTypes = {
   minChars: PropTypes.number,               // passed in
   stringInputPlaceholder: PropTypes.string,
   numberInputPlaceholder: PropTypes.number,
+  onSkip: PropTypes.func.isRequired,          // passed in
 }
 
 // for all optional props, define a default value

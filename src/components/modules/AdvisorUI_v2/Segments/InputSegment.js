@@ -48,7 +48,8 @@ class InputSegment extends Component {
 			instantChars: false,
       data: {
         input_string: '',
-      }
+      },
+      saving: false,
     }
     this.mobile = false
   }
@@ -314,7 +315,15 @@ class InputSegment extends Component {
             {
               this.state.data.input_string && this.shouldDisplayInput()
               ?
-              <Icon onClick={(e) => this.nextSegment(e)} type='check-circle' size='lg' style={comStyles().check} />
+              <div>
+                {
+                  this.state.saving
+                  ?
+                  <Icon type='loading' size='lg' style={comStyles().check} />
+                  :
+                  <Icon onClick={(e) => this.setState({ saving: true, }, () => this.nextSegment(e))} type='check-circle' size='lg' style={comStyles().check} />
+                }
+              </div>
               :
               <div>
                 {

@@ -44,7 +44,8 @@ import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
 import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
-import DualityPage from './pages/DualityPage'
+import RegisterPage from './pages/RegisterPage'
+import LandingPage from './pages/LandingPage'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 // import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import CreditDialog from './dialogs/credit/CreditDialog'
@@ -86,13 +87,13 @@ class AppRoot extends Component {
         <LocaleProvider locale={enUS}>
           <Switch>
 
-            <Route exact path='/' render={DualityPage} />
-            <Route exact path='/register' render={DualityPage} />
+            <Route exact path='/' render={LandingPage} />
+            <Route exact path='/register' render={RegisterPage} />
             {
               //<Route exact path='/login' render={HomePage} />
             }
             <Route exact path='/favorites' render={TenantFavorites} />
-            <Route exact path='/aaa' render={TenantDuality} />
+            <Route exact path='/intro' render={TenantDuality} />
             <Route exact path='/passwordless' render={Passwordless} />
 
             <Route exact path='/logout' render={Logout} />
@@ -122,7 +123,8 @@ class AppRoot extends Component {
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
               <Route exact path='/sandbox' render={AdPage} />
-              <Route exact path='/duality' render={DualityPage} />
+              <Route exact path='/' render={LandingPage} />
+              <Route exact path='/register' render={RegisterPage} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               <Route exact path='/prefs' render={SearchPrefs} />

@@ -4,6 +4,7 @@ import {
   LOADING_COMPLETE,
   TOGGLE_DRAWER_NAV,
   TOGGLE_INSTANT_CHARS,
+  TOGGLE_IS_MOBILE,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -12,6 +13,7 @@ const INITIAL_STATE = {
   loading_complete: false,
   drawer_nav_open: false,
   instant_chars_segment_id: '',
+  is_mobile: false,
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -40,6 +42,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         instant_chars_segment_id: action.payload
+      }
+    case TOGGLE_IS_MOBILE:
+      return {
+        ...state,
+        is_mobile: action.payload,
       }
 		default:
 			return {
