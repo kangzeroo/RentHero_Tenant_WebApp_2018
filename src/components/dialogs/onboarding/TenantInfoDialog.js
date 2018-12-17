@@ -10,7 +10,7 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import $ from 'jquery'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
-import { savePreferences } from '../../../api/prefs/prefs_api'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
 import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
@@ -246,15 +246,17 @@ class OnboardingDialog extends Component {
 
   doneName(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
+    const first_name = data.input_string
+
     saveTenantToSQL({
-      first_name: data.input_string,
+      first_name: first_name,
       ...this.props.tenant_profile,
     })
     .then((data) => {
-      return savePreferences({
-              TENANT_ID: this.props.tenant_id,
+      return saveTenantPreferences({
+              TENANT_ID: this.props.tenant_profile.tenant_id,
               KEY: this.props.prefs.DOCUMENTS.KEY,
-              PREFERRED_NAME: data.input_string,
+              PREFERRED_NAME: first_name,
               })
     }).then((DOCUMENTS) => {
       console.log(DOCUMENTS)
@@ -266,8 +268,8 @@ class OnboardingDialog extends Component {
 
   mapDone(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_profile.tenant_id,
       KEY: this.props.prefs.LOCATION.KEY,
       DESTINATION_ADDRESS: data.address,
       DESTINATION_GEOPOINT: `${data.address_lat},${data.address_lng}`
@@ -282,8 +284,8 @@ class OnboardingDialog extends Component {
   travelModeDone(original_id, endpoint, data) {
     console.log(data)
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_profile.tenant_id,
       KEY: this.props.prefs.LOCATION.KEY,
       TRANSPORT_MODES_AS: data.selected_choices.map(s => s.text),
       TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices.map(s => {
@@ -303,8 +305,8 @@ class OnboardingDialog extends Component {
   doneGroupSize(original_id, endpoint, data) {
     console.log(data)
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_profile.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       CERTAIN_MEMBERS: data.count,
       UNCERTAIN_MEMBERS: data.count
@@ -318,8 +320,8 @@ class OnboardingDialog extends Component {
   suitesRoomsDone(original_id, endpoint, data) {
     console.log(data)
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_profile.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text),
       WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
@@ -339,8 +341,8 @@ class OnboardingDialog extends Component {
   budgetDone(original_id, endpoint, data) {
     console.log(data)
     this.done(original_id, endpoint, data)
-    savePreferences({
-      TENANT_ID: this.props.tenant_id,
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_profile.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       IDEAL_PER_PERSON: data.count,
     }).then((FINANCIALS) => {
@@ -552,7 +554,7 @@ const RadiumHOC = Radium(OnboardingDialog)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
-    tenant_id: redux.tenant.tenant_id,
+    tenant_id: redux.auth.tenant_profile.tenant_id,
     tenant_profile: redux.auth.tenant_profile,
 	}
 }

@@ -1,11 +1,11 @@
 import {
   AUTHENTICATED_STAFF,
   AUTHENTICATION_LOADED,
-  UNAUTHENTICATED_STAFF,
+  UNAUTHENTICATED_TENANT,
   SAVE_STAFF_PROFILE,
   SAVE_CORPORATION_PROFILE,
   LOCATION_FORWARDING,
-  REMOVE_STAFF_PROFILE,
+  REMOVE_TENANT_PROFILE,
   SAVE_TENANT_PROFILE,
 } from '../../actions/action_types'
 
@@ -46,10 +46,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         authentication_loaded: true,
       }
-    case UNAUTHENTICATED_STAFF:
+    case UNAUTHENTICATED_TENANT:
       return {
         ...state,
-        staff_profile: {},
+        tenant_profile: {},
         authenticated: false,
       }
     case SAVE_STAFF_PROFILE:
@@ -68,11 +68,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         location_forwarding: action.payload,
       }
-    case REMOVE_STAFF_PROFILE:
-      localStorage.removeItem('user_id')
+    case REMOVE_TENANT_PROFILE:
       return {
         ...state,
-        staff_profile: {},
+        tenant_profile: {},
         corporation_profile: {},
       }
     case SAVE_TENANT_PROFILE:

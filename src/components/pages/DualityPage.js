@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd-mobile'
-import OnboardingDialog from '../dialogs/onboarding/OnboardingDialog'
+import TenantRegistrationDialog from '../dialogs/onboarding/TenantRegistrationDialog'
 import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
 import HeatMap from '../hunting/HeatMapHunting'
 
@@ -21,10 +21,13 @@ class DualityPage extends Component {
 		return (
 			<div id='DualityPage' style={comStyles().container}>
         <div style={{ width: '40vw' }}>
-				    <TenantInfoDialog width='40vw' />
+				    <TenantRegistrationDialog width='40vw' />
         </div>
         <div style={{ width: '60vw' }}>
-          <HeatMap />
+					{
+						// <HeatMap />
+					}
+
         </div>
 			</div>
 		)

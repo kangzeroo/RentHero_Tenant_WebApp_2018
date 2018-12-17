@@ -14,7 +14,7 @@ import {
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
-import { savePreferences } from '../../../api/prefs/prefs_api'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
 import SegmentTemplate from '../../modules/AdvisorUI_v2/Segments/SegmentTemplate'
 import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
 import CounterSegment from '../../modules/AdvisorUI_v2/Segments/CounterSegment'
@@ -359,7 +359,7 @@ class MoveInDialog extends Component {
 
   doneMoveInUrgency(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       URGENCY_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -379,7 +379,7 @@ class MoveInDialog extends Component {
 
   doneIdealMoveIn(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       IDEAL_MOVEIN_DATE: moment(data.date).toISOString()
@@ -392,7 +392,7 @@ class MoveInDialog extends Component {
 
   doneMoveInRange(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       MIN_MOVEIN_DATE: moment(data.dateRange.selection.startDate).toISOString(),
@@ -410,7 +410,7 @@ class MoveInDialog extends Component {
     } else {
       this.done(original_id, 'arrival_flight_time', data)
     }
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       FROM_CITY: data.address,
@@ -424,7 +424,7 @@ class MoveInDialog extends Component {
 
   doneTourReadyDate(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       TOUR_READY_DATE: moment(data.date).toISOString(),
@@ -437,7 +437,7 @@ class MoveInDialog extends Component {
 
   doneCurrentLeaseSituation(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       CURRENT_LEASE_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -457,7 +457,7 @@ class MoveInDialog extends Component {
 
   doneMoveOutNoticeGiven(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       NOTICE_GIVEN_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -477,7 +477,7 @@ class MoveInDialog extends Component {
 
   doneExistingLeaseEnd(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       CURRENT_LEASE_END_DATE: moment(data.date).toISOString(),
@@ -490,7 +490,7 @@ class MoveInDialog extends Component {
 
   doneTourRepresentative(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       TOUR_REP_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -510,7 +510,7 @@ class MoveInDialog extends Component {
 
   doneMovingReason(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       MOVING_REASON: data.input_string,
@@ -523,7 +523,7 @@ class MoveInDialog extends Component {
 
   doneDesiredLeaseLength(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       LEASE_LENGTH: data.count,
@@ -536,7 +536,7 @@ class MoveInDialog extends Component {
 
   doneMovingChoiceFactor(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.MOVEIN.KEY,
       DECISION_FACTORS_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -728,7 +728,7 @@ const RadiumHOC = Radium(MoveInDialog)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
-    tenant_id: redux.tenant.tenant_id,
+    tenant_id: redux.auth.tenant_profile.tenant_id,
 	}
 }
 

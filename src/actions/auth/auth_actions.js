@@ -1,11 +1,11 @@
 import {
   AUTHENTICATED_STAFF,
   AUTHENTICATION_LOADED,
-  UNAUTHENTICATED_STAFF,
+  UNAUTHENTICATED_TENANT,
   SAVE_STAFF_PROFILE,
   SAVE_CORPORATION_PROFILE,
   LOCATION_FORWARDING,
-  REMOVE_STAFF_PROFILE,
+  REMOVE_TENANT_PROFILE,
   SAVE_TENANT_PROFILE,
 } from '../action_types'
 
@@ -29,11 +29,10 @@ export const authenticationLoaded = () => {
   }
 }
 
-// unauthenticate the staff members' account
-export const unauthenticateStaff = () => {
+export const unauthenticateTenant = () => {
   return (dispatch) => {
     dispatch({
-      type: UNAUTHENTICATED_STAFF
+      type: UNAUTHENTICATED_TENANT
     })
   }
 }
@@ -68,12 +67,10 @@ export const forwardUrlLocation = (url) => {
   }
 }
 
-// remove the staff members' profile
-export const removeStaffProfile = () => {
+export const removeTenantProfile = () => {
 	return (dispatch) => {
-    localStorage.removeItem('cognito_staff_token')
 		dispatch({
-			type: REMOVE_STAFF_PROFILE,
+			type: REMOVE_TENANT_PROFILE,
 		})
 	}
 }

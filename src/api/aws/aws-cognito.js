@@ -17,39 +17,45 @@ AWS.config.update({
 export const retrieveTenantFromLocalStorage = () => {
   const p = new Promise((res, rej) => {
     // const x = localStorage.getItem('renthero_tenant_token')
-		const x = localStorage.getItem('tenant_id')
+		const x = localStorage.getItem('userObj')
 		if (x) {
-      // const login_token = JSON.parse(x)
-			const login_token = x
+      const login_token = JSON.parse(x)
       const cognitoIdentity = new AWS.CognitoIdentity()
-      // let loginsObj = null
-      // if (login_token.type === 'passwordless') {
-      //   loginsObj = { 'renthero.auth0.com': login_token.accessToken }
-      // } else if (login_token.type === 'google') {
-      //   loginsObj = { 'accounts.google.com': login_token.accessToken }
-      // } else if (login_token.type === 'cognito') {
-      //   loginsObj = { [STAFF_USERPOOL_ID]: login_token.accessToken }
-      // }
-			const loginsObj = { 'renthero.auth0.com': login_token.accessToken }
+      let loginsObj = null
+      if (login_token.type === 'passwordless') {
+        loginsObj = { 'renthero.auth0.com': login_token.accessToken }
+      } else if (login_token.type === 'google') {
+        loginsObj = { 'accounts.google.com': login_token.accessToken }
+      } else if (login_token.type === 'cognito') {
+        loginsObj = { [STAFF_USERPOOL_ID]: login_token.accessToken }
+      } else if (login_token.type === 'unauth') {
+				loginsObj = { 'www.amazon.com': login_token.accessToken }
+			}
+
       if (login_token) {
+				console.log(loginsObj)
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
-          Logins: login_token,
+          Logins: loginsObj,
         })
-        console.log(AWS.config.credentials)
+				AWS.config.credentials.refresh(() => {
+					console.log(AWS.config.credentials)
 
-        AWS.config.credentials.get(function() {
-          const client = new AWS.CognitoSyncManager()
+					AWS.config.credentials.get(function() {
+						const client = new AWS.CognitoSyncManager()
 
-          if (AWS.config.credentials.expired) {
-            rej('Expired credentials')
-          } else {
-            localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
-            res({
-              IdentityId: AWS.config.credentials.data.IdentityId,
-            })
-          }
+						if (AWS.config.credentials.expired) {
+							rej('Expired credentials')
+						} else {
+							console.log('LOGGED IN')
+							localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
+							res({
+								IdentityId: AWS.config.credentials.data.IdentityId,
+							})
+						}
+					})
         })
+
       } else {
         rej('No specified Login method')
       }
@@ -109,8 +115,13 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 
 		    // console.log('You are now logged in.');
 		    const cognitoidentity = new AWS.CognitoIdentity();
+
 				const loginItem = {
 					 'renthero.auth0.com': id_token
+				}
+
+				const localLoginItem = {
+					 accessToken: id_token
 				}
 
 		    // Add the Facebook access token to the Cognito credentials login map.
@@ -121,7 +132,7 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 
         AWS.config.credentials.refresh(() => {
           console.log(AWS.config.credentials)
-          localStorage.setItem('renthero_tenant_token', JSON.stringify(loginItem))
+          localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
           localStorage.setItem('header_token', JSON.stringify(id_token))
           // AWS Cognito Sync to sync Facebook
           AWS.config.credentials.get(function(err) {
@@ -130,7 +141,8 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 
               console.log(AWS.config.credentials)
               if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
-                localStorage.setItem('user_id', AWS.config.credentials.data.IdentityId)
+								console.log('LOGGED IN')
+                localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
                 res({
                   IdentityId: AWS.config.credentials.data.IdentityId
                 })
@@ -154,17 +166,28 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 
 export const unauthRoleTenant = () => {
 	const p = new Promise((res, rej) => {
-		// Add the unauthenticated_staff user to the Cognito credentials login map.
+		// Add the UNAUTHENTICATED_TENANT user to the Cognito credentials login map.
 		AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 			IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID()
 		})
 		// AWS Cognito Sync to sync Facebook
 		AWS.config.credentials.get(() => {
 			const client = new AWS.CognitoSyncManager()
-			// console.log(generate_TENANT_IDENTITY_POOL_ID())
+
 			if (AWS.config.credentials.expired) {
-				localStorage.removeItem('fbToken')
+				localStorage.removeItem('userObj')
 			}
+
+			console.log(AWS.config.credentials)
+
+			const userObj = {
+				type: 'unauth',
+				accessToken: AWS.config.credentials.sessionToken,
+				// tenant_id: AWS.config.credentials.data.IdentityId,
+			}
+
+			localStorage.setItem('userObj', JSON.stringify(userObj))
+			// localStorage.setItem('unauth_token', AWS.config.credentials.sessionToken)
 			localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
 			res({
 				tenant_id: AWS.config.credentials.data.IdentityId,
@@ -179,14 +202,13 @@ export const unauthRoleTenant = () => {
 }
 
 
-export const signOutLandlord = () => {
+export const signOutTenant = () => {
 	const p = new Promise((res, rej) => {
-		const cognitoUser = staffPool.getCurrentUser()
-		if (cognitoUser) {
-			cognitoUser.signOut()
-		} else {
-      localStorage.clear()
-    }
+		localStorage.removeItem('email')
+		localStorage.removeItem('phone')
+		localStorage.removeItem('userObj')
+		localStorage.removeItem('tenant_id')
+		localStorage.removeItem('header_token')
 	})
 	return p
 }
