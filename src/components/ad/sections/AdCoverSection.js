@@ -76,7 +76,7 @@ class AdCoverSection extends Component {
                     id="img_carousel"
                     src={img.url}
                     alt=""
-                    style={{ width: '100%', verticalAlign: 'top', borderRadius: '10px', overflow: 'hidden' }}
+                    style={{ width: '100%', verticalAlign: 'top', overflow: 'hidden' }}
                     onLoad={() => {
                       // fire window resize event to change height
                       window.dispatchEvent(new Event('resize'));
@@ -232,8 +232,8 @@ const coverStyles = () => {
   return {
     container: {
       overflow: 'hidden',
-      padding: '10px',
-      borderRadius: '10px',
+      // padding: '10px',
+      // borderRadius: '10px',
     },
   }
 }
