@@ -32,7 +32,7 @@ import {
 import {
 	getListings,
 } from '../api/listings/listings_api'
-import { getPreferences } from '../api/prefs/prefs_api'
+import { getTenantPreferences } from '../api/prefs/prefs_api'
 import { FINANCIALS } from '../reducers/prefs/schemas/financials_schema'
 import { GROUP } from '../reducers/prefs/schemas/group_schema'
 import { MOVEIN } from '../reducers/prefs/schemas/movein_schema'
@@ -51,15 +51,27 @@ export default (ComposedComponent) => {
 
     componentWillMount() {
 			this.props.loadLocalStorageAccount()
-			setTimeout(() => {
-				this.grabListings()
-				this.grabPrefs()
-			}, 100)
-			// check if staff is already authenticated
-			this.checkIfTenantLoggedIn()
 
-			// do stuff based on the URL
-			this.executeOnURL()
+			// check if tenant is already authenticated
+			this.checkIfTenantLoggedIn()
+				.then((data) => {
+					setTimeout(() => {
+						this.grabListings()
+						if (data && data.tenant_id) {
+							this.grabPrefs(data.tenant_id)
+						} else {
+							this.grabPrefs(this.props.tenant_id)
+						}
+					}, 100)
+
+					// do stuff based on the URL
+					this.executeOnURL()
+				})
+				.catch((err) => {
+					console.log(err)
+					this.executeOnURL()
+					// this.props.history.push('/aaa')
+				})
     }
 
 		grabListings() {
@@ -77,9 +89,10 @@ export default (ComposedComponent) => {
 				})
 		}
 
-		grabPrefs() {
-			getPreferences(this.props.tenant_id)
+		grabPrefs(tenant_id) {
+			getTenantPreferences(tenant_id)
 					.then((prefs) => {
+						console.log(prefs)
 						const keys = [
 							FINANCIALS.KEY,
 							GROUP.KEY,
@@ -100,41 +113,75 @@ export default (ComposedComponent) => {
 		}
 
 		checkIfTenantLoggedIn() {
-			// grab the url that was given, will be used in this,saveStaffProfileToRedux()
-			let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
-			if (location === '/login') {
-				location = '/'
-			}
+			const p = new Promise((res, rej) => {
+				// grab the url that was given, will be used in this,saveStaffProfileToRedux()
+				// let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
+				// if (location === '/login') {
+				// 	location = '/'
+				// }
+				console.log(this.props.location)
+				if (this.props.location.pathname === '/passwordless') {
+					console.log('PASSWORDLESS')
+					this.props.authenticationLoaded()
+
+				} else {
+					this.startLoginForTenant(location)
+				}
+
+			})
+			return p
+		}
+
+		startLoginForTenant(location) {
 			retrieveTenantFromLocalStorage()
 				.then((tenant) => {
 					console.log(tenant)
 					console.log('kz trippin balls')
 					console.log(location)
-					return getTenantFromSQL(tenant.IdentityId, {})
+					return getTenantFromSQL(tenant.IdentityId)
 				})
 				.then((data) => {
 					console.log(data)
-					if (location === '/') {
-						location = '/app/home'
-					}
-					// if they have, then we'll auto log them in
-					this.props.history.push(location)
-					this.props.authenticationLoaded()
+					// if (location === '/') {
+					// 	location = '/app/home'
+					// }
+					// // if they have, then we'll auto log them in
+					// this.props.history.push(location)
 					this.props.saveTenantProfileToRedux(data)
-					// return this.saveStaffProfileToRedux(data.profile, location)
+					this.props.authenticationLoaded()
+					res(data.tenant_id)
 				})
 				.catch((err) => {
 					console.log('kz tripping shit')
 					console.log(err)
 					// if not, then we do nothing
-					unauthRoleTenant().then((unauthUser) => {
-						console.log(unauthUser)
-						this.props.saveTenantProfileToRedux(unauthUser)
-					})
-					this.props.forwardUrlLocation(location)
-					this.props.history.push(location)
-					this.props.authenticateStaff(null)
-					this.props.authenticationLoaded()
+					// unauthRoleTenant().then((unauthUser) => {
+					// 	console.log(unauthUser)
+					// 	this.props.saveTenantProfileToRedux(unauthUser)
+					// })
+					// this.props.forwardUrlLocation(location)
+					// this.props.history.push(location)
+					// this.props.authenticateStaff(null)
+					// this.props.authenticationLoaded()
+
+					const tenant_id = localStorage.getItem('tenant_id')
+					if (tenant_id && tenant_id.length > 0) {
+						// tenant_id exists, relogin
+						console.log('RELOGIN')
+						this.props.authenticationLoaded()
+						res()
+					} else {
+						// tenant_id does not exists. start new session
+						this.props.authenticationLoaded()
+						res()
+						// unauthRoleTenant()
+						// 	.then((unauthUser) => {
+						// 		console.log(unauthUser)
+						// 		this.props.saveTenantProfileToRedux(unauthUser)
+						// 		this.props.authenticationLoaded()
+						// 		res(unauthUser.tenant_id)
+						// 	})
+					}
 				})
 		}
 
@@ -211,6 +258,7 @@ export default (ComposedComponent) => {
 		saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 		authenticationLoaded: PropTypes.func.isRequired,
 		tenant_id: PropTypes.string.isRequired,
+		tenant_profile: PropTypes.object.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
 		loadLocalStorageAccount: PropTypes.func.isRequired,
 		updatePreferences: PropTypes.func.isRequired,
@@ -227,6 +275,7 @@ export default (ComposedComponent) => {
 		return {
 			tenant_id: redux.tenant.tenant_id,
 			prefs: redux.prefs,
+			tenant_profile: redux.auth.tenant_profile,
 		}
 	}
 

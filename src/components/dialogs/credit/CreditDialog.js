@@ -12,7 +12,7 @@ import $ from 'jquery'
 import {
   Icon,
 } from 'antd-mobile'
-import { savePreferences } from '../../../api/prefs/prefs_api'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import SegmentTemplate from '../../modules/AdvisorUI_v2/Segments/SegmentTemplate'
@@ -197,7 +197,7 @@ class CreditDialog extends Component {
 
   donePastCredit(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.CREDIT.KEY,
       PAST_CREDIT_EXP_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -217,7 +217,7 @@ class CreditDialog extends Component {
 
   donePastBrands(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.CREDIT.KEY,
       PAST_CREDIT_BRANDS_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -237,7 +237,7 @@ class CreditDialog extends Component {
 
   doneEstimatingCredit(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.CREDIT.KEY,
       GUESSED_CREDIT_SCORE: data.count,
@@ -430,7 +430,7 @@ const RadiumHOC = Radium(CreditDialog)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
-    tenant_id: redux.tenant.tenant_id,
+    tenant_id: redux.auth.tenant_profile.tenant_id,
 	}
 }
 

@@ -12,7 +12,7 @@ import $ from 'jquery'
 import {
   Icon,
 } from 'antd-mobile'
-import { savePreferences } from '../../../api/prefs/prefs_api'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import SegmentTemplate from '../../modules/AdvisorUI_v2/Segments/SegmentTemplate'
@@ -700,7 +700,7 @@ class FinancialDialog extends Component {
 
   doneIdealBudget(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       IDEAL_PER_PERSON: data.count,
@@ -721,7 +721,7 @@ class FinancialDialog extends Component {
     } else {
       this.done(original_id, endpoint, data)
     }
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       EMPLOYED_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -741,7 +741,7 @@ class FinancialDialog extends Component {
 
   jobTitlesDone(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       JOB_TITLES_AS: data.inputs.map(i => i.text).join(', '),
@@ -761,7 +761,7 @@ class FinancialDialog extends Component {
 
   doneIncomeReport(original_id, endpoint, data, attr) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       INCOME: {
@@ -777,7 +777,7 @@ class FinancialDialog extends Component {
 
   doneTypeSelfEmployed(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       SELF_EMPLOYED_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -797,7 +797,7 @@ class FinancialDialog extends Component {
 
   doneTypeWelfare(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       WELFARE_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -817,7 +817,7 @@ class FinancialDialog extends Component {
 
   doneTypeOtherIncome(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       OTHER_INCOME_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -837,7 +837,7 @@ class FinancialDialog extends Component {
 
   doneDepositBid(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       DEPOSIT_CASH_BID: data.count,
@@ -850,7 +850,7 @@ class FinancialDialog extends Component {
 
   doneNamesOnLease(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       SIGN_LEASE_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -870,7 +870,7 @@ class FinancialDialog extends Component {
 
   doneEducationalBackground(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       STUDIED_AS: data.inputs.map(s => s.text).join(', '),
@@ -892,7 +892,7 @@ class FinancialDialog extends Component {
     this.done(original_id, endpoint, data)
     const regular = data.counters.filter(c => c.id === 'REPORTED_REGULAR')
     const adhoc = data.counters.filter(c => c.id === 'REPORTED_ADHOC')
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       INCOME: {
@@ -913,7 +913,7 @@ class FinancialDialog extends Component {
     } else {
       this.done(original_id, 'any_guarantors', data)
     }
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       DEPOSIT_CASH: data.count,
@@ -926,7 +926,7 @@ class FinancialDialog extends Component {
 
   doneBudgetFlex(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       BUDGET_FLEXIBILITY: data.count,
@@ -939,7 +939,7 @@ class FinancialDialog extends Component {
 
   doneGuarantors(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       GUARANTOR_STATUS_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -980,7 +980,7 @@ class FinancialDialog extends Component {
       this.done(original_id, endpoint, data)
     }
     const newProofs = this.mergeLists(this.props.prefs.FINANCIALS.PROOF_OF_INCOMES_AS_SCHEMAS, data.selected_choices)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.FINANCIALS.KEY,
       PROOF_OF_INCOMES_AS: newProofs.map(s => s.text).join(', '),
@@ -1204,7 +1204,7 @@ const RadiumHOC = Radium(FinancialDialog)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
-    tenant_id: redux.tenant.tenant_id,
+    tenant_id: redux.auth.tenant_profile.tenant_id,
 	}
 }
 

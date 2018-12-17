@@ -46,7 +46,7 @@ import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
 import DualityPage from './pages/DualityPage'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
-import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
+// import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import CreditDialog from './dialogs/credit/CreditDialog'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
 import TenantFavorites from './favorites/TenantFavorites'
@@ -58,6 +58,9 @@ import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
 import AdPage from './ad/AdPage'
+import TenantFavorites from './favorites/TenantFavorites'
+import EmailCodeSentTemplate from './modules/EmailCodeSentTemplate'
+
 import TweenOne from 'rc-tween-one'
 import '../styles/pretty_scrollbar.css'
 import { triggerDrawerNav } from '../actions/app/app_actions'
@@ -85,17 +88,18 @@ class AppRoot extends Component {
           <Switch>
 
             <Route exact path='/' render={DualityPage} />
-            <Route exact path='/intro' render={TenantDuality} />
+            <Route exact path='/register' render={DualityPage} />
             {
               //<Route exact path='/login' render={HomePage} />
             }
             <Route exact path='/favorites' render={TenantFavorites} />
-            <Route exact path='/aaa' render={LoginPasswordless} />
+            <Route exact path='/aaa' render={TenantDuality} />
             <Route exact path='/passwordless' render={Passwordless} />
 
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />
             <Route exact path='/existing_session' render={ContinueSession} />
+            <Route exact path='/verifyingemail' render={EmailCodeSentTemplate} />
 
             <Route path='/app/*' component={AppRoutes} />
 
@@ -131,7 +135,7 @@ class AppRoot extends Component {
               <Route exact path='/movein' render={MoveInDialog} />
               <Route exact path='/sample' render={AdvisorUI} />
               <Route exact path='/sino' render={ChineseDialogOnboarding} />
-              <Route exact path='/onboarding' render={OnboardingDialog} />
+              {/*<Route exact path='/onboarding' render={OnboardingDialog} />*/}
               <Route exact path='/group' render={GroupDialog} />
               <Route exact path='/personal' render={RoommatesDialog} />
               <Route exact path='/finance' render={FinancialDialog} />
