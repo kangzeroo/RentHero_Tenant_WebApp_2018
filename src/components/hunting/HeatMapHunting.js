@@ -38,26 +38,26 @@ class HeatMapHunting extends Component {
   }
 
   componentWillMount() {
-    getHeatMapDist({
-      max_beds: this.props.prefs.max_beds,
-      max_budget: this.props.prefs.max_budget,
-      destination: {
-        address: this.props.prefs.destination.address,
-        place_id: this.props.prefs.destination.place_id,
-        commute_mode: this.props.prefs.destination.commute_mode,
-        gps: { lat: this.props.prefs.destination.gps.lat, lng: this.props.prefs.destination.gps.lng }
-      }
-    }).then((data) => {
-      console.log(data)
-      this.setState({
-        ads: data,
-        heat_points: data.map((d) => {
-          return new google.maps.LatLng(d.GPS.lat, d.GPS.lng)
-        })
-      }, () => this.loadHeatMap())
-    }).catch((err) => {
-      console.log(err)
-    })
+    // getHeatMapDist({
+    //   max_beds: this.props.prefs.max_beds,
+    //   max_budget: this.props.prefs.max_budget,
+    //   destination: {
+    //     address: this.props.prefs.destination.address,
+    //     place_id: this.props.prefs.destination.place_id,
+    //     commute_mode: this.props.prefs.destination.commute_mode,
+    //     gps: { lat: this.props.prefs.destination.gps.lat, lng: this.props.prefs.destination.gps.lng }
+    //   }
+    // }).then((data) => {
+    //   console.log(data)
+    //   this.setState({
+    //     ads: data,
+    //     heat_points: data.map((d) => {
+    //       return new google.maps.LatLng(d.GPS.lat, d.GPS.lng)
+    //     })
+    //   }, () => this.loadHeatMap())
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
   }
 
   loadHeatMap() {

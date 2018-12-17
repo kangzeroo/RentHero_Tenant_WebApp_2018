@@ -75,16 +75,7 @@ export default (ComposedComponent) => {
     }
 
 		grabListings() {
-			getListings({
-	      max_beds: this.props.prefs.max_beds,
-	      max_budget: this.props.prefs.max_budget,
-	      destination: {
-	        address: this.props.prefs.destination.address,
-	        place_id: this.props.prefs.destination.place_id,
-	        commute_mode: this.props.prefs.destination.commute_mode,
-	        gps: { lat: this.props.prefs.destination.gps.lat, lng: this.props.prefs.destination.gps.lng }
-	      }
-	    })
+			getListings(this.props.prefs)
 				.then((data) => {
 					// if (data && data.length > 0) {
 					// 	console.log(data)
@@ -269,10 +260,10 @@ export default (ComposedComponent) => {
 		tenant_id: PropTypes.string.isRequired,
 		tenant_profile: PropTypes.object.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
-		prefs: PropTypes.object.isRequired,
 		loadLocalStorageAccount: PropTypes.func.isRequired,
 		updatePreferences: PropTypes.func.isRequired,
 		saveTenantProfileToRedux: PropTypes.func.isRequired,
+		prefs: PropTypes.object.isRequired,
   }
 
   // for all optional props, define a default value
@@ -282,8 +273,8 @@ export default (ComposedComponent) => {
 
 	const mapStateToProps = (redux) => {
 		return {
-			prefs: redux.tenant.prefs,
 			tenant_id: redux.tenant.tenant_id,
+			prefs: redux.prefs,
 			tenant_profile: redux.auth.tenant_profile,
 		}
 	}

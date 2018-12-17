@@ -8,7 +8,10 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
-
+  Badge,
+  Carousel,
+  Icon,
+  Modal,
 } from 'antd-mobile'
 import LikeableImage from './LikeableImage'
 
@@ -19,27 +22,88 @@ class AdCoverSection extends Component {
     super()
     this.state = {
       directions: null,
-      commute_time: 0,
-      commute_distance: 0,
+			imageCarouselSelectedIndex: 0,
     }
   }
 
-  componentDidMount() {
-    this.grabDirections('transit')
-      .then((directions) => {
-        this.setState({
-          directions: directions
-        }, () => this.renderDirections())
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+  turnImageCarousel(e, amount) {
+    if (e) {
+      e.stopPropagation()
+    }
+		let nextIndex = this.state.imageCarouselSelectedIndex
+		if (this.state.imageCarouselSelectedIndex + amount < 0) {
+			nextIndex = this.props.current_listing.IMAGES.length - 1
+		} else if (this.state.imageCarouselSelectedIndex + amount > this.props.current_listing.IMAGES.length - 1) {
+			nextIndex = 0
+		} else {
+			nextIndex = this.state.imageCarouselSelectedIndex + amount
+		}
+		this.setState({
+			imageCarouselSelectedIndex: nextIndex
+		})
+	}
 
   renderCoverImage() {
     return (
       <div key='cover_image' style={coverStyles().container}>
-        <LikeableImage img={this.props.cover_image} />
+        {/*<LikeableImage img={this.props.cover_image} />*/}
+        <div style={{ position: 'relative' }}>
+          <div onClick={(e) => this.turnImageCarousel(e, -1)} style={{ height: '100%', position: 'absolute', left: '10px', top: '45%', zIndex: '3', borderRadius: '0% 30% 30% 0%', cursor: 'pointer' }}>
+            <i className='ion-chevron-left' style={{ fontSize: '1.3rem' }}></i>
+          </div>
+          <Carousel
+              autoplay={true}
+              infinite
+              swipeSpeed={3}
+              dots={false}
+              selectedIndex={this.state.imageCarouselSelectedIndex}
+              style={{ overflow: 'hidden' }}
+            >
+            {
+              this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES.length
+              ?
+              this.props.current_listing.IMAGES.map((img, index) => (
+                <a
+                  key={img.url}
+                  style={{ display: 'inline-block', width: '100%' }}
+                  onClick={() => {
+                    history.pushState(null, null, `${this.props.location.pathname}?show=images`)
+                  }}
+                >
+                  <img
+                    id="img_carousel"
+                    src={img.url}
+                    alt=""
+                    style={{ width: '100%', verticalAlign: 'top', borderRadius: '10px', overflow: 'hidden' }}
+                    onLoad={() => {
+                      // fire window resize event to change height
+                      window.dispatchEvent(new Event('resize'));
+                      // this.setState({ imgHeight: '50vh' });
+                      // this.renderPriceTag()
+                    }}
+                  />
+                </a>
+              ))
+              :
+              <img
+                id="img_carousel_modal"
+                onClick={() => this.clickedImage()}
+                src={'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'}
+                alt=""
+                style={{ width: '100%', height: '100%', verticalAlign: 'top', borderRadius: '10px', overflow: 'hidden' }}
+                onLoad={() => {
+                  // fire window resize event to change height
+                  window.dispatchEvent(new Event('resize'));
+                  // this.setState({ imgHeight: '50vh' });
+                  // this.renderPriceTag()
+                }}
+              />
+            }
+          </Carousel>
+          <div onClick={(e) => this.turnImageCarousel(e, 1)} style={{ height: '100%', position: 'absolute', right: '10px', top: '45%', zIndex: '3', borderRadius: '30% 0% 0% 30%', cursor: 'pointer' }}>
+            <i className='ion-chevron-right' style={{ fontSize: '1.3rem' }}></i>
+          </div>
+        </div>
       </div>
     )
   }
@@ -47,62 +111,14 @@ class AdCoverSection extends Component {
   renderDescription() {
     return (
       <div key='description' style={descriptionStyles().container}>
-        <h2>{`${this.props.beds} Beds ${this.props.baths} Baths for rent by ${this.props.seller}`}</h2>
-      </div>
-    )
-  }
-
-  grabDirections(commute_mode) {
-    const self = this
-    const p = new Promise((res, rej) => {
-  		const directionsService = new google.maps.DirectionsService
-  		directionsService.route({
-  			origin: this.props.current_listing.ADDRESS,
-  			destination: this.props.main_destination,
-  			travelMode: commute_mode.toUpperCase()
-  		}, function(response, status) {
-  			if (status === 'OK') {
-          self.setState({
-  					commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
-  					commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
-          })
-          res(response)
-  			} else {
-          rej(status)
-  				window.alert('Directions request failed due to ' + status);
-  			}
-  	 })
-    })
-    return p
-  }
-
-  renderDirections() {
-    if (document.getElementById('map')) {
-  		const self = this
-  		const location = { lat: this.props.current_listing.GPS.lat, lng: this.props.current_listing.GPS.lng }
-  		const map = new google.maps.Map(document.getElementById('map'), {
-  			center: location,
-  			zoom: 13,
-  			disableDefaultUI: true,
-  		})
-  		const marker = new google.maps.Marker({
-        position: location,
-        map: map,
-        // icon: BLUE_PIN
-      })
-  		const directionsDisplay = new google.maps.DirectionsRenderer;
-  		directionsDisplay.setMap(map);
-      if (this.state.directions) {
-        directionsDisplay.setDirections(this.state.directions);
-      }
-    }
-  }
-
-  renderMap() {
-    return (
-      <div key='map' style={mapStyles().container}>
-        <h3>{`${(this.state.commute_time/60).toFixed(0)} minutes commute to ${this.props.main_destination}. Arrival time by ${this.props.arrival_time}`}</h3>
-        <div id='map' style={mapStyles().map}></div>
+        <div style={descriptionStyles().left}>
+          <div style={descriptionStyles().beds_baths}>{`${this.props.beds} BEDS • ${this.props.baths} BATHS`}</div>
+          <div style={descriptionStyles().price_by}>{`By ${this.props.seller}`.toUpperCase()}</div>
+        </div>
+        <div style={descriptionStyles().right}>
+          <div style={descriptionStyles().price}>{`$${this.props.current_listing.PRICE}`}</div>
+          <div style={descriptionStyles().commute}>{`${(this.props.commute_time/60).toFixed(0)} mins`}</div>
+        </div>
       </div>
     )
   }
@@ -112,7 +128,6 @@ class AdCoverSection extends Component {
 			<div id='AdCoverSection' style={comStyles().container}>
         {this.renderCoverImage()}
         {this.renderDescription()}
-        {this.renderMap()}
 			</div>
 		)
 	}
@@ -121,12 +136,10 @@ class AdCoverSection extends Component {
 // defines the types of variables in this.props
 AdCoverSection.propTypes = {
 	history: PropTypes.object.isRequired,
-  cover_image: PropTypes.string.isRequired,     // passed in
   beds: PropTypes.number.isRequired,     // passed in
   baths: PropTypes.number.isRequired,     // passed in
   seller: PropTypes.string.isRequired,     // passed in
-  main_destination: PropTypes.string.isRequired,     // passed in
-  arrival_time: PropTypes.string.isRequired,     // passed in
+  commute_time: PropTypes.number.isRequired,     // passed in
   current_listing: PropTypes.object.isRequired,     // passed in
 }
 
@@ -160,29 +173,105 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+      margin: '0px 0px 50px 0px'
 		}
 	}
 }
 
 const coverStyles = () => {
   return {
-    container: {}
+    container: {
+      overflow: 'hidden',
+      padding: '10px',
+      borderRadius: '10px',
+    }
   }
 }
 
 const descriptionStyles = () => {
   return {
-    container: {}
+    container: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      padding: '20px',
+    },
+    left: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start',
+      width: '70%',
+    },
+    right: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      width: '30%',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: 'black',
+    },
+    beds_baths: {
+      fontSize: '1rem',
+      fontWeight: 'bold',
+      color: 'rgb(54, 69, 79)',
+    },
+    price_by: {
+      fontSize: '0.7rem',
+      color: 'rgb(126, 136, 142)',
+      width: '80%',
+      textAlign: 'left',
+    },
+		price: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: 'black',
+      margin: '0px 0px 5px 0px',
+		},
+    commute: {
+      width: '100%',
+      backgroundColor: 'green',
+      color: 'white',
+      borderRadius: '5px',
+      display: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      fontSize: '0.8rem',
+      fontWeight: 'normal',
+      padding: '2px',
+    },
   }
 }
+
 
 const mapStyles = () => {
   return {
     container: {
-      padding: '30px'
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'flex-start',
+      margin: '50px 0px 0px 0px',
     },
     map: {
-			height: '400px',
+			height: '250px',
+      overflow: 'hidden',
     }
+  }
+}
+
+const modalStyles = () => {
+  return {
+    zIndex: 15,
+    position: 'fixed',
+    top: '0px',
+    left: '0px',
+    height: '100vh',
+    width: '100vw',
   }
 }

@@ -159,8 +159,6 @@ class NearbyLocations extends Component {
           <div id='controls' style={{ width: '100%', padding: '10px' }}>
             <p style={{ fontWeight: 'bold' }}>Show Nearby...</p>
             <Select
-              showSearch
-              placeholder='Show Nearby...'
               size='large'
               style={{ width: '100%', }}
               onChange={(a) => this.selectedNearby(a)}
@@ -272,6 +270,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
+      backgroundColor: 'white',
 		},
 		map: {
 			height: '400px',
