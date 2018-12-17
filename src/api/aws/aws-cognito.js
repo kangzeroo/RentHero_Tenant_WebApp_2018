@@ -29,7 +29,7 @@ export const retrieveTenantFromLocalStorage = () => {
       } else if (login_token.type === 'cognito') {
         loginsObj = { [STAFF_USERPOOL_ID]: login_token.accessToken }
       } else if (login_token.type === 'unauth') {
-				loginsObj = { 'www.amazon.com': login_token.accessToken }
+				loginsObj = null // { 'www.amazon.com': login_token.accessToken }
 			}
 
       if (login_token) {
@@ -38,7 +38,7 @@ export const retrieveTenantFromLocalStorage = () => {
           IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
           Logins: loginsObj,
         })
-				AWS.config.credentials.refresh(() => {
+				// AWS.config.credentials.refresh(() => {
 					console.log(AWS.config.credentials)
 
 					AWS.config.credentials.get(function() {
@@ -54,7 +54,7 @@ export const retrieveTenantFromLocalStorage = () => {
 							})
 						}
 					})
-        })
+        // })
 
       } else {
         rej('No specified Login method')
@@ -182,7 +182,7 @@ export const unauthRoleTenant = () => {
 
 			const userObj = {
 				type: 'unauth',
-				accessToken: AWS.config.credentials.sessionToken,
+				accessToken: AWS.config.credentials.data.IdentityId, //AWS.config.credentials.sessionToken,
 				// tenant_id: AWS.config.credentials.data.IdentityId,
 			}
 
@@ -191,7 +191,7 @@ export const unauthRoleTenant = () => {
 			localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
 			res({
 				tenant_id: AWS.config.credentials.data.IdentityId,
-				unauthRoleStudent: true,
+				unAuthRole: true,
 			})
 		})
 		// res({

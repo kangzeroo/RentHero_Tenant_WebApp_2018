@@ -1,5 +1,5 @@
 import {
-  AUTHENTICATED_STAFF,
+  AUTHENTICATED_TENANT,
   AUTHENTICATION_LOADED,
   UNAUTHENTICATED_TENANT,
   SAVE_STAFF_PROFILE,
@@ -10,11 +10,11 @@ import {
 } from '../action_types'
 
 // authenticate the staff member's account
-export const authenticateStaff = (staffProfile) => {
+export const authenticateTenant = (bool) => {
   return (dispatch) => {
     dispatch({
-      type: AUTHENTICATED_STAFF,
-      payload: staffProfile,
+      type: AUTHENTICATED_TENANT,
+      payload: bool,
     })
   }
 }
