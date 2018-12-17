@@ -227,7 +227,7 @@ class InputSegment extends Component {
                           console.log('DONE EVENT TRIGGERED')
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
-                              this.props.triggerScrollDown(null, 1000)
+                              this.props.triggerScrollDown(null, 500)
                             }
                             console.log('shouldDisplayInput: ', this.shouldDisplayInput())
                             if (this.shouldDisplayInput() || this.state.instantChars) {

@@ -220,9 +220,9 @@ class PhoneOrEmailRegister extends Component {
           <div style={{ fontSize: '0.8REM' }}>Register with Email instead?</div>
           <div style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.setState({ register_option: 'email', completedSections: [], })}>LOG IN BY EMAIL</div>
         </div>
-        <div style={{ marginTop: '30px' }}>
+        {/*<div style={{ marginTop: '30px' }}>
           <p style={{ fontSize: '0.8REM', }}>When you tap "Continue", RentHero will send a text with verification code. Message and data rates may apply. The verified phone number can be used to log in.</p>
-        </div>
+        </div>*/}
       </div>
     )
   }

@@ -105,10 +105,12 @@ class GroupDialog extends Component {
                 endpoint: 'members_certain_uncertain',
                 choices: [
                   { id: 'myself', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Just Myself', value: 'myself', endpoint: 'entire_place_or_roommates' },
-                  { id: '2_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 Friends', value: '2_friends', endpoint: 'members_certain_uncertain' },
-                  { id: '3+_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Friends', value: '3+_friends', endpoint: 'members_certain_uncertain' },
-                  { id: 'couple', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Couple of 2', value: 'couple', endpoint: 'entire_place_or_roommates' },
-                  { id: '3+_family', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Family Members', value: '3+_family', endpoint: 'meet_the_family', tooltip: (<p>Including parents, children and elderly.</p>) },
+                  { id: 'friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Friends', value: 'friends', endpoint: 'members_certain_uncertain' },
+                  // { id: '2_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '2 Friends', value: '2_friends', endpoint: 'members_certain_uncertain' },
+                  // { id: '3+_friends', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Friends', value: '3+_friends', endpoint: 'members_certain_uncertain' },
+                  { id: 'couple', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Couple', value: 'couple', endpoint: 'entire_place_or_roommates' },
+                  // { id: '3+_family', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: '3+ Family Members', value: '3+_family', endpoint: 'meet_the_family', tooltip: (<p>Including parents, children and elderly.</p>) },
+                  { id: 'family', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Family', value: 'family', endpoint: 'meet_the_family', tooltip: (<p>Including parents, children and elderly.</p>) },
                 ]
               }}
               texts={[
@@ -120,7 +122,7 @@ class GroupDialog extends Component {
            />) },
      {
        id: 'meet_the_family',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/mado5ne/birthday-party-family-eating-cake-in-the-park-next-to-inscription-happy-birthday_4jlwyrudxl__F0000.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+       // scrollStyles: { scroll_styles: { backgroundImage: `url('https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/mado5ne/birthday-party-family-eating-cake-in-the-park-next-to-inscription-happy-birthday_4jlwyrudxl__F0000.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
        component: (<MultiCounterSegment
                title='MEET THE FAMILY'
                schema={{ id: 'meet_the_family', endpoint: 'furry_friends' }}
@@ -131,12 +133,15 @@ class GroupDialog extends Component {
                  { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How many people are you in total? Please include everyone who will sleep there.' },
                ]}
                counters={[
-                 { id: 'adult_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Male', value: 0, tooltip: (<p>Age 18 - 60</p>) },
-                 { id: 'adult_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Female', value: 0, tooltip: (<p>Age 18 - 60</p>) },
-                 { id: 'child_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Male', value: 0, tooltip: (<p>Younger than 18</p>) },
-                 { id: 'child_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Female', value: 0, tooltip: (<p>Younger than 18</p>) },
-                 { id: 'elderly_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Male', value: 0, tooltip: (<p>Older than 60</p>) },
-                 { id: 'elderly_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Female', value: 0, tooltip: (<p>Older than 60</p>) },
+                 // { id: 'adult_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Male', value: 0, tooltip: (<p>Age 18 - 60</p>) },
+                 // { id: 'adult_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adult Female', value: 0, tooltip: (<p>Age 18 - 60</p>) },
+                 { id: 'adult', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Adults', value: 0, tooltip: (<p>Age 18 - 60</p>) },
+                 // { id: 'child_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Male', value: 0, tooltip: (<p>Younger than 18</p>) },
+                 // { id: 'child_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Child Female', value: 0, tooltip: (<p>Younger than 18</p>) },
+                 { id: 'child', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Children', value: 0, tooltip: (<p>Younger than 18</p>) },
+                 // { id: 'elderly_male', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Male', value: 0, tooltip: (<p>Older than 60</p>) },
+                 // { id: 'elderly_female', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elderly Female', value: 0, tooltip: (<p>Older than 60</p>) },
+                 { id: 'elders', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 10, step: 1, default: 0 }, text: 'Elders', value: 0, tooltip: (<p>Older than 60</p>) },
                ]}
                initialData={{
                  counters: this.props.prefs.GROUP.FAMILY_MEMBERS_AS_SCHEMAS
@@ -144,7 +149,7 @@ class GroupDialog extends Component {
             /> )},
      {
        id: 'members_certain_uncertain',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
+       // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.newstatesman.com/sites/default/files/images/2014%2B36_Friends_Cast_Poker(1).jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.8)' } },
        component: (<MultiCounterSegment
                  title='ROOMMATE COMMITMENT'
                  schema={{ id: 'members_certain_uncertain', endpoint: 'meet_the_group' }}
@@ -181,9 +186,9 @@ class GroupDialog extends Component {
                                   id: 'entire_place_or_roommates',
                                   endpoint: 'furry_friends',
                                   choices: [
-                                    { id: 'only_want_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Show Entire Place', value: false, endpoint: 'furry_friends', tooltip: (<p>Just your group, no unknown roommates.</p>) },
-                                    { id: 'only_roommates_no_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Show Partial Places with Roommates', value: false, endpoint: 'max_total_roommates', tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
-                                    { id: 'show_both', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Show Me Both', value: false, endpoint: 'max_total_roommates' },
+                                    { id: 'only_want_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Entire Place', value: false, endpoint: 'furry_friends', tooltip: (<p>Just your group, no unknown roommates.</p>) },
+                                    { id: 'only_roommates_no_entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Only Partial Places', value: false, endpoint: 'max_total_roommates', tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
+                                    { id: 'show_both', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Show Both', value: false, endpoint: 'max_total_roommates' },
                                   ]
                                 }}
                                 texts={[
@@ -216,7 +221,7 @@ class GroupDialog extends Component {
                               /> )},
       {
         id: 'ok_with_dens',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.pinimg.com/originals/13/9c/a0/139ca00c8fe547473f798a4dbd6c3045.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        // scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.pinimg.com/originals/13/9c/a0/139ca00c8fe547473f798a4dbd6c3045.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<MultiOptionsSegment
                                 title='PARTIAL ROOMS'
                                 schema={{
@@ -238,7 +243,7 @@ class GroupDialog extends Component {
                              />) },
        {
          id: 'group_name',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
          component: (<InputSegment
                                  title='Group Name'
                                  schema={{ id: 'group_name', endpoint: 'furry_friends' }}
@@ -256,10 +261,10 @@ class GroupDialog extends Component {
                               />)},
      {
        id: 'furry_friends',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+       // scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<MultiCounterSegment
                      title='PETS'
-                     schema={{ id: 'furry_friends', endpoint: 'desired_rooms' }}
+                     schema={{ id: 'furry_friends', endpoint: 'finish' }}
                      triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                      onDone={(original_id, endpoint, data) => this.doneFurryFriends(original_id, endpoint, data)}
                      texts={[
@@ -282,28 +287,28 @@ class GroupDialog extends Component {
                      }}
                      defaultRenderCountValue={(c) => c}
                   /> )},
-      {
-        id: 'desired_rooms',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://s7d4.scene7.com/is/image/roomandboard/ella_259692_17e_g?$str_g$&size=1968,1450&scl=1')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-        component: (<MultiOptionsSegment
-                                title='ACCEPTABLE TYPES OF UNITS'
-                                schema={{
-                                  id: 'desired_rooms',
-                                  endpoint: 'finish',
-                                  choices: this.bed_choices
-                                }}
-                                texts={[
-                                  { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Select all the types of housing you would like to look at.' },
-                                ]}
-                                multi
-                                preselected={this.props.prefs.GROUP.ACCEPTABLE_UNITS_AS_SCHEMAS}
-                                onDone={(original_id, endpoint, data) => this.doneAcceptableUnitTypes(original_id, endpoint, data)}
-                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                other
-                             />) },
+      // {
+      //   id: 'desired_rooms',
+      //   // scrollStyles: { scroll_styles: { backgroundImage: `url('https://s7d4.scene7.com/is/image/roomandboard/ella_259692_17e_g?$str_g$&size=1968,1450&scl=1')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+      //   component: (<MultiOptionsSegment
+      //                           title='ACCEPTABLE TYPES OF UNITS'
+      //                           schema={{
+      //                             id: 'desired_rooms',
+      //                             endpoint: 'finish',
+      //                             choices: this.bed_choices
+      //                           }}
+      //                           texts={[
+      //                             { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Select all the types of housing you would like to look at.' },
+      //                           ]}
+      //                           multi
+      //                           preselected={this.props.prefs.GROUP.ACCEPTABLE_UNITS_AS_SCHEMAS}
+      //                           onDone={(original_id, endpoint, data) => this.doneAcceptableUnitTypes(original_id, endpoint, data)}
+      //                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //                           other
+      //                        />) },
      {
        id: 'finish',
-       scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+       // scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<ActionSegment
                                title='FINISH'
                                schema={{

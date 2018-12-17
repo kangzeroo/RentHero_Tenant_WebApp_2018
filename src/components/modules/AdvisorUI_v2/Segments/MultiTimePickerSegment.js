@@ -270,7 +270,7 @@ class MultiTimePickerSegment extends Component {
           								doneEvent={() => {
         										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                               if (text.scrollDown) {
-                                this.props.triggerScrollDown(null, 1000)
+                                this.props.triggerScrollDown(null, 500)
                               }
                             })
           								}}

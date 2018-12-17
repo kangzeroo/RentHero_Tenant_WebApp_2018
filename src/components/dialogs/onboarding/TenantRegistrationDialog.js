@@ -31,6 +31,7 @@ import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROU
 import { PASSWORDLESS_LOGIN_REDIRECT, AUTH0_CLIENT_ID, AUTH0_DOMAIN } from '../../../api/ENV_CREDs'
 import { verifyPhone } from '../../../api/phone/phone_api'
 import { saveTenantProfileToRedux } from '../../../actions/auth/auth_actions'
+import { setTenantID } from '../../../actions/tenant/tenant_actions'
 import { unauthRoleTenant } from '../../../api/aws/aws-cognito'
 import auth0 from 'auth0-js'
 
@@ -256,6 +257,7 @@ class TenantRegistrationDialoag extends Component {
       .then((data) => {
         console.log(data)
         this.props.saveTenantProfileToRedux(data)
+        this.props.setTenantID(data.tenant_id)
         this.props.history.push('/intro')
       })
   }
@@ -448,6 +450,7 @@ TenantRegistrationDialoag.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   width: PropTypes.string,                  // passed in
   saveTenantProfileToRedux: PropTypes.func.isRequired,
+	setTenantID: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -472,6 +475,7 @@ export default withRouter(
     toggleInstantCharsSegmentID,
     updatePreferences,
     saveTenantProfileToRedux,
+		setTenantID,
 	})(RadiumHOC)
 )
 
