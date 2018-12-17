@@ -48,7 +48,8 @@ class VerifyCodeSegment extends Component {
 			instantChars: true,
       data: {
         input_string: '',
-      }
+      },
+      clicked_resend: false,
     }
     this.mobile = false
   }
@@ -206,7 +207,7 @@ class VerifyCodeSegment extends Component {
         <br />
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <div style={{ fontSize: '0.8REM'}}>{`Didn't receive a code?`}</div>
-          <div style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.props.resendCode()}>RESEND CODE</div>
+          <div style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer'}} onClick={this.state.clicked_resend ? () => {} : () => this.setState({ clicked_resend: true, }, () => this.props.resendCode())}>RESEND CODE</div>
         </div>
         <br /><br /><br />
         <p style={{ fontSize: '0.8REM'}}>A verification code has been sent to your phone. Check your SMS!</p>

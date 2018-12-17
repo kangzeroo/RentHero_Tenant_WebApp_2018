@@ -57,11 +57,8 @@ export default (ComposedComponent) => {
 				.then((data) => {
 					setTimeout(() => {
 						this.grabListings()
-						if (data && data.tenant_id) {
-							this.grabPrefs(data.tenant_id)
-						} else {
-							this.grabPrefs(this.props.tenant_id)
-						}
+						this.grabPrefs(data.tenant_id)
+
 					}, 100)
 
 					// do stuff based on the URL
@@ -123,6 +120,7 @@ export default (ComposedComponent) => {
 				if (this.props.location.pathname === '/passwordless') {
 					console.log('PASSWORDLESS')
 					this.props.authenticationLoaded()
+					res({ tenant_id: this.props.tenant_id })
 
 				} else {
 					this.startLoginForTenant(location)
@@ -133,53 +131,58 @@ export default (ComposedComponent) => {
 		}
 
 		startLoginForTenant(location) {
-			retrieveTenantFromLocalStorage()
-				.then((tenant) => {
-					console.log(tenant)
-					console.log('kz trippin balls')
-					console.log(location)
-					return getTenantFromSQL(tenant.IdentityId)
-				})
-				.then((data) => {
-					console.log(data)
-					// if (location === '/') {
-					// 	location = '/app/home'
-					// }
-					// // if they have, then we'll auto log them in
-					// this.props.history.push(location)
-					this.props.saveTenantProfileToRedux(data)
-					this.props.authenticationLoaded()
-				})
-				.catch((err) => {
-					console.log('kz tripping shit')
-					console.log(err)
-					// if not, then we do nothing
-					// unauthRoleTenant().then((unauthUser) => {
-					// 	console.log(unauthUser)
-					// 	this.props.saveTenantProfileToRedux(unauthUser)
-					// })
-					// this.props.forwardUrlLocation(location)
-					// this.props.history.push(location)
-					// this.props.authenticateStaff(null)
-					// this.props.authenticationLoaded()
+			const p = new Promise((res, rej) => {
+				retrieveTenantFromLocalStorage()
+					.then((tenant) => {
+						console.log(tenant)
+						console.log('kz trippin balls')
+						console.log(location)
+						return getTenantFromSQL(tenant.IdentityId)
+					})
+					.then((data) => {
+						console.log(data)
+						// if (location === '/') {
+						// 	location = '/app/home'
+						// }
+						// // if they have, then we'll auto log them in
+						// this.props.history.push(location)
+						this.props.saveTenantProfileToRedux(data)
+						this.props.authenticationLoaded()
+					})
+					.catch((err) => {
+						console.log('kz tripping shit')
+						console.log(err)
+						// if not, then we do nothing
+						// unauthRoleTenant().then((unauthUser) => {
+						// 	console.log(unauthUser)
+						// 	this.props.saveTenantProfileToRedux(unauthUser)
+						// })
+						// this.props.forwardUrlLocation(location)
+						// this.props.history.push(location)
+						// this.props.authenticateStaff(null)
+						// this.props.authenticationLoaded()
 
-					const tenant_id = localStorage.getItem('tenant_id')
-					if (tenant_id && tenant_id.length > 0) {
-						// tenant_id exists, relogin
-						console.log('RELOGIN')
-						this.props.authenticationLoaded()
-					} else {
-						// tenant_id does not exists. start new session
-						this.props.authenticationLoaded()
-						// unauthRoleTenant()
-						// 	.then((unauthUser) => {
-						// 		console.log(unauthUser)
-						// 		this.props.saveTenantProfileToRedux(unauthUser)
-						// 		this.props.authenticationLoaded()
-						// 		res(unauthUser.tenant_id)
-						// 	})
-					}
-				})
+						const tenant_id = localStorage.getItem('tenant_id')
+						if (tenant_id && tenant_id.length > 0) {
+							// tenant_id exists, relogin
+							console.log('RELOGIN')
+							this.props.authenticationLoaded()
+							res({ tenant_id: tenant_id, })
+						} else {
+							// tenant_id does not exists. start new session
+							this.props.authenticationLoaded()
+							res({ tenant_id: this.props.tenant_id })
+							// unauthRoleTenant()
+							// 	.then((unauthUser) => {
+							// 		console.log(unauthUser)
+							// 		this.props.saveTenantProfileToRedux(unauthUser)
+							// 		this.props.authenticationLoaded()
+							// 		res(unauthUser.tenant_id)
+							// 	})
+						}
+					})
+			})
+			return p
 		}
 
 		// saveStaffProfileToRedux(staff, location) {
