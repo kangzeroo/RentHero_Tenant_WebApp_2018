@@ -18,7 +18,7 @@ class AppHome extends Component {
 		return (
 			<div id='AppHome' style={comStyles().container}>
 				<div style={comStyles().mainContainer}>
-					<h1>{`Welcome back, ${this.props.staff_profile.first_name}`}</h1>
+					<h1>{`Welcome back, ${this.props.tenant_profile.first_name}`}</h1>
 				</div>
 			</div>
 		)
@@ -28,7 +28,7 @@ class AppHome extends Component {
 // defines the types of variables in this.props
 AppHome.propTypes = {
 	history: PropTypes.object.isRequired,
-	staff_profile: PropTypes.object.isRequired,
+	tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -42,7 +42,7 @@ const RadiumHOC = Radium(AppHome)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-		staff_profile: redux.auth.staff_profile,
+		tenant_profile: redux.auth.staff_profile,
 	}
 }
 

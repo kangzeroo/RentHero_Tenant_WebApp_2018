@@ -30,11 +30,9 @@ import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 import { PASSWORDLESS_LOGIN_REDIRECT, AUTH0_CLIENT_ID, AUTH0_DOMAIN } from '../../../api/ENV_CREDs'
 import { verifyPhone } from '../../../api/phone/phone_api'
-import { saveTenantProfileToRedux } from '../../../actions/auth/auth_actions'
-import { unauthRoleTenant } from '../../../api/aws/aws-cognito'
 import auth0 from 'auth0-js'
 
-class TenantRegistrationDialoag extends Component {
+class LandingDialog extends Component {
 
   constructor() {
     super()
@@ -94,65 +92,35 @@ class TenantRegistrationDialoag extends Component {
     }
   }
 
-  // {
-  //   id: '1',
-  //   component: (<MessageSegment
-  //                          schema={{ id: '1', endpoint: '2' }}
-  //                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-  //                          onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-  //                          texts={[
-  //                            ...this.addAnyPreMessages('1'),
-  //                            { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋 My name is RentHero' },
-  //                            { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm an A.I. real estate agent here to help you find your next home! Here's what I can do for you:` },
-  //                            { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'center' }, text: `🔍 Browse Online Rentals` },
-  //                            { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'center' }, text: `👆 Narrow Your Selection` },
-  //                            { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'center' }, text: `📜 Handle The Paperwork` },
-  //                            { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
-  //                          ]}
-  //                          action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%' } }}
-  //                          segmentStyles={{ justifyContent: 'space-between' }}
-  //                        />) },
+  getStarted() {
+    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
+      console.log("AUTHENTICATED")
+    } else {
+      this.props.history.push('/register')
+    }
+  }
+
 
   rehydrateSegments() {
     this.all_segments = [
-       {
-         id: '1',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
-         component: (<PhoneOrEmailRegister
-                                 title='Registration'
-                                 schema={{ id: '1', endpoint: '2' }}
-                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                 onDone={(original_id, endpoint, data) => this.doneRegister(original_id, endpoint, data)}
-                                 texts={[
-                                   ...this.addAnyPreMessages('1'),
-                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Number is" },
-                                 ]}
-                                 inputType={'tel'}
-                                 initialData={{
-                                   input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
-                                 }}
-                                 skippable={true}
-                                 onSkip={() => this.registerUnAuthRole()}
-                              />)},
       {
-        id: '2',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
-        component: (<VerifyCodeSegment
-                                title='Verification'
-                                schema={{ id: '2', endpoint: '3' }}
-                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                onDone={(original_id, endpoint, data) => this.doneVerify(original_id, endpoint, data)}
-                                texts={[
-                                  ...this.addAnyPreMessages('2'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Code is" },
-                                ]}
-                                inputType={'number'}
-                                stringInputPlaceholder={'Verification Code'}
-                                initialData={{
-                                  // input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
-                                }}
-                                resendCode={() => this.resendCode()}
-                             />)},
+        id: '1',
+        component: (<MessageSegment
+                               schema={{ id: '1', endpoint: '2' }}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                               onDone={(original_id, endpoint, data) => this.getStarted()}
+                               texts={[
+                                 ...this.addAnyPreMessages('1'),
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋  Welcome to RentHero' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm an A.I. rental agent here to help you find your next home! Here's what I can do for you:` },
+                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'center' }, text: `🔍 Browse Online Rentals That Matter to you` },
+                                 { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'center' }, text: `👆 Narrow Your Selection` },
+                                 { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'center' }, text: `📜 Book a tour` },
+                                 { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
+                               ]}
+                               action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%', textAlign: 'center', } }}
+                               segmentStyles={{ justifyContent: 'space-between' }}
+                             />) },
     ]
     this.setState({ lastUpdated: moment().unix() })
   }
@@ -251,13 +219,105 @@ class TenantRegistrationDialoag extends Component {
     })
   }
 
-  registerUnAuthRole() {
-    unauthRoleTenant()
-      .then((data) => {
-        console.log(data)
-        this.props.saveTenantProfileToRedux(data)
-        this.props.history.push('/intro')
+
+  doneName(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.DOCUMENTS.KEY,
+      PREFERRED_NAME: data.input_string,
+    }).then((DOCUMENTS) => {
+      console.log(DOCUMENTS)
+      this.props.updatePreferences(DOCUMENTS)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  mapDone(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.LOCATION.KEY,
+      DESTINATION_ADDRESS: data.address,
+      DESTINATION_GEOPOINT: `${data.address_lat},${data.address_lng}`
+    }).then((LOCATION) => {
+      console.log(LOCATION)
+      this.props.updatePreferences(LOCATION)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  travelModeDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.LOCATION.KEY,
+      TRANSPORT_MODES_AS: data.selected_choices.map(s => s.text).join(', '),
+      TRANSPORT_MODES_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
       })
+    }).then((LOCATION) => {
+      this.props.updatePreferences(LOCATION)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneGroupSize(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      CERTAIN_MEMBERS: data.count,
+      UNCERTAIN_MEMBERS: data.count
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  suitesRoomsDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text).join(', '),
+      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      })
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  budgetDone(original_id, endpoint, data) {
+    console.log(data)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.FINANCIALS.KEY,
+      IDEAL_PER_PERSON: data.count,
+    }).then((FINANCIALS) => {
+      this.props.updatePreferences(FINANCIALS)
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   done(original_id, endpoint, data) {
@@ -407,7 +467,7 @@ class TenantRegistrationDialoag extends Component {
 
 	render() {
 		return (
-			<div id='TenantRegistrationDialoag' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
+			<div id='LandingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles, this.props.width).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles, this.props.width).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -440,23 +500,22 @@ class TenantRegistrationDialoag extends Component {
 }
 
 // defines the types of variables in this.props
-TenantRegistrationDialoag.propTypes = {
+LandingDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
   width: PropTypes.string,                  // passed in
-  saveTenantProfileToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
-TenantRegistrationDialoag.defaultProps = {
+LandingDialog.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TenantRegistrationDialoag)
+const RadiumHOC = Radium(LandingDialog)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -471,7 +530,6 @@ export default withRouter(
 	connect(mapReduxToProps, {
     toggleInstantCharsSegmentID,
     updatePreferences,
-    saveTenantProfileToRedux,
 	})(RadiumHOC)
 )
 

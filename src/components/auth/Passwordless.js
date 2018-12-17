@@ -62,12 +62,11 @@ class Passwordless extends Component {
 			})
 			.then((data) => {
 				console.log(data)
-				this.props.saveTenantProfileToRedux(data.tenant)
-				this.props.history.push('/')
+				return this.props.saveTenantProfileToRedux(data.tenant)
 			})
-			// .then(() => {
-			// 	this.props.history.push('/')
-			// })
+			.then(() => {
+				this.props.history.push('/intro')
+			})
 			.catch((err) => {
 				console.log(err)
 			})

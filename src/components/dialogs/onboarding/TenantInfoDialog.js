@@ -22,7 +22,8 @@ import {
   Icon,
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
-import { saveTenantToSQL } from '../../../api/auth/auth_api'
+import { updateTenantName } from '../../../api/tenant/tenant_api'
+import { saveTenantProfileToRedux } from '../../../actions/auth/auth_actions'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 class OnboardingDialog extends Component {
@@ -48,6 +49,7 @@ class OnboardingDialog extends Component {
   }
 
   componentWillMount() {
+    this.retrieveTenantFromLocalStorage()
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
     this.setState({ lastUpdated: moment().unix() })
@@ -69,6 +71,22 @@ class OnboardingDialog extends Component {
          }
          this.lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
       }, false);
+    }
+  }
+
+  retrieveTenantFromLocalStorage() {
+    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
+      console.log('TENANT PROFILE EXISTS... MOVING ON')
+    } else {
+      const tenant_id = localStorage.getItem('tenant_id')
+      if (tenant_id) {
+        this.props.saveTenantProfileToRedux({
+          tenant_id: tenant_id,
+          authenticated: false,
+        })
+      } else {
+        console.log('NO TENANT ID')
+      }
     }
   }
 
@@ -98,7 +116,7 @@ class OnboardingDialog extends Component {
                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "Let's get to know each other better 😊 What's your name?" },
                                ]}
                                inputType={'text'}
-                               stringInputPlaceholder={'Full Name'}
+                               stringInputPlaceholder={'First Name'}
                                initialData={{
                                  input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
                                }}
@@ -113,7 +131,7 @@ class OnboardingDialog extends Component {
                                 onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
                                 texts={[
                                   ...this.addAnyPreMessages('2'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.prefs.DOCUMENTS.PREFERRED_NAME} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.tenant_profile.first_name} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
                                 ]}
                                 initialData={{
                                   address_components: [],
@@ -245,12 +263,17 @@ class OnboardingDialog extends Component {
   }
 
   doneName(original_id, endpoint, data) {
-    this.done(original_id, endpoint, data)
+
     const first_name = data.input_string
 
-    saveTenantToSQL({
+    updateTenantName({
+      tenant_id: this.props.tenant_profile.tenant_id,
       first_name: first_name,
-      ...this.props.tenant_profile,
+      authenticated: this.props.tenant_profile.authenticated ? this.props.tenant_profile.authenticated : null,
+    })
+    .then((data) => {
+      console.log(data)
+      return this.props.saveTenantProfileToRedux(data.tenant)
     })
     .then((data) => {
       return saveTenantPreferences({
@@ -261,6 +284,7 @@ class OnboardingDialog extends Component {
     }).then((DOCUMENTS) => {
       console.log(DOCUMENTS)
       this.props.updatePreferences(DOCUMENTS)
+      this.done(original_id, endpoint, data)
     }).catch((err) => {
       console.log(err)
     })
@@ -540,6 +564,7 @@ OnboardingDialog.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   width: PropTypes.string,                  // passed in
   tenant_profile: PropTypes.object.isRequired,
+  saveTenantProfileToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -564,6 +589,7 @@ export default withRouter(
 	connect(mapReduxToProps, {
     toggleInstantCharsSegmentID,
     updatePreferences,
+    saveTenantProfileToRedux,
 	})(RadiumHOC)
 )
 

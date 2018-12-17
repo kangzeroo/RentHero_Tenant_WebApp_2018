@@ -4,6 +4,7 @@ import {
   LOADING_COMPLETE,
   TOGGLE_DRAWER_NAV,
   TOGGLE_INSTANT_CHARS,
+  TOGGLE_IS_MOBILE,
 } from '../action_types'
 
 // change the language of the app
@@ -51,6 +52,15 @@ export const triggerDrawerNav = (bool) => {
   return (dispatch) => {
     dispatch({
       type: TOGGLE_DRAWER_NAV,
+      payload: bool,
+    })
+  }
+}
+
+export const isMobileRedux = (bool) => {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_IS_MOBILE,
       payload: bool,
     })
   }

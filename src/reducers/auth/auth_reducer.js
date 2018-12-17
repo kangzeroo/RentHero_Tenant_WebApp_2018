@@ -1,5 +1,5 @@
 import {
-  AUTHENTICATED_STAFF,
+  AUTHENTICATED_TENANT,
   AUTHENTICATION_LOADED,
   UNAUTHENTICATED_TENANT,
   SAVE_STAFF_PROFILE,
@@ -36,7 +36,7 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case AUTHENTICATED_STAFF:
+    case AUTHENTICATED_TENANT:
       return {
         ...state,
         authenticated: action.payload ? true : false,

@@ -55,3 +55,16 @@ export const registerTenantEmail = ({ tenant_id, email, }) => {
   })
   return p
 }
+
+export const updateTenantName = ({ tenant_id, first_name, authenticated, }) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/update_tenant_name`, { tenant_id, first_name, authenticated, }, authHeaders())
+      .then((data) => {
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}

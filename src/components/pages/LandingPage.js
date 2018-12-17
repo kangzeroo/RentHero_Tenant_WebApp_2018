@@ -1,4 +1,4 @@
-// Compt for copying as a TenantDuality
+// Compt for copying as a LandingPage
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -10,12 +10,12 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd-mobile'
+import LandingDialog from '../dialogs/onboarding/LandingDialog'
 import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
 import HeatMap from '../hunting/HeatMapHunting'
 import { isMobile } from '../../api/general/general_api'
 
-
-class TenantDuality extends Component {
+class LandingPage extends Component {
 
 	constructor() {
 		super()
@@ -42,20 +42,23 @@ class TenantDuality extends Component {
 	render() {
 		if (this.state.mobile) {
 			return (
-				<div id='TenantDuality' style={comStyles().container}>
+				<div id='LandingPage' style={comStyles().container}>
 	        <div style={{ width: '100vw' }}>
-					    <TenantInfoDialog width='100vw' />
+					    <LandingDialog width='100vw' />
 	        </div>
 				</div>
 			)
 		} else {
 			return (
-				<div id='TenantDuality' style={comStyles().container}>
+				<div id='LandingPage' style={comStyles().container}>
 	        <div style={{ width: '40vw' }}>
-					    <TenantInfoDialog width='40vw' />
+					    <LandingDialog width='40vw' />
 	        </div>
 	        <div style={{ width: '60vw' }}>
-	          <HeatMap />
+						{
+							// <HeatMap />
+						}
+
 	        </div>
 				</div>
 			)
@@ -65,17 +68,17 @@ class TenantDuality extends Component {
 }
 
 // defines the types of variables in this.props
-TenantDuality.propTypes = {
+LandingPage.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-TenantDuality.defaultProps = {
+LandingPage.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TenantDuality)
+const RadiumHOC = Radium(LandingPage)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
