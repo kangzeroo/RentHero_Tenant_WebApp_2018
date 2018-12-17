@@ -14,6 +14,9 @@ import {
   Icon,
   Modal,
 } from 'antd-mobile'
+import {
+  Button,
+} from 'antd'
 import LikeableImage from './LikeableImage'
 
 
@@ -68,7 +71,8 @@ class AdCoverSection extends Component {
                   key={img.url}
                   style={{ display: 'inline-block', width: '100%' }}
                   onClick={() => {
-                    this.props.scrollDownToImages()
+                    this.props.onShowAll()
+                    // this.props.scrollDownToImages()
                     // history.pushState(null, null, `${this.props.location.pathname}?show=images`)
                   }}
                 >
@@ -76,7 +80,7 @@ class AdCoverSection extends Component {
                     id="img_carousel"
                     src={img.url}
                     alt=""
-                    style={{ width: '100%', verticalAlign: 'top', overflow: 'hidden' }}
+                    style={{ width: '100%', verticalAlign: 'top', borderRadius: '0px', overflow: 'hidden' }}
                     onLoad={() => {
                       // fire window resize event to change height
                       window.dispatchEvent(new Event('resize'));
@@ -105,6 +109,9 @@ class AdCoverSection extends Component {
           <div onClick={(e) => this.turnImageCarousel(e, 1)} style={{ height: '100%', position: 'absolute', right: '10px', top: '45%', zIndex: '3', borderRadius: '30% 0% 0% 30%', cursor: 'pointer' }}>
             <i className='ion-chevron-right' style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'white' }}></i>
           </div>
+          <Button type='default' style={{ position: 'absolute', bottom: '20px', right: '10px', }} onClick={() => this.props.onShowAll()}>
+            Tour this Home
+          </Button>
         </div>
       </div>
     )
@@ -191,6 +198,7 @@ AdCoverSection.propTypes = {
   commute_time: PropTypes.number.isRequired,     // passed in
   current_listing: PropTypes.object.isRequired,     // passed in
   scrollDownToImages: PropTypes.func.isRequired,    // passed in
+  onShowAll: PropTypes.func.isRequired,             // passed in
 }
 
 // for all optional props, define a default value

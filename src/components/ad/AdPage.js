@@ -13,7 +13,10 @@ import { rankOrderPics } from '../../api/ad/ad_api'
 import { getCurrentListingByReference } from '../../api/listings/listings_api'
 import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, setCurrentListing } from '../../actions/listings/listings_actions'
 import {
-
+  Divider,
+} from 'antd'
+import {
+  Modal,
 } from 'antd-mobile'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
 import AdCoverSection from './sections/AdCoverSection'
@@ -23,8 +26,9 @@ import AdFinePrintSection from './sections/AdFinePrintSection'
 import AdNearbySection from './sections/AdNearbySection'
 import AdStreetView from './sections/AdStreetView'
 import AdMapSection from './sections/AdMapSection'
-
-
+import AdImagesSection from './sections/AdImagesSection'
+import AdImages from './tabs/AdImages'
+import { isMobile } from '../../api/general/general_api'
 
 class AdPage extends Component {
 
@@ -36,7 +40,21 @@ class AdPage extends Component {
       commute_state: {
 				commute_time: 0,
 				commute_distance: 0,
-      }
+      },
+
+      photos: {
+        outside: [],
+        bedroom: [],
+        living_room: [],
+        kitchen: [],
+        bathroom: [],
+        img_count: 0,
+      },
+
+      toggle_modal: false,
+      modal_name: '',
+      context: {},
+
     }
     this.lastScrollTop = 0
   }
@@ -209,8 +227,16 @@ class AdPage extends Component {
     }
 
     this.setState({
-      orderedImages: orderedImages
-    })
+      orderedImages: orderedImages,
+      photos: {
+        outside,
+        bedroom,
+        living_room: livingRoom,
+        kitchen,
+        bathroom,
+        img_count: this.props.current_listing.IMAGES.length,
+      }
+    }, () => console.log(this.state.photos))
   }
 
   showCount() {
@@ -239,6 +265,46 @@ class AdPage extends Component {
     document.getElementById('all_images').scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
+  toggleModal(bool, attr, context) {
+    history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}/${attr}`)
+    this.setState({
+      toggle_modal: bool,
+      modal_name: attr,
+      context,
+    })
+  }
+
+  renderAppropriateModal(modal_name, context) {
+    if (modal_name === 'images') {
+      return (
+        <Modal
+          visible={this.state.toggle_modal}
+          transparent
+          maskClosable={false}
+          style={
+            isMobile()
+            ?
+            {
+              height: '100vh',
+              width: '100vw',
+            }
+            :
+            {
+              height: '100vh',
+              width: '100vh',
+            }
+          }
+        >
+          <AdImages
+            photos={this.state.photos}
+            onClose={() => this.toggleModal(false)}
+          />
+        </Modal>
+      )
+    }
+  }
+
+
 	render() {
     if (this.props.current_listing) {
   		return (
@@ -264,6 +330,7 @@ class AdPage extends Component {
             commute_time={this.state.commute_state.commute_time}
             arrival_time={'10am'}
             scrollDownToImages={() => this.scrollDownToImages()}
+            onShowAll={() => this.toggleModal(true, 'images')}
           />
           <AdMapSection
             setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
@@ -272,26 +339,15 @@ class AdPage extends Component {
             current_listing={this.props.current_listing}
           />
           <div style={{ width: '100%', height: '70px' }}></div>
-          <div id='all_images' style={{ height: 'auto', display: 'flex', flexDirection: 'column' }}>
-              {
-                this.props.current_listing.IMAGES.map((img, index) => {
-                    return (
-                      <img
-                        id="img_carousel_modal"
-                        src={img.url}
-                        alt=""
-                        style={{ width: '100%', height: 'auto', margin: '5px 0px 5px 0px' }}
-                        onLoad={() => {
-                          // fire window resize event to change height
-                          // window.dispatchEvent(new Event('resize'));
-                          // this.setState({ imgHeight: '50vh' });
-                          // this.renderPriceTag()
-                        }}
-                      />
-                  )
-                })
-              }
-          </div>
+
+          <Divider />
+          <AdImagesSection
+            photos={this.state.photos}
+            onShowAll={() => this.toggleModal(true, 'images')}
+          />
+
+          <Divider />
+
           <div style={{ width: '100%', height: '70px' }}></div>
           <div style={actionStyles().container}>
             <div onClick={() => this.props.nextListing()} style={actionStyles().dislike}>
@@ -304,6 +360,9 @@ class AdPage extends Component {
               <i className='ion-thumbsup' style={{ fontSize: '2rem', color: '#0ca20c' }} />
             </div>
           </div>
+          {
+            this.renderAppropriateModal(this.state.modal_name, this.state.context)
+          }
   			</div>
   		)
     } else {
