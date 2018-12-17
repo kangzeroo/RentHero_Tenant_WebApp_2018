@@ -56,24 +56,8 @@ let myPrefs = {
 }
 
 export const getListings = (prefs) => {
-  console.log(prefs)
-  myPrefs.rooms.avail.min = prefs.max_beds
-  myPrefs.rooms.avail.ideal = prefs.max_beds
-  myPrefs.rooms.avail.max = prefs.max_beds
-  myPrefs.budget.ideal_per_person = prefs.max_budget
-  myPrefs.budget.max_per_person = prefs.max_budget
-  myPrefs.destinations = [prefs.destination]
-  if (prefs.destination.commute_mode === 'driving') {
-    myPrefs.radius = 30000
-  } else if (prefs.destination.commute_mode === 'transit') {
-    myPrefs.radius = 20000
-  } else if (prefs.destination.commute_mode === 'bicycling') {
-    myPrefs.radius = 20000
-  } else if (prefs.destination.commute_mode === 'walking') {
-    myPrefs.radius = 20000
-  }
 	const p = new Promise((res, rej) => {
-		axios.post(GET_LISTINGS_ENDPOINT, myPrefs)
+		axios.post(GET_LISTINGS_ENDPOINT, prefs)
 			.then((data) => {
 				console.log(data)
 				res(data.data.data)

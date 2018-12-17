@@ -16,9 +16,11 @@ class LikeableImage extends Component {
 
 	render() {
 		return (
-			<div id='LikeableImage' style={comStyles().container}>
-				<img src={this.props.img} style={{ width: '100%', height: 'auto' }} />
-        <div style={{ width: '50px', height: '50px', position: 'absolute', bottom: '10px', right: '10px' }}>Like</div>
+			<div id='LikeableImage' style={{ ...comStyles().container, ...this.props.styles }}>
+				<img src={this.props.img} style={{ width: '100%', height: 'auto', borderRadius: '10px' }} />
+        <div style={comStyles().button}>
+					<i className='ion-ios-heart' style={{ fontSize: '2rem', color: '#ed1313' }}></i>
+				</div>
 			</div>
 		)
 	}
@@ -62,6 +64,19 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
+		},
+		button: {
+			cursor: 'pointer',
+			width: '45px',
+	    height: '45px',
+	    position: 'absolute',
+	    bottom: '10px',
+	    right: '10px',
+	    backgroundColor: 'rgba(256,256,256,0.8)',
+	    borderRadius: '50%',
+	    display: 'flex',
+	    flexDirection: 'column',
+	    justifyContent: 'center',
 		}
 	}
 }

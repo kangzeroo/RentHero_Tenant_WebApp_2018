@@ -1,4 +1,4 @@
-// Compt for copying as a template
+// Compt for copying as a AdStreetView
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -12,16 +12,14 @@ import {
 } from 'antd-mobile'
 
 
-class StreetView extends Component {
+class AdStreetView extends Component {
 
   componentDidMount() {
-    if (this.props.card_section_shown === 'streetview') {
-      this.renderStreetview()
-    }
+    this.renderStreetview()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.card_section_shown !== this.props.card_section_shown && this.props.card_section_shown === 'streetview') || (prevProps.current_listing !== this.props.current_listing)) {
+    if (prevProps.current_listing !== this.props.current_listing) {
       this.renderStreetview()
     }
   }
@@ -39,33 +37,28 @@ class StreetView extends Component {
   }
 
 	render() {
-    if (this.props.card_section_shown === 'streetview') {
-  		return (
-  			<div id='StreetView' style={comStyles().container}>
-  				<div id='pano' style={comStyles().pano}>
-          </div>
-  			</div>
-  		)
-    } else {
-      return null
-    }
+		return (
+			<div id='AdStreetView' style={comStyles().container}>
+        <div id='pano' style={comStyles().pano}>
+        </div>
+			</div>
+		)
 	}
 }
 
 // defines the types of variables in this.props
-StreetView.propTypes = {
+AdStreetView.propTypes = {
 	history: PropTypes.object.isRequired,
 	current_listing: PropTypes.object.isRequired,       // passed in
-  card_section_shown: PropTypes.string.isRequired,    // passed in
 }
 
 // for all optional props, define a default value
-StreetView.defaultProps = {
+AdStreetView.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(StreetView)
+const RadiumHOC = Radium(AdStreetView)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -89,10 +82,10 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: 'white',
+      padding: '30px',
 		},
 		pano: {
-			height: '60vh',
+			height: '500px',
       width: '100%',
 		},
 	}

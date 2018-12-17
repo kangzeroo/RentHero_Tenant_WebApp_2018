@@ -60,11 +60,17 @@ class AdFurnishSection extends Component {
   }
 
   renderImages() {
-    return this.props.images.map((img) => {
-      return (
-        <LikeableImage img={img} />
-      )
-    })
+    return (
+      <div style={{ padding: '10px' }}>
+        {
+          this.props.images.map((img) => {
+            return (
+              <LikeableImage img={img} styles={{ margin: '10px 0px 10px 0px' }} />
+            )
+          })
+        }
+      </div>
+    )
   }
 
 	render() {

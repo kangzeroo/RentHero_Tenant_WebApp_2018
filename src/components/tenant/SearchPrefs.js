@@ -60,31 +60,31 @@ class SearchPrefs extends Component {
 		}
 	}
 
-  componentDidMount() {
-    this.setState({
-      people: this.props.prefs.max_beds,
-      max_budget_person: this.props.prefs.max_budget,
-      commute_mode: this.props.prefs.destination.commute_mode,
-      destination_address: this.props.prefs.destination.address,
-      destination_address_lat: this.props.prefs.destination.gps.lat,
-      destination_address_lng: this.props.prefs.destination.gps.lng,
-      destination_address_place_id: this.props.prefs.destination.place_id,
-    })
-  }
-
-	componentDidUpdate(prevProps, prevState) {
-    if (prevProps.prefs.max_beds !== this.props.prefs.max_beds || prevProps.prefs.max_budget_person !== this.props.prefs.max_budget_person || prevProps.commute_mode !== this.props.commute_mode || prevProps.prefs.destination_address !== this.props.prefs.destination_address) {
-      this.setState({
-        people: this.props.prefs.max_beds,
-        max_budget_person: this.props.prefs.max_budget,
-	      commute_mode: this.props.prefs.destination.commute_mode,
-        destination_address: this.props.prefs.destination.address,
-        destination_address_lat: this.props.prefs.destination.gps.lat,
-        destination_address_lng: this.props.prefs.destination.gps.lng,
-        destination_address_place_id: this.props.prefs.destination.place_id,
-      })
-    }
-	}
+  // componentDidMount() {
+  //   this.setState({
+  //     people: this.props.prefs.max_beds,
+  //     max_budget_person: this.props.prefs.max_budget,
+  //     commute_mode: this.props.prefs.destination.commute_mode,
+  //     destination_address: this.props.prefs.destination.address,
+  //     destination_address_lat: this.props.prefs.destination.gps.lat,
+  //     destination_address_lng: this.props.prefs.destination.gps.lng,
+  //     destination_address_place_id: this.props.prefs.destination.place_id,
+  //   })
+  // }
+	//
+	// componentDidUpdate(prevProps, prevState) {
+  //   if (prevProps.prefs.max_beds !== this.props.prefs.max_beds || prevProps.prefs.max_budget_person !== this.props.prefs.max_budget_person || prevProps.commute_mode !== this.props.commute_mode || prevProps.prefs.destination_address !== this.props.prefs.destination_address) {
+  //     this.setState({
+  //       people: this.props.prefs.max_beds,
+  //       max_budget_person: this.props.prefs.max_budget,
+	//       commute_mode: this.props.prefs.destination.commute_mode,
+  //       destination_address: this.props.prefs.destination.address,
+  //       destination_address_lat: this.props.prefs.destination.gps.lat,
+  //       destination_address_lng: this.props.prefs.destination.gps.lng,
+  //       destination_address_place_id: this.props.prefs.destination.place_id,
+  //     })
+  //   }
+	// }
 
 	// trigger instant load text from <SubtitleMachine>
 	instantCharClick() {

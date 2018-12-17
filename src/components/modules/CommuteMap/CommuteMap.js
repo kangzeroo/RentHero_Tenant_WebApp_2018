@@ -13,6 +13,7 @@ import {
 } from '../../../actions/listings/listings_actions'
 import {
   Button,
+  Select,
 } from 'antd'
 
 
@@ -26,6 +27,13 @@ class CommuteMap extends Component {
 				commute_time: 0,
 				commute_distance: 0,
 			},
+      address_components: [],
+      address_lat: 0,
+      address_lng: 0,
+      address_place_id: '',
+      address: '',
+      commute_mode: '',
+      arrival_time: new Date(),
     }
     this.directionsDisplay = null
   }
@@ -117,16 +125,24 @@ class CommuteMap extends Component {
     }
   }
 
-  setCommuteMode(mode) {
-    this.props.changeCommuteMode(mode)
-  }
-
 	render() {
     if (this.props.card_section_shown === 'commute') {
   		return (
   			<div id='CommuteMap' style={comStyles().container}>
           <div id='controls' style={comStyles().controls}>
-            <div id='options' style={comStyles().options}>
+            <Select
+              size='large'
+              style={{ width: '30%', }}
+              onChange={(a) => this.setState({ commute_mode: mode })}
+            >
+              <Select.Option key='transit' value='transit'>Transit</Select.Option>
+              <Select.Option key='driving' value='driving'>Driving</Select.Option>
+              <Select.Option key='walking' value='walking'>Walking</Select.Option>
+              <Select.Option key='bicycling' value='bicycling'>Bicycling</Select.Option>
+            </Select>
+            <input id='destination_address' value={(e) => this.setState({ address: e.target.value })} />
+
+            {/*<div id='options' style={comStyles().options}>
               <Button onClick={() => this.setCommuteMode('DRIVING')} type={this.props.commute_mode.toUpperCase() === 'DRIVING' ? 'primary' : 'default'} inline size="small" style={{ margin: '3px', padding: '0px 15px', borderRadius: '10px' }}>
                 {
                   this.props.commute_mode.toUpperCase() === 'DRIVING'
@@ -163,7 +179,7 @@ class CommuteMap extends Component {
                   'BICYCLING'
                 }
               </Button>
-            </div>
+            </div>*/}
           </div>
   				<div id='map' style={comStyles().map}></div>
   			</div>
@@ -214,6 +230,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+      backgroundColor: 'white',
 		},
     options: {
       display: 'flex',
@@ -231,7 +248,7 @@ const comStyles = () => {
       textAlign: 'center',
     },
 		map: {
-			height: '400px',
+			height: '250px',
 		},
 	}
 }
