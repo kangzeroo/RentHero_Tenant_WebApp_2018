@@ -9,6 +9,9 @@ const REGION = 'us-east-1'
 const CORPORATION_USER_POOL_ID = 'us-east-1_ueLNqdv7l'
 const CORPORATION_CLIENT_ID = 'v658686di26fa8pfjtvj1669i'
 
+const TENANT_IDENTITY_POOL_ID = 'us-east-1:d47bfcd4-1309-40df-99c2-80165784ffc8'
+
+
 AWS.config.update({
 	region: REGION
 })
@@ -20,6 +23,10 @@ AWS.config.update({
 const staffData = {
     UserPoolId: CORPORATION_USER_POOL_ID,
     ClientId: CORPORATION_CLIENT_ID
+}
+
+const tenantData = {
+	IdentityPoolId: 'us-east-1:d47bfcd4-1309-40df-99c2-80165784ffc8'
 }
 
 // export const TENANT_KMS_ID = '2157ccf4-5dc3-442e-b49a-02e6077eadcb'

@@ -29,3 +29,29 @@ export const getFavoritesForTenant = (tenant_id) => {
   })
   return p
 }
+
+export const registerTenantPhone = ({ tenant_id, phone_number, national_format, country_code, email, }) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_phone`, { tenant_id, phone_number, national_format, country_code, email, }, authHeaders())
+      .then((data) => {
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}
+
+export const registerTenantEmail = ({ tenant_id, email, }) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_email`, { tenant_id, email, }, authHeaders())
+      .then((data) => {
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}

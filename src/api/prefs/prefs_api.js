@@ -1,7 +1,7 @@
 import { GET_TENANT_PROFILE, UPDATE_TENANT_PROFILE } from '../API_URLS'
 import axios from 'axios'
 
-export const savePreferences = (PREF_OBJECT) => {
+export const saveTenantPreferences = (PREF_OBJECT) => {
   console.log(PREF_OBJECT)
   const p = new Promise((res, rej) => {
     axios.post(UPDATE_TENANT_PROFILE, PREF_OBJECT)
@@ -18,7 +18,7 @@ export const savePreferences = (PREF_OBJECT) => {
   return p
 }
 
-export const getPreferences = (tenant_id) => {
+export const getTenantPreferences = (tenant_id) => {
   const p = new Promise((res, rej) => {
     axios.post(GET_TENANT_PROFILE, { TENANT_ID: tenant_id })
       .then((data) => {

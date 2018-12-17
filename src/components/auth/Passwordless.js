@@ -8,10 +8,13 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
-
-} from 'antd-mobile'
+	Spin,
+} from 'antd'
 import { registerPasswordlessAuth0WithCognito } from '../../api/aws/aws-cognito'
+import { registerTenantPhone, registerTenantEmail } from '../../api/tenant/tenant_api'
+import { saveTenantProfileToRedux } from '../../actions/auth/auth_actions'
 // import { getTenantInfo } from '../../api/tenant/tenant_api'
+import auth0 from 'auth0-js'
 
 
 class Passwordless extends Component {
@@ -33,9 +36,34 @@ class Passwordless extends Component {
     registerPasswordlessAuth0WithCognito(id_token)
 			.then(({ IdentityId }) => {
 				console.log(IdentityId)
-        // return getTenantInfo(IdentityId)
+				const phoneStr = localStorage.getItem('phone')
+				const emailStr = localStorage.getItem('email')
+				if (phoneStr) {
+					const phoneObj = JSON.parse(phoneStr)
+					const tenantObj = {
+						tenant_id: IdentityId,
+						phone_number: phoneObj.phoneNumber,
+						national_format: phoneObj.nationalFormat,
+						country_code: phoneObj.countryCode,
+						email: emailStr,
+					}
 
-				this.props.history.push('/intro')
+					return registerTenantPhone(tenantObj)
+				} else if (emailStr) {
+					const tenantObj = {
+						tenant_id: IdentityId,
+						email: emailStr,
+					}
+
+					return registerTenantEmail(tenantObj)
+				} else {
+					console.log('PHONE AND EMAIL NOT IN LOCAL STORAGE')
+				}
+			})
+			.then((data) => {
+				console.log(data)
+				this.props.saveTenantProfileToRedux(data.tenant)
+				this.props.history.push('/')
 			})
 			// .then(() => {
 			// 	this.props.history.push('/')
@@ -48,7 +76,7 @@ class Passwordless extends Component {
 	render() {
 		return (
 			<div id='Passwordless' style={comStyles().container}>
-				Passwordless
+				<Spin tip='Verifying...' />
 			</div>
 		)
 	}
@@ -57,6 +85,7 @@ class Passwordless extends Component {
 // defines the types of variables in this.props
 Passwordless.propTypes = {
 	history: PropTypes.object.isRequired,
+	saveTenantProfileToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -77,7 +106,7 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
+		saveTenantProfileToRedux,
 	})(RadiumHOC)
 )
 
@@ -89,6 +118,10 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+			height: '100vh',
+			width: '100%',
+			justifyContent: 'center',
+			alignItems: 'center',
 		}
 	}
 }

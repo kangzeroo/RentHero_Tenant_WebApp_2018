@@ -14,7 +14,7 @@ import {
   Icon,
 } from 'antd-mobile'
 import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
-import { savePreferences } from '../../../api/prefs/prefs_api'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
 import SegmentTemplate from '../../modules/AdvisorUI_v2/Segments/SegmentTemplate'
 import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
@@ -326,7 +326,7 @@ class GroupDialog extends Component {
 
   doneSearchingAs(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       SEARCHING_AS: data.selected_choices.map(c => c.text).join(', '),
@@ -346,7 +346,7 @@ class GroupDialog extends Component {
 
   doneMeetingFamily(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       FAMILY_MEMBERS_AS: data.counters.map(c => c.text).join(', '),
@@ -368,7 +368,7 @@ class GroupDialog extends Component {
     this.done(original_id, endpoint, data)
     const certain = data.counters.filter(c => c.id === 'CERTAIN_MEMBERS')
     const uncertain = data.counters.filter(c => c.id === 'UNCERTAIN_MEMBERS')
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       CERTAIN_MEMBERS: certain[0] && certain[0].value ? certain[0].value : 0,
@@ -382,7 +382,7 @@ class GroupDialog extends Component {
 
   doneMeetingGroup(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       GROUP_MEMBERS_AS: data.inputs.map(c => c.text).join(', '),
@@ -405,7 +405,7 @@ class GroupDialog extends Component {
     // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
     // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -428,7 +428,7 @@ class GroupDialog extends Component {
     // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
     // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       LIVE_IN_DEN_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -451,7 +451,7 @@ class GroupDialog extends Component {
     // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
     // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       GROUP_ID: this.props.prefs.GROUP.GROUP_ID ? this.props.prefs.GROUP.GROUP_ID : uuid.v4(),
@@ -465,7 +465,7 @@ class GroupDialog extends Component {
 
   doneFurryFriends(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       PETS_AS: data.counters.map(c => c.text).join(', '),
@@ -485,7 +485,7 @@ class GroupDialog extends Component {
 
   doneMaxTotalGroup(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       MAX_TOTAL_GROUP: data.count,
@@ -498,7 +498,7 @@ class GroupDialog extends Component {
 
   doneAcceptableUnitTypes(original_id, endpoint, data) {
     this.done(original_id, endpoint, data)
-    savePreferences({
+    saveTenantPreferences({
       TENANT_ID: this.props.tenant_id,
       KEY: this.props.prefs.GROUP.KEY,
       ACCEPTABLE_UNITS_AS: data.selected_choices.map(s => s.text).join(', '),
@@ -690,7 +690,7 @@ const RadiumHOC = Radium(GroupDialog)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
-    tenant_id: redux.tenant.tenant_id,
+    tenant_id: redux.auth.tenant_profile.tenant_id,
 	}
 }
 
