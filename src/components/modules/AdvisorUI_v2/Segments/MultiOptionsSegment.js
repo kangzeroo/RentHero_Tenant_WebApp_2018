@@ -273,9 +273,9 @@ class MultiOptionsSegment extends Component {
     this.setState({
       data: {
         ...this.state.data,
-        selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat([
+        selected_choices: this.state.data.selected_choices.filter(sel => sel.id !== 'other').concat(this.state.data.other_choice ? [
           { id: 'other', text: this.state.data.other_choice || 'other', value: this.state.data.other_choice ? true : false }
-        ])
+        ]: [])
       }
     }, () => this.props.onDone(this.props.schema.id, endpoint, this.state.data))
   }
@@ -343,7 +343,7 @@ class MultiOptionsSegment extends Component {
         								doneEvent={() => {
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
-                              this.props.triggerScrollDown(null, 1000)
+                              this.props.triggerScrollDown(null, 500)
                             }
                           })
         								}}

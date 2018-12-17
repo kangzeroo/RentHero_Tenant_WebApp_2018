@@ -55,10 +55,7 @@ class RegisterPage extends Component {
 					    <TenantRegistrationDialog width='40vw' />
 	        </div>
 	        <div style={{ width: '60vw' }}>
-						{
-							// <HeatMap />
-						}
-
+						<HeatMap />
 	        </div>
 				</div>
 			)
@@ -90,7 +87,6 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
 	})(RadiumHOC)
 )
 

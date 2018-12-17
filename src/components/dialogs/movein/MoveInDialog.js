@@ -105,7 +105,7 @@ class MoveInDialog extends Component {
            />) },
       {
       id: 'ideal_movein',
-      scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.apartmentguide.com/blog/wp-content/uploads/2011/09/moving-truck-Christina-Richards-original.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+      // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.apartmentguide.com/blog/wp-content/uploads/2011/09/moving-truck-Christina-Richards-original.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
       component: (<DatePickerSegment
                       title='Ideal Move-In Date'
                       schema={{ id: 'ideal_movein', endpoint: 'movein_range' }}
@@ -141,7 +141,7 @@ class MoveInDialog extends Component {
                         /> )},
         {
           id: 'moving_from',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+          // scrollStyles: { scroll_styles: { backgroundImage: `url('https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57730/land_ocean_ice_2048.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
           component: (<MapSegment
                             title='Your Current City'
                             schema={{ id: 'moving_from', endpoint: 'current_housing_situation' }}
@@ -161,7 +161,7 @@ class MoveInDialog extends Component {
                          /> )},
         {
           id: 'arrival_flight_time',
-          scrollStyles: { scroll_styles: { backgroundImage: `url('https://onemileatatime.com/wp-content/uploads/2015/06/Window.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+          // scrollStyles: { scroll_styles: { backgroundImage: `url('https://onemileatatime.com/wp-content/uploads/2015/06/Window.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
           component: (<DatePickerSegment
                     title='Arrival Flight Time'
                     schema={{ id: 'arrival_flight_time', endpoint: 'needs_representative' }}
@@ -176,7 +176,7 @@ class MoveInDialog extends Component {
                  /> )},
        {
          id: 'current_housing_situation',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.homedepot-static.com/productImages/a5754483-c06d-4976-b6d6-f31d00bd18d4/svn/heritage-mill-engineered-hardwood-pf9710-64_1000.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.homedepot-static.com/productImages/a5754483-c06d-4976-b6d6-f31d00bd18d4/svn/heritage-mill-engineered-hardwood-pf9710-64_1000.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
          component: (<MultiOptionsSegment
                                    title='Current Housing Situation'
                                    schema={{
@@ -237,7 +237,7 @@ class MoveInDialog extends Component {
                              /> )},
            {
              id: 'needs_representative',
-             scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/storage.propsocial.com/topic/post_picture/7348/what-should-you-do-when-viewing-a-house-4.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+             // scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3-ap-southeast-1.amazonaws.com/storage.propsocial.com/topic/post_picture/7348/what-should-you-do-when-viewing-a-house-4.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
              component: (<MultiOptionsSegment
                                        title='Tenant Representative'
                                        schema={{
@@ -262,7 +262,7 @@ class MoveInDialog extends Component {
                                     />) },
          {
            id: 'moving_reason',
-           scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.shift8stock.com/wp-content/uploads/edd/2016/12/DSCF3496-1560x1040.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
+           // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.shift8stock.com/wp-content/uploads/edd/2016/12/DSCF3496-1560x1040.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
            component: (<InputSegment
                                  title='Reason for Moving'
                                  schema={{ id: 'moving_reason', endpoint: 'lease_length' }}
@@ -279,9 +279,9 @@ class MoveInDialog extends Component {
                               /> )},
         {
          id: 'lease_length',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.growingagreenerworld.com/wp-content/uploads/2013/08/Tree-fall-for-web.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
          component: (<CounterSegment
-                                 schema={{ id: 'lease_length', endpoint: 'moving_choice_factor' }}
+                                 schema={{ id: 'lease_length', endpoint: 'finish' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.doneDesiredLeaseLength(original_id, endpoint, data)}
                                  texts={[
@@ -308,34 +308,34 @@ class MoveInDialog extends Component {
                                    count: this.props.prefs.MOVEIN.LEASE_LENGTH
                                  }}
                               /> )},
-      {
-        id: 'moving_choice_factor',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
-        component: (<MultiOptionsSegment
-                                  title='Decision Making Factors'
-                                  schema={{
-                                    id: 'moving_choice_factor',
-                                    endpoint: 'finish',
-                                    choices: [
-                                      { id: 'good_deal', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'If I Find A Good Deal', value: false, endpoint: 'finish', tooltip: (<p>You are flexible with move-in, so the price, location, quality mix will determine your final decision.</p>) },
-                                      { id: 'available_in_time', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: `If It's Available In Time`, value: false, endpoint: 'finish', tooltip: (<p>Time is of top importance. Price, location and quality can be flexible.</p>) },
-                                      { id: 'group_members', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Depends On My Group', value: false, endpoint: 'finish', tooltip: (<p>You're waiting on your group members to commit or make a choice.</p>) },
-                                      { id: 'enough_money', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Saved Enough Money', value: false, endpoint: 'finish', tooltip: (<p>You are saving enough money before moving in.</p>) },
-                                      { id: 'when_employed', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'When I Get A Job', value: false, endpoint: 'finish', tooltip: (<p>You are confident to move-in when you secure a job with steady pay.</p>) },
-                                    ]
-                                  }}
-                                  texts={[
-                                    { id: '1', scrollDown: true, text: `Which of these is the biggest factor to your final decision?` },
-                                  ]}
-                                  onDone={(original_id, endpoint, data) => this.doneMovingChoiceFactor(original_id, endpoint, data)}
-                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                                  multi
-                                  other
-                                  preselected={this.props.prefs.MOVEIN.DECISION_FACTORS_AS_SCHEMAS}
-                               />) },
+      // {
+      //   id: 'moving_choice_factor',
+      //   // scrollStyles: { scroll_styles: { backgroundImage: `url('https://cdn-images-1.medium.com/max/2000/1*q4Y5rlqAX_Pr5g83cOCoyg.jpeg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+      //   component: (<MultiOptionsSegment
+      //                             title='Decision Making Factors'
+      //                             schema={{
+      //                               id: 'moving_choice_factor',
+      //                               endpoint: 'finish',
+      //                               choices: [
+      //                                 { id: 'good_deal', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'If I Find A Good Deal', value: false, endpoint: 'finish', tooltip: (<p>You are flexible with move-in, so the price, location, quality mix will determine your final decision.</p>) },
+      //                                 { id: 'available_in_time', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: `If It's Available In Time`, value: false, endpoint: 'finish', tooltip: (<p>Time is of top importance. Price, location and quality can be flexible.</p>) },
+      //                                 { id: 'group_members', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Depends On My Group', value: false, endpoint: 'finish', tooltip: (<p>You're waiting on your group members to commit or make a choice.</p>) },
+      //                                 { id: 'enough_money', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'Saved Enough Money', value: false, endpoint: 'finish', tooltip: (<p>You are saving enough money before moving in.</p>) },
+      //                                 { id: 'when_employed', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'When I Get A Job', value: false, endpoint: 'finish', tooltip: (<p>You are confident to move-in when you secure a job with steady pay.</p>) },
+      //                               ]
+      //                             }}
+      //                             texts={[
+      //                               { id: '1', scrollDown: true, text: `Which of these is the biggest factor to your final decision?` },
+      //                             ]}
+      //                             onDone={(original_id, endpoint, data) => this.doneMovingChoiceFactor(original_id, endpoint, data)}
+      //                             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //                             multi
+      //                             other
+      //                             preselected={this.props.prefs.MOVEIN.DECISION_FACTORS_AS_SCHEMAS}
+      //                          />) },
        {
          id: 'finish',
-         scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
          component: (<ActionSegment
                                  title='FINISH'
                                  schema={{
@@ -568,7 +568,7 @@ class MoveInDialog extends Component {
       // add next segment
       this.shown_segments = this.shown_segments.slice(0, original_id_index + 1).concat(this.all_segments.filter(seg => seg.id === endpoint))
       this.setState({ lastUpdated: moment().unix() }, () => {
-        history.pushState(null, null, `${this.props.location.pathname}#${endpoint}`)
+        // history.pushState(null, null, `${this.props.location.pathname}#${endpoint}`)
         this.redrawContainer()
       })
     // Backtracking on a past segment

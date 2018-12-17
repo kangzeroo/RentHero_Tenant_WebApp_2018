@@ -90,7 +90,7 @@ class FinancialDialog extends Component {
         />) },
       {
         id: 'ideal_budget',
-        scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.narcity.com/uploads/255957_a863b146f86b05303b1f5948bd320e656e2bf4e3.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
+        // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.narcity.com/uploads/255957_a863b146f86b05303b1f5948bd320e656e2bf4e3.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<CounterSegment
                                 title='Ideal Budget'
                                 schema={{ id: 'ideal_budget', endpoint: 'working_studying' }}
@@ -433,12 +433,14 @@ class FinancialDialog extends Component {
                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                           multi
                           other
+                          skippable
+                          skipEndpoint='any_guarantors'
                        />) },
       {
         id: 'total_other_cash_flows',
         component: (<CounterSegment
                        title='Total Other Income'
-                       schema={{ id: 'total_other_cash_flows', endpoint: 'income_breakdown' }}
+                       schema={{ id: 'total_other_cash_flows', endpoint: 'names_on_lease' }}
                        triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                        onDone={(original_id, endpoint, data) => this.doneIncomeReport(original_id, endpoint, data, 'OTHER')}
                        texts={[
@@ -462,63 +464,63 @@ class FinancialDialog extends Component {
                        }}
                        renderCountValue={(count) => `$ ${count}`}
                   /> )},
-      {
-        id: 'income_breakdown',
-        component: (<MultiCounterSegment
-                          title='Breakdown of Income'
-                          schema={{ id: 'income_breakdown', endpoint: 'cash_deposit_banked' }}
-                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                          onDone={(original_id, endpoint, data) => this.doneIncomeBreakdown(original_id, endpoint, data)}
-                          texts={[
-                            ...this.addAnyPreMessages('income_breakdown'),
-                            { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Your monthly income is seperated into regular and adhoc income.' },
-                            { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Based on your answers, are these are your correct amounts? Please modify if necessary.' },
-                          ]}
-                          counters={[
-                            { id: 'REPORTED_REGULAR', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 150000, step: 500, default: this.props.prefs.FINANCIALS.INCOME.REPORTED_REGULAR }, text: 'Regular Income', value: this.props.prefs.FINANCIALS.INCOME.REPORTED_REGULAR, tooltip: (<p>20 kg or less</p>) },
-                            { id: 'REPORTED_ADHOC', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 150000, step: 500, default: this.props.prefs.FINANCIALS.INCOME.REPORTED_ADHOC }, text: 'Ad-hoc Income', value: this.props.prefs.FINANCIALS.INCOME.REPORTED_ADHOC, tooltip: (<p>20 kg or more</p>) },
-                          ]}
-                       /> )},
-      {
-        id: 'cash_deposit_banked',
-        component: (<CounterSegment
-                         title='Cash for Deposits'
-                         schema={{ id: 'cash_deposit_banked', endpoint: 'cash_deposit_biddable' }}
-                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                         onDone={(original_id, endpoint, data) => this.doneCashDeposit(original_id, endpoint, data)}
-                         texts={[
-                           ...this.addAnyPreMessages('cash_deposit_banked'),
-                           { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Landlords in Ontario typically expect 2 months of rent as deposit.' },
-                           { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How much cash do you have in your bank to cover your portion of the deposit? A guess is fine.' },
-                         ]}
-                         incrementerOptions={{
-                           max:10000,
-                           min: 0,
-                           step: 250,
-                           default: 0,
-                         }}
-                         slider
-                         sliderOptions={{
-                           max: 10000,
-                           min: 0,
-                           step: 250,
-                         }}
-                         initialData={{
-                           count: this.props.prefs.FINANCIALS.DEPOSIT_CASH
-                         }}
-                         renderCountValue={(count) => `$ ${count}`}
-                    /> )},
+      // {
+      //   id: 'income_breakdown',
+      //   component: (<MultiCounterSegment
+      //                     title='Breakdown of Income'
+      //                     schema={{ id: 'income_breakdown', endpoint: 'cash_deposit_banked' }}
+      //                     triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //                     onDone={(original_id, endpoint, data) => this.doneIncomeBreakdown(original_id, endpoint, data)}
+      //                     texts={[
+      //                       ...this.addAnyPreMessages('income_breakdown'),
+      //                       { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Your monthly income is seperated into regular and adhoc income.' },
+      //                       { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Based on your answers, are these are your correct amounts? Please modify if necessary.' },
+      //                     ]}
+      //                     counters={[
+      //                       { id: 'REPORTED_REGULAR', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 150000, step: 500, default: this.props.prefs.FINANCIALS.INCOME.REPORTED_REGULAR }, text: 'Regular Income', value: this.props.prefs.FINANCIALS.INCOME.REPORTED_REGULAR, tooltip: (<p>20 kg or less</p>) },
+      //                       { id: 'REPORTED_ADHOC', renderCountValue: (c) => c, incrementerOptions: { min: 0, max: 150000, step: 500, default: this.props.prefs.FINANCIALS.INCOME.REPORTED_ADHOC }, text: 'Ad-hoc Income', value: this.props.prefs.FINANCIALS.INCOME.REPORTED_ADHOC, tooltip: (<p>20 kg or more</p>) },
+      //                     ]}
+      //                  /> )},
+      // {
+      //   id: 'cash_deposit_banked',
+      //   component: (<CounterSegment
+      //                    title='Cash for Deposits'
+      //                    schema={{ id: 'cash_deposit_banked', endpoint: 'cash_deposit_biddable' }}
+      //                    triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //                    onDone={(original_id, endpoint, data) => this.doneCashDeposit(original_id, endpoint, data)}
+      //                    texts={[
+      //                      ...this.addAnyPreMessages('cash_deposit_banked'),
+      //                      { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Landlords in Ontario typically expect 2 months of rent as deposit.' },
+      //                      { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How much cash do you have in your bank to cover your portion of the deposit? A guess is fine.' },
+      //                    ]}
+      //                    incrementerOptions={{
+      //                      max:10000,
+      //                      min: 0,
+      //                      step: 250,
+      //                      default: 0,
+      //                    }}
+      //                    slider
+      //                    sliderOptions={{
+      //                      max: 10000,
+      //                      min: 0,
+      //                      step: 250,
+      //                    }}
+      //                    initialData={{
+      //                      count: this.props.prefs.FINANCIALS.DEPOSIT_CASH
+      //                    }}
+      //                    renderCountValue={(count) => `$ ${count}`}
+      //               /> )},
      {
        id: 'any_guarantors',
        component: (<MultiOptionsSegment
                         title='Guarantors'
                         schema={{
                           id: 'any_guarantors',
-                          endpoint: 'cash_deposit_biddable',
+                          endpoint: 'names_on_lease',
                           choices: [
-                            { id: 'canadian_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, I have a Canadian Guarantor', value: false, endpoint: 'cash_deposit_biddable', tooltip: (<p>Tooltip A</p>) },
-                            { id: 'international_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'I have an International Guarantor', value: false, endpoint: 'cash_deposit_biddable', tooltip: (<p>Tooltip A</p>) },
-                            { id: 'no_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'No Guarantor', value: false, endpoint: 'cash_deposit_biddable', tooltip: (<p>Tooltip A</p>) },
+                            { id: 'canadian_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, I have a Canadian Guarantor', value: false, endpoint: 'names_on_lease', tooltip: (<p>Tooltip A</p>) },
+                            { id: 'international_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'I have an International Guarantor', value: false, endpoint: 'names_on_lease', tooltip: (<p>Tooltip A</p>) },
+                            { id: 'no_guarantor', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'No Guarantor', value: false, endpoint: 'names_on_lease', tooltip: (<p>Tooltip A</p>) },
                           ]
                         }}
                         texts={[
@@ -531,36 +533,38 @@ class FinancialDialog extends Component {
                         onDone={(original_id, endpoint, data) => this.doneGuarantors(original_id, endpoint, data)}
                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                         other
+                        skippable
+                        skipEndpoint='names_on_lease'
                      />) },
-      {
-        id: 'cash_deposit_biddable',
-        component: (<CounterSegment
-                    title='Higher Security Deposit'
-                    schema={{ id: 'cash_deposit_biddable', endpoint: 'names_on_lease' }}
-                    triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                    onDone={(original_id, endpoint, data) => this.doneDepositBid(original_id, endpoint, data)}
-                    texts={[
-                      ...this.addAnyPreMessages('cash_deposit_biddable'),
-                      { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Since you have no income and no guarantor, landlords will expect a higher rent deposit as a form of security.' },
-                      { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How many months of rent are you able to put for a cash deposit?' },
-                    ]}
-                    incrementerOptions={{
-                      max:10000,
-                      min: 0,
-                      step: 250,
-                      default: 0,
-                    }}
-                    slider
-                    sliderOptions={{
-                      max: 10000,
-                      min: 0,
-                      step: 250,
-                    }}
-                    initialData={{
-                      count: this.props.prefs.FINANCIALS.DEPOSIT_CASH_BID
-                    }}
-                    renderCountValue={(count) => `$ ${count}`}
-               /> )},
+      // {
+      //   id: 'cash_deposit_biddable',
+      //   component: (<CounterSegment
+      //               title='Higher Security Deposit'
+      //               schema={{ id: 'cash_deposit_biddable', endpoint: 'names_on_lease' }}
+      //               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //               onDone={(original_id, endpoint, data) => this.doneDepositBid(original_id, endpoint, data)}
+      //               texts={[
+      //                 ...this.addAnyPreMessages('cash_deposit_biddable'),
+      //                 { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Since you have no income and no guarantor, landlords will expect a higher rent deposit as a form of security.' },
+      //                 { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How many months of rent are you able to put for a cash deposit?' },
+      //               ]}
+      //               incrementerOptions={{
+      //                 max:10000,
+      //                 min: 0,
+      //                 step: 250,
+      //                 default: 0,
+      //               }}
+      //               slider
+      //               sliderOptions={{
+      //                 max: 10000,
+      //                 min: 0,
+      //                 step: 250,
+      //               }}
+      //               initialData={{
+      //                 count: this.props.prefs.FINANCIALS.DEPOSIT_CASH_BID
+      //               }}
+      //               renderCountValue={(count) => `$ ${count}`}
+      //          /> )},
       {
         id: 'names_on_lease',
         component: (<MultiOptionsSegment
@@ -585,6 +589,8 @@ class FinancialDialog extends Component {
                       onDone={(original_id, endpoint, data) => this.doneNamesOnLease(original_id, endpoint, data)}
                       triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                       other
+                      skippable
+                      skipEndpoint='names_on_lease_disclaimer'
                    />) },
       {
         id: 'names_on_lease_disclaimer',

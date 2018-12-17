@@ -87,10 +87,10 @@ class CreditDialog extends Component {
            component: (<MultiOptionsSegment
                  schema={{
                    id: 'ever_done_credit',
-                   endpoint: 'past_credit_brand',
+                   endpoint: 'estimated_credit_score',
                    choices: [
-                     { id: 'yes_recently', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, recently', value: false, endpoint: 'past_credit_brand' },
-                     { id: 'yes_but_forgot', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, but I forgot', value: false, endpoint: 'past_credit_brand' },
+                     { id: 'yes_recently', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, recently', value: false, endpoint: 'estimated_credit_score' },
+                     { id: 'yes_but_forgot', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Yes, but I forgot', value: false, endpoint: 'estimated_credit_score' },
                      { id: 'no_never', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'No, Never', value: false, endpoint: 'learn_more' },
                    ]
                  }}
@@ -101,31 +101,31 @@ class CreditDialog extends Component {
                  onDone={(original_id, endpoint, data) => this.donePastCredit(original_id, endpoint, data)}
                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
               />) },
-     {
-       id: 'past_credit_brand',
-       component: (<MultiOptionsSegment
-             title='ABOUT CREDIT SCORES'
-             schema={{
-               id: 'past_credit_brand',
-               endpoint: 'estimated_credit_score',
-               choices: [
-                 { id: 'canadian_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Canadian', value: false, endpoint: 'estimated_credit_score' },
-                 { id: 'american_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'American', value: false, endpoint: 'estimated_credit_score' },
-                 { id: 'uk_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'United Kingdom', value: false, endpoint: 'estimated_credit_score' },
-                 { id: 'non_english_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Non-English', value: false, endpoint: 'estimated_credit_score' },
-                 { id: 'none', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'None', value: false, endpoint: 'estimated_credit_score', tooltip: (<p>Including parents, children and elderly.</p>) },
-               ]
-             }}
-             texts={[
-               { id: '1', text: `A credit score is a measurement of how well you pay back your debts.` },
-               { id: '2', text: `It is mandatory, all landlords expect it as security and reassurance.` },
-               { id: '3', text: `A credit report is a detailed breakdown of what debts your have on record, and your payment history.` },
-               { id: '4', text: `Have you ever gotten any of the below credit reports done before?` },
-             ]}
-             preselected={this.props.prefs.CREDIT.PAST_CREDIT_BRANDS_AS_SCHEMAS}
-             onDone={(original_id, endpoint, data) => this.donePastBrands(original_id, endpoint, data)}
-             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-          />) },
+     // {
+     //   id: 'past_credit_brand',
+     //   component: (<MultiOptionsSegment
+     //         title='ABOUT CREDIT SCORES'
+     //         schema={{
+     //           id: 'past_credit_brand',
+     //           endpoint: 'estimated_credit_score',
+     //           choices: [
+     //             { id: 'canadian_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Canadian', value: false, endpoint: 'estimated_credit_score' },
+     //             { id: 'american_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'American', value: false, endpoint: 'estimated_credit_score' },
+     //             { id: 'uk_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'United Kingdom', value: false, endpoint: 'estimated_credit_score' },
+     //             { id: 'non_english_report', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Non-English', value: false, endpoint: 'estimated_credit_score' },
+     //             { id: 'none', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'None', value: false, endpoint: 'estimated_credit_score', tooltip: (<p>Including parents, children and elderly.</p>) },
+     //           ]
+     //         }}
+     //         texts={[
+     //           { id: '1', text: `A credit score is a measurement of how well you pay back your debts.` },
+     //           { id: '2', text: `It is mandatory, all landlords expect it as security and reassurance.` },
+     //           { id: '3', text: `A credit report is a detailed breakdown of what debts your have on record, and your payment history.` },
+     //           { id: '4', text: `Have you ever gotten any of the below credit reports done before?` },
+     //         ]}
+     //         preselected={this.props.prefs.CREDIT.PAST_CREDIT_BRANDS_AS_SCHEMAS}
+     //         onDone={(original_id, endpoint, data) => this.donePastBrands(original_id, endpoint, data)}
+     //         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+     //      />) },
     {
       id: 'estimated_credit_score',
       component: (<CounterSegment

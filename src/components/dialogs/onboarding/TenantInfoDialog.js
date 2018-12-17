@@ -42,6 +42,7 @@ class OnboardingDialog extends Component {
       show_progress: false,
       progress_percent: 0,
       phone: '',
+      first_name: '',
     }
     this.all_segments = []
     this.shown_segments = []
@@ -105,6 +106,7 @@ class OnboardingDialog extends Component {
     this.all_segments = [
      {
        id: '1',
+       comment: 'whats your name',
        scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
        component: (<InputSegment
                                title='Introductions'
@@ -123,6 +125,7 @@ class OnboardingDialog extends Component {
                             />)},
       {
         id: '2',
+        comment: 'whats your destination',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://connectassetmanagement.com/wp-content/uploads/2016/04/toronto-sunset-city-view.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
         component: (<MapSegment
                                 title='Frequently Travelled'
@@ -131,7 +134,7 @@ class OnboardingDialog extends Component {
                                 onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
                                 texts={[
                                   ...this.addAnyPreMessages('2'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.props.tenant_profile.first_name} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.state.first_name} 🤝 Where do you commute to most often? I'll find rentals close to it.` }
                                 ]}
                                 initialData={{
                                   address_components: [],
@@ -143,6 +146,7 @@ class OnboardingDialog extends Component {
                              /> )},
       {
         id: '3',
+        comment: 'how do you travel? bus, drive...etc',
         scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/FqOAKHzVpaw/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<MultiOptionsSegment
                                 title='Travel Mode'
@@ -166,6 +170,7 @@ class OnboardingDialog extends Component {
                              />) },
        {
          id: '4',
+         comment: 'how big is your group?',
          scrollStyles: { scroll_styles: { backgroundImage: `url('https://byba.co.uk/wp-content/uploads/bella-london-concrete-lazio.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
          component: (<CounterSegment
                                  title='Group Size'
@@ -188,6 +193,7 @@ class OnboardingDialog extends Component {
                               /> )},
       {
         id: '5',
+        comment: 'do you want suites or rooms?',
         scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.globexdevelopments.com/Custom-Homes-Photo-Portfolio/14-Casa/big/Hallway-EntryDoor.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.4)' } },
         component: (<MultiOptionsSegment
                                 title='Suites or Rooms'
@@ -195,9 +201,9 @@ class OnboardingDialog extends Component {
                                   id: '5',
                                   endpoint: '6',
                                   choices: [
-                                    { id: 'entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: false, endpoint: '7', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
-                                    { id: 'just_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: false, endpoint: '7', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) },
-                                    { id: 'both_place_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BOTH', value: false, endpoint: '7', tooltip: (<p>You are open to entire units and random roommates.</p>) },
+                                    { id: 'entire_place', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'ENTIRE PLACE', value: false, endpoint: '6', tooltip: (<p>An entire place means you have no random roommates, just the people in your group.</p>) },
+                                    { id: 'just_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'JUST ROOMS', value: false, endpoint: '6', tooltip: (<p>Rooms mean you are willing to have new random roommates. Often for a cheaper rent, as the whole place can be expensive.</p>) },
+                                    { id: 'both_place_rooms', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BOTH', value: false, endpoint: '6', tooltip: (<p>You are open to entire units and random roommates.</p>) },
                                   ]
                                 }}
                                 texts={[
@@ -210,6 +216,7 @@ class OnboardingDialog extends Component {
                              />) },
      {
        id: '6',
+       comment: 'whast your budget per person?',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/yzWqIH9NBZE/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<CounterSegment
                                title='Budget Per Person'
@@ -253,7 +260,6 @@ class OnboardingDialog extends Component {
                                texts={[
                                  ...this.addAnyPreMessages('7'),
                                  { id: '1-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `And that's it! Ready to see your matches? 👀` },
-                                 { id: '1-2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `( By the way, these aren't your matches. That part isn't hooked up yet 😅 )` }
                                ]}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.action(original_id, endpoint, data)}
@@ -263,8 +269,10 @@ class OnboardingDialog extends Component {
   }
 
   doneName(original_id, endpoint, data) {
-
     const first_name = data.input_string
+    this.setState({
+      first_name: first_name,
+    }, () => this.done(original_id, endpoint, data))
 
     updateTenantName({
       tenant_id: this.props.tenant_profile.tenant_id,
@@ -284,13 +292,13 @@ class OnboardingDialog extends Component {
     }).then((DOCUMENTS) => {
       console.log(DOCUMENTS)
       this.props.updatePreferences(DOCUMENTS)
-      this.done(original_id, endpoint, data)
     }).catch((err) => {
       console.log(err)
     })
   }
 
   mapDone(original_id, endpoint, data) {
+    console.log(data)
     this.done(original_id, endpoint, data)
     saveTenantPreferences({
       TENANT_ID: this.props.tenant_profile.tenant_id,

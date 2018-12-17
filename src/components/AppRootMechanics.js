@@ -43,6 +43,7 @@ import { DOCUMENTS } from '../reducers/prefs/schemas/documents_schema'
 import { ROOMMATES } from '../reducers/prefs/schemas/roommates_schema'
 import { isMobile } from '../api/general/general_api'
 import { isMobileRedux } from '../actions/app/app_actions'
+import { setTenantID } from '../actions/tenant/tenant_actions'
 
 
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
@@ -52,11 +53,15 @@ export default (ComposedComponent) => {
 
     componentWillMount() {
 			this.checkIfMobile()
-
+			console.log('checkIfTenantLoggedIn..')
 			// check if tenant is already authenticated
 			this.checkIfTenantLoggedIn()
 				.then((data) => {
-					this.grabPrefs(data.tenant_id)
+					console.log(data)
+					if (data.tenant_id) {
+						console.log('Grabbing prefs...')
+						this.grabPrefs(data.tenant_id)
+					}
 					// do stuff based on the URL
 					this.executeOnURL()
 				})
@@ -124,7 +129,7 @@ export default (ComposedComponent) => {
 				if (this.props.location.pathname === '/passwordless') {
 					console.log('PASSWORDLESS')
 					this.props.authenticationLoaded()
-					res({ tenant_id: this.props.tenant_id })
+					res({ tenant_id: null })
 				} else {
 					this.startLoginForTenant(location)
 						.then((data) => {
@@ -140,9 +145,6 @@ export default (ComposedComponent) => {
 			const p = new Promise((res, rej) => {
 				retrieveTenantFromLocalStorage()
 					.then((tenant) => {
-						console.log(tenant)
-						console.log('kz trippin balls')
-						console.log(location)
 						return getTenantFromSQL(tenant.IdentityId)
 					})
 					.then((data) => {
@@ -150,18 +152,18 @@ export default (ComposedComponent) => {
 						if (location === '/') {
 							location = '/app/home'
 						}
-						console.log(location)
 						// // if they have, then we'll auto log them in
 						this.props.authenticateTenant(true)
 						this.props.authenticationLoaded(true)
-						return this.props.saveTenantProfileToRedux(data)
+						this.props.saveTenantProfileToRedux(data)
+		        this.props.setTenantID(data.tenant_id)
+						res({ tenant_id: data.tenant_id })
 					})
-					.then(() => {
-						console.log(location)
-						this.props.history.push(location)
-					})
+					// .then(() => {
+					// 	console.log(location)
+					// 	this.props.history.push(location)
+					// })
 					.catch((err) => {
-						console.log('kz tripping shit')
 						console.log(err)
 						// if not, then we do nothing
 
@@ -173,13 +175,12 @@ export default (ComposedComponent) => {
 						const tenant_id = localStorage.getItem('tenant_id')
 						if (tenant_id && tenant_id.length > 0) {
 							// tenant_id exists, relogin
-							console.log('RELOGIN')
 							this.props.authenticationLoaded()
 							res({ tenant_id: tenant_id, })
 						} else {
 							// tenant_id does not exists. start new session
 							this.props.authenticationLoaded()
-							res({ tenant_id: this.props.tenant_id })
+							res({ tenant_id: null })
 							// unauthRoleTenant()
 							// 	.then((unauthUser) => {
 							// 		console.log(unauthUser)
@@ -265,13 +266,13 @@ export default (ComposedComponent) => {
 		dispatchActionsToRedux: PropTypes.func.isRequired,
 		saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 		authenticationLoaded: PropTypes.func.isRequired,
-		tenant_id: PropTypes.string.isRequired,
 		tenant_profile: PropTypes.object.isRequired,
 		saveListingsToRedux: PropTypes.func.isRequired,
 		updatePreferences: PropTypes.func.isRequired,
 		saveTenantProfileToRedux: PropTypes.func.isRequired,
 		prefs: PropTypes.object.isRequired,
 		isMobileRedux: PropTypes.func.isRequired,
+		setTenantID: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -281,7 +282,6 @@ export default (ComposedComponent) => {
 
 	const mapStateToProps = (redux) => {
 		return {
-			tenant_id: redux.tenant.tenant_id,
 			prefs: redux.prefs,
 			tenant_profile: redux.auth.tenant_profile,
 		}
@@ -302,6 +302,7 @@ export default (ComposedComponent) => {
 			updatePreferences,
 			saveTenantProfileToRedux,
 			isMobileRedux,
+			setTenantID,
     })(AppRootMechanics)
 	)
 }
