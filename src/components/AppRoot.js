@@ -131,8 +131,10 @@ class AppRoot extends Component {
 
                 <Route exact path='/checklist' render={Checklist} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
-              <Route exact path='/matches' render={SwipeList} />
+                
+              <Route exact path='/matches' render={AdHome} />
               {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
+
               <Route exact path='/no_more' render={NoMoreListings} />
               <Route exact path='/cover' render={CoverPage} />
               {/*<Route exact path='/sample' render={AdvisorUI} />
