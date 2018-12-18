@@ -14,6 +14,7 @@ import { getCurrentListingByReference } from '../../api/listings/listings_api'
 import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, setCurrentListing } from '../../actions/listings/listings_actions'
 import {
   Divider,
+  Button,
 } from 'antd'
 import {
   Modal,
@@ -305,6 +306,28 @@ class AdPage extends Component {
   }
 
 
+  // <div onClick={() => this.props.nextListing()} style={actionStyles().dislike}>
+  //   <i className='ion-thumbsdown' style={{ fontSize: '2rem', color: '#f23939' }} />
+  // </div>
+  // <div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={actionStyles().contact}>
+  //   VIEW ORIGINAL
+  // </div>
+  // <div onClick={() => this.props.nextListing()} style={actionStyles().like}>
+  //   <i className='ion-thumbsup' style={{ fontSize: '2rem', color: '#0ca20c' }} />
+  // </div>
+
+  renderStickyFooter() {
+    return (
+      <div style={actionStyles(isMobile()).container}>
+        <div style={{ fontSize: '1.2REM', fontWeight: 'bold', color: 'black' }}>{`$ ${this.props.current_listing.PRICE}`}</div>
+        <Button type='primary' style={actionStyles().actionButton} size='large'>
+          Book Tour
+        </Button>
+      </div>
+    )
+  }
+
+
 	render() {
     if (this.props.current_listing) {
   		return (
@@ -332,12 +355,14 @@ class AdPage extends Component {
             scrollDownToImages={() => this.scrollDownToImages()}
             onShowAll={() => this.toggleModal(true, 'images')}
           />
-          <AdMapSection
-            setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
-            main_destination={this.props.main_destination}
-            arrival_time={123}
-            current_listing={this.props.current_listing}
-          />
+          <div style={{ margin: '20px' }}>
+            <AdMapSection
+              setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
+              main_destination={this.props.main_destination}
+              arrival_time={123}
+              current_listing={this.props.current_listing}
+            />
+          </div>
           <div style={{ width: '100%', height: '70px' }}></div>
 
           <Divider />
@@ -349,17 +374,9 @@ class AdPage extends Component {
           <Divider />
 
           <div style={{ width: '100%', height: '70px' }}></div>
-          <div style={actionStyles().container}>
-            <div onClick={() => this.props.nextListing()} style={actionStyles().dislike}>
-              <i className='ion-thumbsdown' style={{ fontSize: '2rem', color: '#f23939' }} />
-            </div>
-            <div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={actionStyles().contact}>
-              VIEW ORIGINAL
-            </div>
-            <div onClick={() => this.props.nextListing()} style={actionStyles().like}>
-              <i className='ion-thumbsup' style={{ fontSize: '2rem', color: '#0ca20c' }} />
-            </div>
-          </div>
+          {
+            this.renderStickyFooter()
+          }
           {
             this.renderAppropriateModal(this.state.modal_name, this.state.context)
           }
@@ -416,6 +433,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+      overflowY: 'scroll',
       // background: '#ECE9E6',  /* fallback for old browsers */
       // background: '-webkit-linear-gradient(to right, #FFFFFF, #ECE9E6)',  /* Chrome 10-25, Safari 5.1-6 */
       // background: 'linear-gradient(to right, #FFFFFF, #ECE9E6)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
@@ -468,25 +486,38 @@ const headerStyles = () => {
       justifyContent: 'center',
       alignItems: 'flex-start',
       padding: '10px 10px 10px 10px',
-    }
+    },
+
   }
 }
 
-const actionStyles = () => {
+const actionStyles = (mobile) => {
+  let attrs
+  if (mobile) {
+    attrs = {
+      width: '100%',
+    }
+  } else {
+    attrs = {
+      width: '40%',
+    }
+  }
   return {
     container: {
       position: 'fixed',
-      width: '100%',
       height: '70px',
       bottom: '0px',
       left: '0px',
       backgroundColor: 'rgba(256,256,256,0.9)',
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
       alignItems: 'center',
       borderRadius: '0px 0px 0px 0px',
       zIndex: 5,
+      padding: '0px 20px',
+      borderTop: 'lightgray solid thin',
+      ...attrs,
     },
     dislike: {
       display: 'flex',
@@ -517,5 +548,11 @@ const actionStyles = () => {
       color: '#2faded',
       fontWeight: 'regular',
     },
+    actionButton: {
+      backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
+      width: '45%',
+      border: 'none',
+      // height: '90%',
+    }
   }
 }

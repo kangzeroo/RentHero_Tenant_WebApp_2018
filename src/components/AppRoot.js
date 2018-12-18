@@ -60,7 +60,7 @@ import LoginPage from './login/LoginPage'
 import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
-import AdPage from './ad/AdPage'
+import AdHome from './ad/AdHome'
 import EmailCodeSentTemplate from './modules/EmailCodeSentTemplate'
 
 import TweenOne from 'rc-tween-one'
@@ -125,8 +125,11 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
-              <Route exact path='/sandbox' render={AdPage} />
-              <Route exact path='/checklist' render={Checklist} />
+              <Route exact path='/sandbox' render={AdHome} />
+              <Route exact path='/' render={LandingPage} />
+              <Route exact path='/register' render={RegisterPage} />
+
+                <Route exact path='/checklist' render={Checklist} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
               {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
