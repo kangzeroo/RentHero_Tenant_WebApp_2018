@@ -735,7 +735,8 @@ class FinancialDialog extends Component {
         return {
           id: s.id,
           text: s.text,
-          value: s.value
+          value: s.value,
+          endpoint: s.endpoint,
         }
       }),
     }).then((FINANCIALS) => {

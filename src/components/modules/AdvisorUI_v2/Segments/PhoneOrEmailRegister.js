@@ -202,7 +202,7 @@ class PhoneOrEmailRegister extends Component {
             // backgroundColor: 'rgba(0,0,0,0)',
             margin: '20px 0px 20px 0px',
           }}
-        >My Number is</div>
+        >Getting Started</div>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <input
             id={`input_field--${this.props.schema.id}`}
@@ -217,7 +217,7 @@ class PhoneOrEmailRegister extends Component {
           ></input>
         </div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: '20px' }}>
-          <div style={{ fontSize: '0.8REM' }}>Register with Email instead?</div>
+          {/*<div style={{ fontSize: '0.8REM' }}>Register with Email instead?</div>*/}
           <div style={{ color: 'red', textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.setState({ register_option: 'email', completedSections: [], })}>LOG IN BY EMAIL</div>
         </div>
         {/*<div style={{ marginTop: '30px' }}>

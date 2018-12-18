@@ -235,7 +235,7 @@ class MessageSegment extends Component {
             this.shouldDisplayInput() && this.props.action.enabled
             ?
             <div style={{ height: '100px', display: 'flex', flexDirection: 'row' }}>
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative' }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative', textAlign: 'center' }}>
                 <div onClick={(e) => this.nextSegment(e)} style={{ ...comStyles().action, ...this.props.action.actionStyles }}>{this.props.action.label}</div>
               </div>
             </div>
