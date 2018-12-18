@@ -55,10 +55,7 @@ class LandingPage extends Component {
 					    <LandingDialog width='40vw' />
 	        </div>
 	        <div style={{ width: '60vw' }}>
-						{
-							// <HeatMap />
-						}
-
+							<HeatMap />
 	        </div>
 				</div>
 			)

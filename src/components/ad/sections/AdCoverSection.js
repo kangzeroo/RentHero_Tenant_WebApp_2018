@@ -109,7 +109,7 @@ class AdCoverSection extends Component {
           <div onClick={(e) => this.turnImageCarousel(e, 1)} style={{ height: '100%', position: 'absolute', right: '10px', top: '45%', zIndex: '3', borderRadius: '30% 0% 0% 30%', cursor: 'pointer' }}>
             <i className='ion-chevron-right' style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'white' }}></i>
           </div>
-          <Button type='default' style={{ position: 'absolute', bottom: '20px', right: '10px', }} onClick={() => this.props.onShowAll()}>
+          <Button type='default' style={{ position: 'absolute', bottom: '20px', right: '10px', }} onClick={() => this.props.onShowAll()} icon='appstore'>
             Tour this Home
           </Button>
         </div>

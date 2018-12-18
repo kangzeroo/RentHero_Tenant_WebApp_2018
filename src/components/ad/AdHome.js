@@ -1,4 +1,4 @@
-// Compt for copying as a RegisterPage
+// Compt for copying as a AdHome
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -9,13 +9,13 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
 
-} from 'antd-mobile'
-import TenantRegistrationDialog from '../dialogs/onboarding/TenantRegistrationDialog'
-import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
+} from 'antd'
+import AdPage from './AdPage'
 import HeatMap from '../hunting/HeatMapHunting'
 import { isMobile } from '../../api/general/general_api'
 
-class RegisterPage extends Component {
+
+class AdHome extends Component {
 
 	constructor() {
 		super()
@@ -42,20 +42,20 @@ class RegisterPage extends Component {
 	render() {
 		if (this.state.mobile) {
 			return (
-				<div id='RegisterPage' style={comStyles().container}>
+				<div id='AdHome' style={comStyles().container}>
 	        <div style={{ width: '100vw' }}>
-					    <TenantRegistrationDialog width='100vw' />
+					    <AdPage width='100vw' />
 	        </div>
 				</div>
 			)
 		} else {
 			return (
-				<div id='RegisterPage' style={comStyles().container}>
-	        <div style={{ width: '40vw' }}>
-					    <TenantRegistrationDialog width='40vw' />
+				<div id='AdHome' style={comStyles().container}>
+	        <div style={{ width: '40vw', maxHeight: '100vh', overflowY: 'scroll', }}>
+					    <AdPage width='40vw' />
 	        </div>
 	        <div style={{ width: '60vw' }}>
-							<HeatMap />
+	          <HeatMap />
 	        </div>
 				</div>
 			)
@@ -65,17 +65,17 @@ class RegisterPage extends Component {
 }
 
 // defines the types of variables in this.props
-RegisterPage.propTypes = {
+AdHome.propTypes = {
 	history: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
-RegisterPage.defaultProps = {
+AdHome.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(RegisterPage)
+const RadiumHOC = Radium(AdHome)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

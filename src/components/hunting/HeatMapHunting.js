@@ -38,34 +38,37 @@ class HeatMapHunting extends Component {
   }
 
   componentWillMount() {
-    // getHeatMapDist({
-    //   max_beds: this.props.prefs.max_beds,
-    //   max_budget: this.props.prefs.max_budget,
-    //   destination: {
-    //     address: this.props.prefs.destination.address,
-    //     place_id: this.props.prefs.destination.place_id,
-    //     commute_mode: this.props.prefs.destination.commute_mode,
-    //     gps: { lat: this.props.prefs.destination.gps.lat, lng: this.props.prefs.destination.gps.lng }
-    //   }
-    // }).then((data) => {
-    //   console.log(data)
-    //   this.setState({
-    //     ads: data,
-    //     heat_points: data.map((d) => {
-    //       return new google.maps.LatLng(d.GPS.lat, d.GPS.lng)
-    //     })
-    //   }, () => this.loadHeatMap())
-    // }).catch((err) => {
-    //   console.log(err)
-    // })
+    console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
+
+    getHeatMapDist({
+      // max_beds: this.props.prefs.max_beds,
+      // max_budget: this.props.prefs.max_budget,
+      destination: {
+        address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
+        // place_id: this.props.prefs.destination.place_id,
+        // commute_mode: this.props.prefs.destination.commute_mode,
+        gps: { lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0], lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1] }
+      }
+    }).then((data) => {
+      console.log(data)
+      this.setState({
+        ads: data,
+        heat_points: data.map((d) => {
+          return new google.maps.LatLng(d.GPS.lat, d.GPS.lng)
+        })
+      }, () => this.loadHeatMap())
+    }).catch((err) => {
+      console.log(err)
+    })
   }
 
   loadHeatMap() {
+    console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
     const self = this
     // INITIATE GOOGLE MAPS
     this.map = new google.maps.Map(document.getElementById('map'), {
       zoom: 12,
-      center: { lat: parseFloat(this.props.prefs.destination.gps.lat), lng: parseFloat(this.props.prefs.destination.gps.lng) },
+      center: { lat: parseFloat(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0]), lng: parseFloat(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1]) },
       styles: mapStyles,
       disableDefaultUI: true,
       clickableIcons: false,
@@ -226,7 +229,6 @@ HeatMapHunting.propTypes = {
 
 // for all optional props, define a default value
 HeatMapHunting.defaultProps = {
-
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -235,7 +237,7 @@ const RadiumHOC = Radium(HeatMapHunting)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-    prefs: redux.tenant.prefs
+    prefs: redux.prefs
 	}
 }
 
@@ -259,7 +261,7 @@ const comStyles = () => {
       position: 'relative',
 		},
     map: {
-      width: '100vw',
+      width: '100%',
       height: '100vh'
     },
     exit: {
