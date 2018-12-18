@@ -332,6 +332,7 @@ class AdPage extends Component {
     if (this.props.current_listing) {
   		return (
   			<div id='AdPage' style={comStyles().container}>
+          <div style={{ width: '100%', height: '50px' }}></div>
           {
             this.state.show_header
             ?
@@ -447,7 +448,13 @@ const headerStyles = () => {
       flexDirection: 'row',
       justifyContent: 'flex-start',
       color: '#36454f',
-      backgroundColor: 'rgba(0,0,0,0)',
+      position: 'fixed',
+      zIndex: 5,
+      top: '0px',
+      left: '0px',
+      width: '100%',
+      backgroundColor: 'white',
+      height: '50px',
     },
     menu: {
       display: 'flex',
@@ -501,7 +508,7 @@ const actionStyles = (mobile) => {
       height: '70px',
       bottom: '0px',
       left: '0px',
-      backgroundColor: 'white',
+      backgroundColor: 'rgba(256,256,256,0.9)',
       display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -535,7 +542,7 @@ const actionStyles = (mobile) => {
       flexDirection: 'column',
       justifyContent: 'center',
       height: '70%',
-      width: '30%',
+      width: '35%',
       border: '1px solid #2faded',
       borderRadius: '10px',
       color: '#2faded',

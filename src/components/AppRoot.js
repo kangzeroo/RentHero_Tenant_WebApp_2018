@@ -32,20 +32,21 @@ import WelcomeScreen from './home/WelcomeScreen'
 import UserPreferences from './home/UserPreferences'
 import NoteToTester from './home/NoteToTester'
 import SwipeList from './swipe/SwipeList'
-import MoveInPrefs from './tenant/MoveInPrefs'
+// import MoveInPrefs from './tenant/MoveInPrefs'
 import InteractiveTemplate from './misc/InteractiveTemplate'
-import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
+// import CreditReportDialogMe from './qualifications/credit_report/CreditReportDialogMe'
 import FavoritesList from './swipe/FavoritesList'
 import NoMoreListings from './swipe/NoMoreListings'
-import ContinueSession from './tenant/ContinueSession'
+// import ContinueSession from './tenant/ContinueSession'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
 import HeatMapHunting from './hunting/HeatMapHunting'
 import NoResults from './modules/NoResults'
-import SearchPrefs from './tenant/SearchPrefs'
+// import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
 import RegisterPage from './pages/RegisterPage'
 import LandingPage from './pages/LandingPage'
+import Checklist from './tenant/Checklist'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 // import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import CreditDialog from './dialogs/credit/CreditDialog'
@@ -54,6 +55,7 @@ import TenantFavorites from './favorites/TenantFavorites'
 import GroupDialog from './dialogs/group/GroupDialog'
 import RoommatesDialog from './dialogs/roommates/RoommatesDialog'
 import ChineseDialogOnboarding from './dialogs/onboarding/ChineseDialogOnboarding'
+import InterestDialog from './dialogs/interest/InterestDialog'
 import LoginPage from './login/LoginPage'
 import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
@@ -75,10 +77,9 @@ class AppRoot extends Component {
 
 	render() {
     const sidebar = [
-      <List.Item key={9} onClick={() => this.clickedDrawerOption('/cover')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Cover Page</span></List.Item>,
+      <List.Item key={9} onClick={() => this.clickedDrawerOption('/checklist')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Checklist</span></List.Item>,
       <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Browse</span></List.Item>,
       <List.Item key={1} onClick={() => this.clickedDrawerOption('/heatmap')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Heat Map</span></List.Item>,
-      <List.Item key={2} onClick={() => this.clickedDrawerOption('/prefs')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Search Options</span></List.Item>,
       <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Favorites</span></List.Item>,
       <List.Item key={4} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Sandbox</span></List.Item>,
     ]
@@ -88,18 +89,20 @@ class AppRoot extends Component {
           <Switch>
 
             <Route exact path='/' render={LandingPage} />
-            <Route exact path='/register' render={RegisterPage} />
             {
               //<Route exact path='/login' render={HomePage} />
             }
             <Route exact path='/favorites' render={TenantFavorites} />
             <Route exact path='/intro' render={TenantDuality} />
             <Route exact path='/passwordless' render={Passwordless} />
+            <Route exact path='/register' render={RegisterPage} />
 
             <Route exact path='/logout' render={Logout} />
             <Route exact path='/noresults' render={NoResults} />
-            <Route exact path='/existing_session' render={ContinueSession} />
+            {/*<Route exact path='/existing_session' render={ContinueSession} />*/}
             <Route exact path='/verifyingemail' render={EmailCodeSentTemplate} />
+
+            <Route exact path='/p/:pid' render={InterestDialog} />
 
             <Route path='/app/*' component={AppRoutes} />
 
@@ -125,22 +128,21 @@ class AppRoot extends Component {
               <Route exact path='/sandbox' render={AdHome} />
               <Route exact path='/' render={LandingPage} />
               <Route exact path='/register' render={RegisterPage} />
+
+                <Route exact path='/checklist' render={Checklist} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
               <Route exact path='/matches' render={SwipeList} />
-              <Route exact path='/prefs' render={SearchPrefs} />
-              <Route exact path='/favourites' render={FavoritesList} />
+              {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
               <Route exact path='/no_more' render={NoMoreListings} />
-              <Route exact path='/dialog/moveinprefs/me' render={MoveInPrefs} />
-              <Route exact path='/dialog/credit_report/me' render={CreditReportDialogMe} />
               <Route exact path='/cover' render={CoverPage} />
-              <Route exact path='/movein' render={MoveInDialog} />
-              <Route exact path='/sample' render={AdvisorUI} />
-              <Route exact path='/sino' render={ChineseDialogOnboarding} />
+              {/*<Route exact path='/sample' render={AdvisorUI} />
+              <Route exact path='/sino' render={ChineseDialogOnboarding} />*/}
               {/*<Route exact path='/onboarding' render={OnboardingDialog} />*/}
-              <Route exact path='/group' render={GroupDialog} />
-              <Route exact path='/personal' render={RoommatesDialog} />
-              <Route exact path='/finance' render={FinancialDialog} />
-              <Route exact path='/credit' render={CreditDialog} />
+              <Route exact path='/dialog/movein' render={MoveInDialog} />
+              <Route exact path='/dialog/group' render={GroupDialog} />
+              {/*<Route exact path='/dialog/personal' render={RoommatesDialog} />*/}
+              <Route exact path='/dialog/finance' render={FinancialDialog} />
+              <Route exact path='/dialog/credit' render={CreditDialog} />
             </Drawer>
           </Switch>
         </LocaleProvider>

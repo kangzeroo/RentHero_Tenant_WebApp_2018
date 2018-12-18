@@ -315,7 +315,7 @@ class MultiCounterSegment extends Component {
           								doneEvent={() => {
         										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                               if (text.scrollDown) {
-                                this.props.triggerScrollDown(null, 1000)
+                                this.props.triggerScrollDown(null, 500)
                               }
                             })
           								}}
@@ -339,10 +339,10 @@ class MultiCounterSegment extends Component {
                 this.state.data.counters.map((counter) => {
                   return (
                     <div key={counter.id} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '10px 0px 10px 0px' }}>
-                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, -1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'white', ...counter.textStyles }}>-</div>
+                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, -1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: FONT_COLOR, ...counter.textStyles }}>-</div>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                          <div style={{ fontSize: '1.5rem', color: 'white', ...counter.textStyles }}>{counter.renderCountValue(counter.value)}</div>
-                          <div style={{ fontSize: '0.9rem', color: 'white', ...counter.textStyles }}>
+                          <div style={{ fontSize: '1.5rem', color: FONT_COLOR, ...counter.textStyles }}>{counter.renderCountValue(counter.value)}</div>
+                          <div style={{ fontSize: '0.9rem', color: FONT_COLOR, ...counter.textStyles }}>
                             {counter.text}
                             {
                               counter.tooltip
@@ -355,7 +355,7 @@ class MultiCounterSegment extends Component {
                             }
                           </div>
                         </div>
-                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, 1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'white', ...counter.textStyles }}>+</div>
+                      <div onClick={(e) => this.incrementedCounter(e, counter, counter.incrementerOptions.step, 1)} style={{ alignSelf: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: FONT_COLOR, ...counter.textStyles }}>+</div>
                     </div>
                   )
                 })
