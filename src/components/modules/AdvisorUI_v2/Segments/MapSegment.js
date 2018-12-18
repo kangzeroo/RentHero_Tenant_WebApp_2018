@@ -196,7 +196,8 @@ class MapSegment extends Component {
       disableDefaultUI: true,
     })
     const marker = new google.maps.Marker({position: coords, map: map})
-    document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "top" })
+    // document.getElementById(`map--${this.props.schema.id}`).scrollIntoView({ behavior: "smooth", block: "top" })
+    this.props.triggerScrollDown(null, 800)
   }
 
   focusedInput(id) {
@@ -262,7 +263,7 @@ class MapSegment extends Component {
         								doneEvent={() => {
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
-                              this.props.triggerScrollDown(null, 1000)
+                              this.props.triggerScrollDown(null, 500)
                             }
                             if (this.shouldDisplayInput() || this.state.instantChars) {
                               this.startAutocomplete()

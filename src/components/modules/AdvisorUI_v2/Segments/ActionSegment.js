@@ -242,10 +242,10 @@ class ActionSegment extends Component {
         								doneEvent={() => {
       										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
                             if (text.scrollDown) {
-                              this.props.triggerScrollDown(null, 1000)
+                              this.props.triggerScrollDown(null, 500)
                             }
                             if (this.shouldDisplayInput()) {
-                              this.props.triggerScrollDown(null, 1000)
+                              this.props.triggerScrollDown(null, 500)
                             }
                           })
         								}}
@@ -394,6 +394,7 @@ const choiceStyles = (selected_choices, choice) => {
       fontSize: '1rem',
       margin: '10px 0px 10px 0px',
       cursor: 'pointer',
+      textAlign: 'center',
       ...selectedStyle,
       ":hover": {
         backgroundColor: 'rgba(256,256,256,1)',

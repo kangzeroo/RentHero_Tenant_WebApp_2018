@@ -87,7 +87,6 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
 	})(RadiumHOC)
 )
 

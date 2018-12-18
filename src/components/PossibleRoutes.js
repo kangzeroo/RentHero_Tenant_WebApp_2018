@@ -2,13 +2,24 @@
 // add routes here when they need ?id=something params in the URL
 
 export default [
-  '/app',
-  '/welcome',
-  '/settings',
-  '/login',
-  '/forgotpassword',
-  '/register/verify',
-  '/passwordless',
+  '/',
+  '/sandbox',
+  '/register',
+  '/favorites',
   '/intro',
-  '/sandbox'
+  '/passwordless',
+  '/register',
+  '/logout',
+  '/intro',
+  '/noresults',
+  '/verifyingemail',
+  '/checklist',
+  '/heatmap',
+  '/no_more',
+  '/cover',
+  '/dialog/movein',
+  '/dialog/group',
+  '/dialog/personal',
+  '/dialog/finance',
+  '/dialog/credit',
 ]
