@@ -15,6 +15,7 @@ import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
 import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
+import DatePickerSegment from '../../modules/AdvisorUI_v2/Segments/DatePickerSegment'
 import CounterSegment from '../../modules/AdvisorUI_v2/Segments/CounterSegment'
 import MultiOptionsSegment from '../../modules/AdvisorUI_v2/Segments/MultiOptionsSegment'
 import { Progress } from 'antd'
@@ -224,7 +225,7 @@ class OnboardingDialog extends Component {
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
                                texts={[
-                                 ...this.addAnyPreMessages('6'),
+                                 ...this.addAnyPreMessages('ideal_movein'),
                                  { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
                                ]}
                                incrementerOptions={{
@@ -245,6 +246,21 @@ class OnboardingDialog extends Component {
                                  count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON
                                }}
                             /> )},
+       {
+         id: 'ideal_movein',
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.apartmentguide.com/blog/wp-content/uploads/2011/09/moving-truck-Christina-Richards-original.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.5)' } },
+         component: (<DatePickerSegment
+                         title='Ideal Move-In Date'
+                         schema={{ id: 'ideal_movein', endpoint: '7' }}
+                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                         onDone={(original_id, endpoint, data) => this.doneIdealMoveIn(original_id, endpoint, data)}
+                         texts={[
+                           { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal move-in date?' }
+                         ]}
+                         initialData={{
+                           date: this.props.prefs.MOVEIN.IDEAL_MOVEIN_DATE ? moment(this.props.prefs.MOVEIN.IDEAL_MOVEIN_DATE).toDate() : new Date()
+                         }}
+                      /> )},
      {
        id: '7',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
@@ -379,6 +395,19 @@ class OnboardingDialog extends Component {
       IDEAL_PER_PERSON: data.count,
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneIdealMoveIn(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.MOVEIN.KEY,
+      IDEAL_MOVEIN_DATE: moment(data.date).toISOString()
+    }).then((MOVEIN) => {
+      this.props.updatePreferences(MOVEIN)
     }).catch((err) => {
       console.log(err)
     })

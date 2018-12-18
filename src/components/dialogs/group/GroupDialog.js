@@ -216,7 +216,7 @@ class GroupDialog extends Component {
                                    default: 4
                                  }}
                                  initialData={{
-                                   count: this.props.prefs.GROUP.MAX_TOTAL_GROUP
+                                   count: this.props.prefs.GROUP.MAX_TOTAL_GROUP || 1
                                  }}
                               /> )},
       {

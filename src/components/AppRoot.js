@@ -55,6 +55,7 @@ import TenantFavorites from './favorites/TenantFavorites'
 import GroupDialog from './dialogs/group/GroupDialog'
 import RoommatesDialog from './dialogs/roommates/RoommatesDialog'
 import ChineseDialogOnboarding from './dialogs/onboarding/ChineseDialogOnboarding'
+import InterestDialog from './dialogs/interest/InterestDialog'
 import LoginPage from './login/LoginPage'
 import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
@@ -100,6 +101,8 @@ class AppRoot extends Component {
             <Route exact path='/noresults' render={NoResults} />
             {/*<Route exact path='/existing_session' render={ContinueSession} />*/}
             <Route exact path='/verifyingemail' render={EmailCodeSentTemplate} />
+
+            <Route exact path='/p/:pid' render={InterestDialog} />
 
             <Route path='/app/*' component={AppRoutes} />
 
