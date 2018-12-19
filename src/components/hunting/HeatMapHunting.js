@@ -47,7 +47,7 @@ class HeatMapHunting extends Component {
 
     this.red_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/red-dot.png'
 		this.blue_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/blue-dot.png'
-    this.flag_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/flag-green-icon.png'
+    this.flag_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/flag-green-icon2.png'
 
     this.refreshPins.bind(this)
   }
@@ -77,14 +77,6 @@ class HeatMapHunting extends Component {
     }).catch((err) => {
       console.log(err)
     })
-
-    if (this.props.showFlagPin) {
-      const flagDest = {
-        lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
-        lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
-      }
-      this.createFlagPin(flagDest)
-    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -164,6 +156,14 @@ class HeatMapHunting extends Component {
       if (self.props.current_listing && self.props.current_listing.REFERENCE_ID) {
         self.initializeCurrentListing(self.props.current_listing)
       }
+
+      if (this.props.showFlagPin) {
+        const flagDest = {
+          lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
+          lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
+        }
+        this.createFlagPin(flagDest)
+      }
     }
   }
 
@@ -218,6 +218,7 @@ class HeatMapHunting extends Component {
 	}
 
   createFlagPin(coords) {
+    console.log('FLAG PIN: ', coords)
     let flagPin = new google.maps.Marker({
 				position: new google.maps.LatLng(coords.lat, coords.lng),
 				pin_type: 'listing',
@@ -225,6 +226,8 @@ class HeatMapHunting extends Component {
 				zIndex: 12,
 				pin_id: 'flag',
 		})
+
+    console.log(flagPin)
 
 		flagPin.addListener('click', (event) => {
 			// marker.infowindow.open(self.state.mapTarget, marker)

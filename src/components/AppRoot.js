@@ -62,7 +62,6 @@ import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
 import AdsHome from './ad/AdsHome'
-import AdHome from './ad/AdHome'
 import EmailCodeSentTemplate from './modules/EmailCodeSentTemplate'
 
 import TweenOne from 'rc-tween-one'
