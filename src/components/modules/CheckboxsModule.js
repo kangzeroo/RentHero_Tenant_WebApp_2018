@@ -7,9 +7,14 @@ import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
+import { isMobile } from '../../api/general/general_api'
 import {
   Checkbox,
 } from 'antd'
+import {
+  Toast,
+  Icon,
+} from 'antd-mobile'
 
 
 class CheckboxsModule extends Component {
@@ -18,6 +23,7 @@ class CheckboxsModule extends Component {
     super()
     this.state = {
       show_other_input: false,
+      initial_selected_choices: [],
       data: {
         selected_choices: [],
         other_choice: '',
@@ -65,6 +71,7 @@ class CheckboxsModule extends Component {
     }
     this.setState({
       show_other_input: other_choice ? true : false,
+      initial_selected_choices: this.props.preselected,
       data: {
         ...this.state.data,
         selected_choices: this.props.preselected,
@@ -122,8 +129,6 @@ class CheckboxsModule extends Component {
                 selected_choices: [choice],
                 other_choice: '',
               }
-            }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           // OTHER ALREADY CLOSED
           } else {
@@ -134,8 +139,6 @@ class CheckboxsModule extends Component {
                 selected_choices: [choice],
                 other_choice: '',
               }
-            }, () => {
-              this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
             })
           }
         // OTHER DISABLED
@@ -145,20 +148,47 @@ class CheckboxsModule extends Component {
               ...this.state.data,
               selected_choices: [choice]
             }
-          }, () => {
-            this.props.onDone(this.props.schema.id, choice.endpoint, this.state.data)
           })
         }
       }
     }
   }
 
+  determineIfChecked(selected_choices, choice) {
+    let checked = false
+    selected_choices.forEach((c) => {
+      if (c.id === choice.id) {
+        checked = true
+      }
+    })
+    return checked
+  }
+
+  saveChanges() {
+    this.props.onComplete(this.state.data)
+  }
+
 	render() {
 		return (
 			<div id='CheckboxsModule' style={comStyles().container}>
-				<Checkbox.Group
-          options={this.props.choices}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', width: '80%', margin: '0px 10% 0px 10%' }}>
+				{
+          this.props.choices.map(choice => {
+            return (
+              <Checkbox id={choice.id} key={choice.id} onClick={() => this.clickedChoice(choice)} checked={this.determineIfChecked(this.state.data.selected_choices, choice)}>{choice.text}</Checkbox>
+            )
+          })
+        }
+        </div>
+        <div style={{ width: '100%', height: '50px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', position: 'relative', margin: '15px 0px 0px 0px' }}>
+          {
+            this.state.data.selected_choices !== this.state.initial_selected_choices
+            ?
+            <Icon onClick={(e) => this.saveChanges(e)} type='check-circle' size='lg' style={comStyles().check} />
+            :
+            <Icon type='check-circle-o' size='lg' style={{ ...comStyles().check, cursor: 'not-allowed', color: 'gray' }} />
+          }
+        </div>
 			</div>
 		)
 	}
@@ -167,7 +197,8 @@ class CheckboxsModule extends Component {
 // defines the types of variables in this.props
 CheckboxsModule.propTypes = {
 	history: PropTypes.object.isRequired,
-  onDone: PropTypes.func.isRequired,        // passed in, function to call at very end
+  onComplete: PropTypes.func.isRequired,        // passed in, function to call at very end
+  multi: PropTypes.bool,                    // passed in, can there be multiple input choices?
   choices: PropTypes.array.isRequired,      // passed in
   /*
     options = [{ id: 'parentID-choiceID', value: 'X', text: 'Something to show'  }]
@@ -183,7 +214,7 @@ CheckboxsModule.propTypes = {
 
 // for all optional props, define a default value
 CheckboxsModule.defaultProps = {
-
+  multi: false,
 }
 
 // Wrap the prop in Radium to allow JS styling

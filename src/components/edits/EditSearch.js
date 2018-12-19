@@ -142,6 +142,33 @@ class EditSearch extends Component {
     }
   }
 
+  completedRoomOrEntirePlace(data) {
+    this.setState({
+      loading: true,
+      searchable: true,
+    })
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      WHOLE_OR_RANDOM_AS: data.selected_choices.map(s => s.text).join(', '),
+      WHOLE_OR_RANDOMS_AS_SCHEMAS: data.selected_choices.map(s => {
+        return {
+          id: s.id,
+          text: s.text,
+          value: s.value
+        }
+      }),
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+      this.setState({
+        loading: false,
+        searchable: true
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
 	render() {
 		return (
 			<div id='EditSearch' style={comStyles().container}>
@@ -193,6 +220,17 @@ class EditSearch extends Component {
             initialData={{
               count: this.props.prefs.GROUP.CERTAIN_MEMBERS || 1
             }}
+          />
+        </Card>
+        <Card title="Entire Place or Room" style={{ maxWidth: '400px', margin: '20px' }}>
+          <CheckboxsModule
+            onComplete={(data) => this.completedRoomOrEntirePlace(data)}
+            choices={[
+              { id: 'only_want_entire_place', text: 'Only Entire Place', value: false, tooltip: (<p>Just your group, no unknown roommates.</p>) },
+              { id: 'only_roommates_no_entire_place', text: 'Only Partial Places', value: false, tooltip: (<p>Possibily live with new random roommates in exchange for cheaper rent.</p>) },
+              { id: 'show_both', text: 'Show Both', value: false },
+            ]}
+            preselected={this.props.prefs.GROUP.WHOLE_OR_RANDOMS_AS_SCHEMAS}
           />
         </Card>
         <Card title="Bathrooms" style={{ maxWidth: '400px', margin: '20px' }}>
