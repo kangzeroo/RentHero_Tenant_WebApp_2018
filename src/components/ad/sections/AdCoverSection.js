@@ -121,6 +121,7 @@ class AdCoverSection extends Component {
     return (
       <div key='description' style={descriptionStyles().container}>
         <div style={descriptionStyles().left}>
+          <div style={descriptionStyles().title}>{`${this.props.title}`}</div>
           <div style={descriptionStyles().beds_baths}>{`${this.props.beds} BEDS • ${this.props.baths} BATHS`}</div>
           <div style={descriptionStyles().price_by}>{`By ${this.props.seller}`.toUpperCase()}</div>
           <br/>
@@ -192,6 +193,7 @@ class AdCoverSection extends Component {
 // defines the types of variables in this.props
 AdCoverSection.propTypes = {
 	history: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,    // passed in
   beds: PropTypes.number.isRequired,     // passed in
   baths: PropTypes.number.isRequired,     // passed in
   seller: PropTypes.string.isRequired,     // passed in
@@ -270,6 +272,11 @@ const descriptionStyles = () => {
       fontSize: '1.5rem',
       fontWeight: 'bold',
       color: 'black',
+    },
+    title: {
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: 'rgb(54, 69, 79)',
     },
     beds_baths: {
       fontSize: '1rem',

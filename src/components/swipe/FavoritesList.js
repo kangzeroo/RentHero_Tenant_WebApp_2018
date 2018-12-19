@@ -68,7 +68,7 @@ class FavoritesList extends Component {
 						{
 							this.props.likes.map(like => {
 								return (
-									<div id={like.REFERENCE_ID} onClick={() => this.props.history.push(`/matches?ref=${like.REFERENCE_ID}`)} style={comStyles().card}>
+									<div id={like.REFERENCE_ID} onClick={() => this.props.history.push(`/matches/${like.REFERENCE_ID}`)} style={comStyles().card}>
 										<img src={like.THUMBNAIL} style={comStyles().thumbnail} />
 										<div style={comStyles().details}>
 											<div style={comStyles().price}>
@@ -95,7 +95,7 @@ class FavoritesList extends Component {
 						{
 							this.props.dislikes.map(dislike => {
 								return (
-									<div id={dislike.REFERENCE_ID} onClick={() => this.props.history.push(`/matches?ref=${dislike.REFERENCE_ID}`)} style={comStyles().card}>
+									<div id={dislike.REFERENCE_ID} onClick={() => this.props.history.push(`/matches/${dislike.REFERENCE_ID}`)} style={comStyles().card}>
 										<img src={dislike.THUMBNAIL} style={comStyles().thumbnail} />
 										<div style={comStyles().details}>
 											<div style={comStyles().price}>

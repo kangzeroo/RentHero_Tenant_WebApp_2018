@@ -78,7 +78,7 @@ class SwipeList extends Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
-			history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
+			history.pushState(null, null, `${this.props.location.pathname}/${this.props.current_listing.REFERENCE_ID}`)
 		}
 	}
 
