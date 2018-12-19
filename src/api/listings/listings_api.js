@@ -74,6 +74,7 @@ export const getCurrentListingByReference = (ref_id) => {
   const p = new Promise((res, rej) => {
     axios.post(GET_LISTING_BY_REF_ENDPOINT, { ref_id: ref_id })
       .then((data) => {
+        console.log(data.data)
         res(data.data.data)
       })
       .catch((err) => {

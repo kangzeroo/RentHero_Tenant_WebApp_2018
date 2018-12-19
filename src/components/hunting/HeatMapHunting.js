@@ -257,12 +257,12 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
 			backgroundColor: '#f5f5f9',
-      height: '100vh',
+      height: '100%',
       position: 'relative',
 		},
     map: {
       width: '100%',
-      height: '100vh'
+      height: '100%'
     },
     exit: {
       position: 'absolute',

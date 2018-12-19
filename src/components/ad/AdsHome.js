@@ -1,4 +1,4 @@
-// Compt for copying as a AdHome
+// Compt for copying as a AdsHome
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -10,12 +10,12 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd'
-import AdPage from './AdPage'
+import AdsPage from './AdsPage'
 import HeatMap from '../hunting/HeatMapHunting'
 import { isMobile } from '../../api/general/general_api'
 import DesktopHeader from '../format/desktop/DesktopHeader'
 
-class AdHome extends Component {
+class AdsHome extends Component {
 
 	constructor() {
 		super()
@@ -42,20 +42,20 @@ class AdHome extends Component {
 	render() {
 		if (this.state.mobile) {
 			return (
-				<div id='AdHome' style={comStyles().container}>
+				<div id='AdsHome' style={comStyles().container}>
           <DesktopHeader />
 	        <div style={{ width: '100vw', height: '93vh' }}>
-					    <AdPage width='100vw' />
+					    <AdsPage width='100vw' />
 	        </div>
 				</div>
 			)
 		} else {
 			return (
-				<div id='AdHome' style={comStyles().container}>
+				<div id='AdsHome' style={comStyles().container}>
           <DesktopHeader />
           <div style={comStyles().rowContainer}>
   	        <div style={{ width: '40vw', overflowY: 'scroll', maxHeight: '93vh', }}>
-  					    <AdPage width='40vw' />
+  					    <AdsPage width='40vw' />
   	        </div>
   	        <div style={{ width: '60vw' }}>
   	          <HeatMap />
@@ -69,18 +69,18 @@ class AdHome extends Component {
 }
 
 // defines the types of variables in this.props
-AdHome.propTypes = {
+AdsHome.propTypes = {
 	history: PropTypes.object.isRequired,
   all_listings: PropTypes.array.isRequired,
 }
 
 // for all optional props, define a default value
-AdHome.defaultProps = {
+AdsHome.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(AdHome)
+const RadiumHOC = Radium(AdsHome)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

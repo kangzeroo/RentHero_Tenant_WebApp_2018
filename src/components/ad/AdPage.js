@@ -15,6 +15,7 @@ import { nextListing, incrementLikes, decrementLikes, changeShownSectionCards, s
 import {
   Divider,
   Button,
+  Icon,
 } from 'antd'
 import {
   Modal,
@@ -60,12 +61,18 @@ class AdPage extends Component {
     this.lastScrollTop = 0
   }
 
+  componentWillMount() {
+
+  }
+
   componentDidMount() {
     if (this.props.current_listing) {
       this.organizePhotos()
     }
-    if (this.props.location.search.indexOf('ref=') > -1) {
-			const ref_id = this.props.location.search.slice(this.props.location.search.indexOf('ref=') + 'ref='.length)
+    console.log(this.props.location)
+    if (this.props.location.pathname.indexOf('/matches/') > -1) {
+      console.log(this.props.location)
+			const ref_id = this.props.location.pathname.slice(this.props.location.search.indexOf('/matches/') + '/matches/'.length + 1)
 			console.log('ref_id: ', ref_id)
 			getCurrentListingByReference(ref_id)
 				.then((data) => {
@@ -96,7 +103,7 @@ class AdPage extends Component {
   componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
 			console.log('LOADED UP MAP')
-			history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
+			// history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
       this.organizePhotos()
 		}
 	}
@@ -267,7 +274,7 @@ class AdPage extends Component {
   }
 
   toggleModal(bool, attr, context) {
-    history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}/${attr}`)
+    history.pushState(null, null, `${this.props.location.pathname}/${attr}`)
     this.setState({
       toggle_modal: bool,
       modal_name: attr,
@@ -286,13 +293,19 @@ class AdPage extends Component {
             isMobile()
             ?
             {
-              height: '100vh',
+              height: '93vh',
               width: '100vw',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
             }
             :
             {
-              height: '100vh',
-              width: '100vh',
+              height: '93vh',
+              width: '40vw',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
             }
           }
         >
@@ -306,15 +319,22 @@ class AdPage extends Component {
   }
 
 
-  // <div onClick={() => this.props.nextListing()} style={actionStyles().dislike}>
-  //   <i className='ion-thumbsdown' style={{ fontSize: '2rem', color: '#f23939' }} />
+  // <div style={headerStyles().container}>
+  //   <div onClick={() => this.props.triggerDrawerNav(true)} style={headerStyles().menu}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
+  //   <div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
+  //   {/*<div style={headerStyles().price}>${this.props.current_listing.PRICE}</div>*/}
+  //   {/*<div onClick={() => this.props.nextListing()} style={headerStyles().more}><i className='ion-android-more-vertical' style={{ fontSize: '1.3rem' }}></i></div>*/}
   // </div>
-  // <div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={actionStyles().contact}>
-  //   VIEW ORIGINAL
-  // </div>
-  // <div onClick={() => this.props.nextListing()} style={actionStyles().like}>
-  //   <i className='ion-thumbsup' style={{ fontSize: '2rem', color: '#0ca20c' }} />
-  // </div>
+
+  renderStickyHeader() {
+    return (
+      <div style={actionStyles(isMobile()).header_container}>
+        <Icon type='left' size='large' onClick={() => this.props.history.push('/matches')} />
+        <div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
+        <div />
+      </div>
+    )
+  }
 
   renderStickyFooter() {
     return (
@@ -332,21 +352,9 @@ class AdPage extends Component {
     if (this.props.current_listing) {
   		return (
   			<div id='AdPage' style={comStyles().container}>
-          <div style={{ width: '100%', height: '50px' }}></div>
-          {
-            this.state.show_header
-            ?
-            <div style={headerStyles().container}>
-              <div onClick={() => this.props.triggerDrawerNav(true)} style={headerStyles().menu}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
-      				<div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
-              {/*<div style={headerStyles().price}>${this.props.current_listing.PRICE}</div>*/}
-              {/*<div onClick={() => this.props.nextListing()} style={headerStyles().more}><i className='ion-android-more-vertical' style={{ fontSize: '1.3rem' }}></i></div>*/}
-            </div>
-            :
-            null
-          }
           <AdCoverSection
             current_listing={this.props.current_listing}
+            title={this.props.current_listing.TITLE}
             beds={this.props.current_listing.BEDS}
             baths={this.props.current_listing.BATHS}
             seller={this.props.current_listing.SELLER}
@@ -553,6 +561,22 @@ const actionStyles = (mobile) => {
       width: '45%',
       border: 'none',
       // height: '90%',
-    }
+    },
+    header_container: {
+      position: 'fixed',
+      height: '70px',
+      top: '0px',
+      left: '0px',
+      backgroundColor: 'rgba(256,256,256,0.9)',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderRadius: '0px 0px 0px 0px',
+      zIndex: 5,
+      padding: '0px 20px',
+      borderTop: 'lightgray solid thin',
+      ...attrs,
+    },
   }
 }

@@ -60,6 +60,7 @@ import LoginPage from './login/LoginPage'
 import LoginPasswordless from './auth/LoginPasswordless'
 import Passwordless from './auth/Passwordless'
 import TenantDuality from './pages/TenantDuality'
+import AdsHome from './ad/AdsHome'
 import AdHome from './ad/AdHome'
 import EmailCodeSentTemplate from './modules/EmailCodeSentTemplate'
 
@@ -125,14 +126,15 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
-              <Route exact path='/sandbox' render={AdHome} />
+              <Route exact path='/sandbox' render={AdsHome} />
               <Route exact path='/' render={LandingPage} />
               <Route exact path='/register' render={RegisterPage} />
 
                 <Route exact path='/checklist' render={Checklist} />
               <Route exact path='/heatmap' render={HeatMapHunting} />
-                
-              <Route exact path='/matches' render={AdHome} />
+
+              <Route exact path='/matches' render={AdsHome} />
+              <Route exact path='/matches/:ref_id' render={AdHome} />
               {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
 
               <Route exact path='/no_more' render={NoMoreListings} />
