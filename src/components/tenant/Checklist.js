@@ -86,36 +86,26 @@ class Checklist extends Component {
 
 	checkFinanceProgress() {
 		let progress = 0
-		let left = 4
+		let left = 5
 		const FINANCIALS = this.props.prefs.FINANCIALS
 		if (FINANCIALS.EMPLOYED_AS) {
-			progress += 25
+			progress += 20
 			left -= 1
 		}
 		if (FINANCIALS.IDEAL_PER_PERSON) {
-			progress += 25
+			progress += 20
 			left -= 1
 		}
 		if (FINANCIALS.SIGN_LEASE_AS) {
-			progress += 25
+			progress += 20
 			left -= 1
 		}
 		if (FINANCIALS.BUDGET_FLEXIBILITY) {
-			progress += 25
+			progress += 20
 			left -= 1
 		}
-		return {
-			progress,
-			left
-		}
-	}
-
-	checkCreditProgress() {
-		let progress = 0
-		let left = 1
-		const CREDIT = this.props.prefs.CREDIT
-		if (CREDIT.GUESSED_CREDIT_SCORE) {
-			progress += 100
+		if (this.props.prefs.CREDIT.GUESSED_CREDIT_SCORE) {
+			progress += 20
 			left -= 1
 		}
 		return {
@@ -128,7 +118,11 @@ class Checklist extends Component {
 		return (
 			<div id='Checklist' style={comStyles().container}>
         <div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'absolute', left: '10px', top: '10px' }}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
-        <div style={{ height: '150px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}><h3>Tenant TODO Checklist</h3></div>
+        <div style={{ height: '150px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px' }}>
+					<h3>Tenant Checklist</h3>
+					<br/>
+					<p>Complete the below questions to create the strongest rental profile.</p>
+				</div>
         <div style={comStyles().dialog_menu}>
 				    <div key='movein' onClick={() => this.props.history.push('/dialog/movein')} style={choiceStyles().action}>
 							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkMoveInProgress().progress} width={30} /></div>
@@ -138,7 +132,7 @@ class Checklist extends Component {
 									?
 									`Move In`
 									:
-									`Move In - ${this.checkMoveInProgress().left} Questions`
+									`Move In - ${this.checkMoveInProgress().left} Left`
 								}
 							</div>
 						</div>
@@ -150,7 +144,7 @@ class Checklist extends Component {
 									?
 									`My Group`
 									:
-									`My Group - ${this.checkGroupProgress().left} Questions`
+									`My Group - ${this.checkGroupProgress().left} Left`
 								}
 							</div>
 						</div>
@@ -162,19 +156,7 @@ class Checklist extends Component {
 									?
 									`Set Budget`
 									:
-									`Set Budget - ${this.checkFinanceProgress().left} Questions`
-								}
-							</div>
-						</div>
-				    <div key='credit' onClick={() => this.props.history.push('/dialog/credit')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkCreditProgress().progress} width={30} /></div>
-							<div style={choiceStyles().label}>
-								{
-									this.checkCreditProgress().left == 0
-									?
-									`Credit`
-									:
-									`Credit - ${this.checkCreditProgress().left} Questions`
+									`Set Budget - ${this.checkFinanceProgress().left} Left`
 								}
 							</div>
 						</div>

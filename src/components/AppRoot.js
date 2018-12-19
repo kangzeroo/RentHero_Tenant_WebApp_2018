@@ -50,6 +50,7 @@ import Checklist from './tenant/Checklist'
 import FinancialDialog from './dialogs/financial/FinancialDialog'
 // import OnboardingDialog from './dialogs/onboarding/OnboardingDialog'
 import CreditDialog from './dialogs/credit/CreditDialog'
+import EditSearch from './edits/EditSearch'
 import MoveInDialog from './dialogs/movein/MoveInDialog'
 import TenantFavorites from './favorites/TenantFavorites'
 import GroupDialog from './dialogs/group/GroupDialog'
@@ -78,11 +79,10 @@ class AppRoot extends Component {
 
 	render() {
     const sidebar = [
-      <List.Item key={9} onClick={() => this.clickedDrawerOption('/checklist')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Checklist</span></List.Item>,
-      <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Browse</span></List.Item>,
-      <List.Item key={1} onClick={() => this.clickedDrawerOption('/heatmap')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Heat Map</span></List.Item>,
-      <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Favorites</span></List.Item>,
-      <List.Item key={4} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'white' }}>Sandbox</span></List.Item>,
+      <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Browse</span></List.Item>,
+      <List.Item key={9} onClick={() => this.clickedDrawerOption('/checklist')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Checklist</span></List.Item>,
+      <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Favorites</span></List.Item>,
+      <List.Item key={4} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Sandbox</span></List.Item>,
     ]
     if (this.props.authentication_loaded) {
       return (
@@ -115,10 +115,10 @@ class AppRoot extends Component {
                 zIndex: '99',
                 width: '40vw',
                 minWidth: '250px',
-                background: 'rgba',
-          			background: '#00c6ff', /* fallback for old browsers */
-          		  background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
-          		  background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+                background: 'white',
+          			// background: '#00c6ff', /* fallback for old browsers */
+          		  // background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
+          		  // background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
               }}
               contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
               overlayStyle={{ zIndex: '10', backgroundColor: 'rgba(0,0,0,0.5)' }}
@@ -126,7 +126,7 @@ class AppRoot extends Component {
               open={this.props.drawer_nav_open}
               onOpenChange={() => this.props.triggerDrawerNav(false)}
             >
-              <Route exact path='/sandbox' render={AdsHome} />
+              <Route exact path='/sandbox' render={EditSearch} />
               <Route exact path='/' render={LandingPage} />
               <Route exact path='/register' render={RegisterPage} />
 
