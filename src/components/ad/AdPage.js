@@ -16,6 +16,8 @@ import {
   Divider,
   Button,
   Icon,
+  Card,
+  Spin,
 } from 'antd'
 import {
   Modal,
@@ -57,31 +59,48 @@ class AdPage extends Component {
       modal_name: '',
       context: {},
 
+      loading: false,
     }
     this.lastScrollTop = 0
   }
 
   componentWillMount() {
-
+    // console.log(this.props.location)
+    // if (this.props.location.pathname.indexOf('/matches/') > -1) {
+    //   console.log(this.props.location)
+		// 	const ref_id = this.props.location.pathname.slice(this.props.location.search.indexOf('/matches/') + '/matches/'.length + 1)
+		// 	console.log('ref_id: ', ref_id)
+		// 	getCurrentListingByReference(ref_id)
+		// 		.then((data) => {
+		// 			this.props.setCurrentListing(data)
+    //       this.setState({
+    //         loading: false,
+    //       })
+		// 		})
+		// 		.catch((err) => {
+		// 			console.log(err)
+		// 		})
+		// }
   }
+
 
   componentDidMount() {
     if (this.props.current_listing) {
       this.organizePhotos()
     }
     console.log(this.props.location)
-    if (this.props.location.pathname.indexOf('/matches/') > -1) {
-      console.log(this.props.location)
-			const ref_id = this.props.location.pathname.slice(this.props.location.search.indexOf('/matches/') + '/matches/'.length + 1)
-			console.log('ref_id: ', ref_id)
-			getCurrentListingByReference(ref_id)
-				.then((data) => {
-					this.props.setCurrentListing(data)
-				})
-				.catch((err) => {
-					console.log(err)
-				})
-		}
+    // if (this.props.location.pathname.indexOf('/matches/') > -1) {
+    //   console.log(this.props.location)
+		// 	const ref_id = this.props.location.pathname.slice(this.props.location.pathname.indexOf('/matches/') + '/matches/'.length + 1)
+		// 	console.log('ref_id: ', ref_id)
+		// 	getCurrentListingByReference(ref_id)
+		// 		.then((data) => {
+		// 			this.props.setCurrentListing(data)
+		// 		})
+		// 		.catch((err) => {
+		// 			console.log(err)
+		// 		})
+		// }
     const scrollable = document.getElementById('AdPage')
     if (scrollable) {
       scrollable.addEventListener("scroll", () => { // or window.addEventListener("scroll"....
@@ -274,7 +293,11 @@ class AdPage extends Component {
   }
 
   toggleModal(bool, attr, context) {
-    history.pushState(null, null, `${this.props.location.pathname}/${attr}`)
+    if (attr) {
+      history.pushState(null, null, `/matches/${this.props.current_listing.REFERENCE_ID}?tab=${attr}`)
+    } else {
+      history.pushState(null, null, `/matches/${this.props.current_listing.REFERENCE_ID}`)
+    }
     this.setState({
       toggle_modal: bool,
       modal_name: attr,
@@ -289,29 +312,33 @@ class AdPage extends Component {
           visible={this.state.toggle_modal}
           transparent
           maskClosable={false}
+          animationType='fade'
           style={
             isMobile()
             ?
             {
-              height: '93vh',
+              height: '100vh',
               width: '100vw',
               position: 'absolute',
               left: 0,
               bottom: 0,
+              borderRadius: '0px !important',
             }
             :
             {
               height: '93vh',
-              width: '40vw',
+              width: '60vw',
               position: 'absolute',
-              left: 0,
+              right: 0,
               bottom: 0,
+              borderRadius: '0px !important',
             }
           }
         >
           <AdImages
             photos={this.state.photos}
             onClose={() => this.toggleModal(false)}
+            current_listing={context}
           />
         </Modal>
       )
@@ -349,7 +376,17 @@ class AdPage extends Component {
 
 
 	render() {
-    if (this.props.current_listing) {
+    if (this.props.loading) {
+      return (
+        <div id='AdPage' style={comStyles().loadingContainer}>
+          <div style={{ display: 'flex', height: '30%', justifyContent: 'center', alignItems: 'center', }}>
+            <Spin />
+          </div>
+          <Card bordered={false} loading />
+
+        </div>
+      )
+    } else if (this.props.current_listing) {
   		return (
   			<div id='AdPage' style={comStyles().container}>
           <AdCoverSection
@@ -361,7 +398,8 @@ class AdPage extends Component {
             commute_time={this.state.commute_state.commute_time}
             arrival_time={'10am'}
             scrollDownToImages={() => this.scrollDownToImages()}
-            onShowAll={() => this.toggleModal(true, 'images')}
+            onShowAll={() => this.toggleModal(true, 'images', this.props.current_listing)}
+            setListing={(listing, url) => this.props.setListing(listing, url)}
           />
           <div style={{ margin: '20px' }}>
             <AdMapSection
@@ -376,7 +414,7 @@ class AdPage extends Component {
           <Divider />
           <AdImagesSection
             photos={this.state.photos}
-            onShowAll={() => this.toggleModal(true, 'images')}
+            onShowAll={() => this.toggleModal(true, 'images', this.props.current_listing)}
           />
 
           <Divider />
@@ -399,11 +437,14 @@ class AdPage extends Component {
 // defines the types of variables in this.props
 AdPage.propTypes = {
 	history: PropTypes.object.isRequired,
-	current_listing: PropTypes.object,
+	current_listing: PropTypes.object,         // passed in
 	all_listings: PropTypes.array.isRequired,
 	nextListing: PropTypes.func.isRequired,
 	main_destination: PropTypes.string,
   setCurrentListing: PropTypes.func.isRequired,
+
+  loading: PropTypes.bool.isRequired,   // passed in
+  setListing: PropTypes.func.isRequired,    // passed in
 }
 
 // for all optional props, define a default value
@@ -417,7 +458,7 @@ const RadiumHOC = Radium(AdPage)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-		current_listing: redux.listings.current_listing,
+		// current_listing: redux.listings.current_listing,
     all_listings: redux.listings.all_listings,
 		main_destination: redux.prefs.LOCATION.DESTINATION_ADDRESS,
   	triggerDrawerNav: PropTypes.func.isRequired,
@@ -445,7 +486,12 @@ const comStyles = () => {
       // background: '#ECE9E6',  /* fallback for old browsers */
       // background: '-webkit-linear-gradient(to right, #FFFFFF, #ECE9E6)',  /* Chrome 10-25, Safari 5.1-6 */
       // background: 'linear-gradient(to right, #FFFFFF, #ECE9E6)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-		}
+		},
+    loadingContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '93vh',
+    }
 	}
 }
 

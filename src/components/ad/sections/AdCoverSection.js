@@ -47,6 +47,7 @@ class AdCoverSection extends Component {
 		})
 	}
 
+
   renderCoverImage() {
     return (
       <div key='cover_image' style={coverStyles().container}>
@@ -57,8 +58,9 @@ class AdCoverSection extends Component {
           </div>
           <Carousel
               autoplay={true}
+              autoplayInterval={5000}
               infinite
-              swipeSpeed={3}
+              swipeSpeed={2000}
               dots={false}
               selectedIndex={this.state.imageCarouselSelectedIndex}
               style={{ overflow: 'hidden' }}
@@ -71,7 +73,7 @@ class AdCoverSection extends Component {
                   key={img.url}
                   style={{ display: 'inline-block', width: '100%' }}
                   onClick={() => {
-                    this.props.onShowAll()
+                    // this.props.onShowAll()
                     // this.props.scrollDownToImages()
                     // history.pushState(null, null, `${this.props.location.pathname}?show=images`)
                   }}
@@ -111,6 +113,9 @@ class AdCoverSection extends Component {
           </div>
           <Button type='default' style={{ position: 'absolute', bottom: '20px', right: '10px', }} onClick={() => this.props.onShowAll()} icon='appstore'>
             Tour this Home
+          </Button>
+          <Button type='default' style={{ position: 'absolute', top: '10px', left: '10px' }} icon='left' onClick={() => this.props.setListing({}, '/matches')}>
+            BACK
           </Button>
         </div>
       </div>
@@ -201,6 +206,7 @@ AdCoverSection.propTypes = {
   current_listing: PropTypes.object.isRequired,     // passed in
   scrollDownToImages: PropTypes.func.isRequired,    // passed in
   onShowAll: PropTypes.func.isRequired,             // passed in
+  setListing: PropTypes.func.isRequired,            // passed in
 }
 
 // for all optional props, define a default value

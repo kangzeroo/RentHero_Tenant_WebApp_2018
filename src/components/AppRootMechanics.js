@@ -83,6 +83,8 @@ export default (ComposedComponent) => {
 					// if (data && data.length > 0) {
 					// 	console.log(data)
 						this.props.saveListingsToRedux(data)
+						this.props.saveLoadingCompleteToRedux()
+
 					// } else {
 					// 	this.props.history.push('/noresults')
 					// }
