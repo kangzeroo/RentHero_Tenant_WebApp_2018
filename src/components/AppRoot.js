@@ -134,7 +134,7 @@ class AppRoot extends Component {
               <Route exact path='/heatmap' render={HeatMapHunting} />
 
               <Route exact path='/matches' render={AdsHome} />
-              <Route exact path='/matches/:ref_id' render={AdHome} />
+              <Route exact path='/matches/:ref_id' render={AdsHome} />
               {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
 
               <Route exact path='/no_more' render={NoMoreListings} />

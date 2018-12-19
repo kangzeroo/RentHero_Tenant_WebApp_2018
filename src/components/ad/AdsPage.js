@@ -32,17 +32,14 @@ class AdsPage extends Component {
   }
 
   renderProperties(listings) {
-    const setListing = (listing) => {
-      this.props.setCurrentListing(listing)
-      this.props.history.push(`/matches/${listing.REFERENCE_ID}`)
-    }
     return (
       <div>
         <List
            grid={{ gutter: 16, column: 2 }}
+           loading={!this.props.loading_complete}
            dataSource={listings.filter(li => li.IMAGES.length > 0)}
            renderItem={item => (
-             <List.Item>
+             <List.Item key={item.REFERENCE_ID}>
                <Card
                 cover={<img src={item.IMAGES[0].url} style={{ maxHeight: '200px', borderRadius: '5px', }} />}
                 bordered={false}
@@ -51,7 +48,7 @@ class AdsPage extends Component {
                   padding: 0,
                 }}
                 style={{ padding: '10px', cursor: 'pointer' }}
-                onClick={() => setListing(item)}
+                onClick={() => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`)}
                >
                   <Card.Meta
                     title={item.TITLE}
@@ -95,6 +92,8 @@ AdsPage.propTypes = {
   prefs: PropTypes.object.isRequired,
   listings: PropTypes.object.isRequired,
   setCurrentListing: PropTypes.func.isRequired,
+  loading_complete: PropTypes.bool.isRequired,
+  setListing: PropTypes.func.isRequired,          // passed in
 }
 
 // for all optional props, define a default value
@@ -110,6 +109,7 @@ const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
     listings: redux.listings,
+    loading_complete: redux.app.loading_complete,
 	}
 }
 

@@ -126,6 +126,12 @@ class AdImages extends Component {
     )
   }
 
+  onClose() {
+    history.pushState(null, null, `${this.props.location.pathname}/${this.props.current_listing.REFERENCE_ID}`)
+    this.props.onClose()
+  }
+
+
 	render() {
 		return (
 			<div id='AdImages' style={comStyles().container}>
@@ -136,11 +142,11 @@ class AdImages extends Component {
             style={{
               cursor: 'pointer'
             }}
-            onClick={() => this.props.onClose()}
+            onClick={() => this.onClose()}
           />
           <div />
         </Card>
-        <div style={{ height: '100px' }} />
+        <div style={{ height: '60px' }} />
 				{
           this.props.photos.outside.length > 0
           ?
@@ -190,6 +196,7 @@ AdImages.propTypes = {
 	history: PropTypes.object.isRequired,
   photos: PropTypes.object.isRequired,          // passed in
   onClose: PropTypes.func.isRequired,           // passed in
+  current_listing: PropTypes.object.isRequired, // passed in
 }
 
 // for all optional props, define a default value
@@ -222,8 +229,9 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-start',
-      padding: '10px',
+      padding: '25px',
       overflowY: 'scroll',
+      borderRadius: '0px',
 		}
 	}
 }

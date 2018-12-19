@@ -258,7 +258,7 @@ const imgStyles = (enlarge) => {
   let attrs = {}
   if (enlarge) {
     attrs = {
-      width: '200%'
+      // width: '200%'
     }
   }
   return {
