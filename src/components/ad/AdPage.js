@@ -32,6 +32,7 @@ import AdStreetView from './sections/AdStreetView'
 import AdMapSection from './sections/AdMapSection'
 import AdImagesSection from './sections/AdImagesSection'
 import AdImages from './tabs/AdImages'
+import ListingActions from './tabs/ListingActions'
 import { isMobile } from '../../api/general/general_api'
 
 class AdPage extends Component {
@@ -342,32 +343,49 @@ class AdPage extends Component {
           />
         </Modal>
       )
+    } else if (modal_name === 'action') {
+      return (
+        <Modal
+          visible={this.state.toggle_modal}
+          transparent
+          maskClosable={false}
+          animationType='fade'
+          style={
+            isMobile()
+            ?
+            {
+              height: '100vh',
+              width: '100vw',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
+              borderRadius: '0px !important',
+            }
+            :
+            {
+              height: '93vh',
+              width: '60vw',
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              borderRadius: '0px !important',
+            }
+          }
+        >
+          <ListingActions
+            onClose={() => this.toggleModal(false)}
+            current_listing={context}
+          />
+        </Modal>
+      )
     }
-  }
-
-
-  // <div style={headerStyles().container}>
-  //   <div onClick={() => this.props.triggerDrawerNav(true)} style={headerStyles().menu}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
-  //   <div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
-  //   {/*<div style={headerStyles().price}>${this.props.current_listing.PRICE}</div>*/}
-  //   {/*<div onClick={() => this.props.nextListing()} style={headerStyles().more}><i className='ion-android-more-vertical' style={{ fontSize: '1.3rem' }}></i></div>*/}
-  // </div>
-
-  renderStickyHeader() {
-    return (
-      <div style={actionStyles(isMobile()).header_container}>
-        <Icon type='left' size='large' onClick={() => this.props.history.push('/matches')} />
-        <div style={headerStyles().address}>{this.props.current_listing.ADDRESS.split(',')[0]}</div>
-        <div />
-      </div>
-    )
   }
 
   renderStickyFooter() {
     return (
       <div style={actionStyles(isMobile()).container}>
         <div style={{ fontSize: '1.2REM', fontWeight: 'bold', color: 'black' }}>{`$ ${this.props.current_listing.PRICE}`}</div>
-        <Button type='primary' style={actionStyles().actionButton} size='large'>
+        <Button type='primary' style={actionStyles().actionButton} size='large' onClick={() => this.toggleModal(true, 'action', this.props.current_listing)}>
           Book Tour
         </Button>
       </div>
@@ -606,6 +624,7 @@ const actionStyles = (mobile) => {
       backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
       width: '45%',
       border: 'none',
+      fontWeight: 'bold',
       // height: '90%',
     },
     header_container: {
