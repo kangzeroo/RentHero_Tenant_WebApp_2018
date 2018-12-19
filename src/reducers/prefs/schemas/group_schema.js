@@ -10,6 +10,7 @@ export const GROUP = {
       GROUP_NAME: '',
       CERTAIN_MEMBERS: 0,
       UNCERTAIN_MEMBERS: 0,
+      BATHROOMS: 0,
       BIO: '',
 
       // acceptable room types

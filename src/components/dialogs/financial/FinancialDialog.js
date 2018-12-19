@@ -93,7 +93,7 @@ class FinancialDialog extends Component {
         // scrollStyles: { scroll_styles: { backgroundImage: `url('https://www.narcity.com/uploads/255957_a863b146f86b05303b1f5948bd320e656e2bf4e3.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
         component: (<CounterSegment
                                 title='Ideal Budget'
-                                schema={{ id: 'ideal_budget', endpoint: 'working_studying' }}
+                                schema={{ id: 'ideal_budget', endpoint: 'estimated_credit_score' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.doneIdealBudget(original_id, endpoint, data)}
                                 texts={[
@@ -118,6 +118,35 @@ class FinancialDialog extends Component {
                                   count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON
                                 }}
                            /> )},
+      {
+        id: 'estimated_credit_score',
+        component: (<CounterSegment
+                                title='ESTIMATED CREDIT SCORE'
+                                schema={{ id: 'estimated_credit_score', endpoint: 'working_studying' }}
+                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                onDone={(original_id, endpoint, data) => this.doneEstimatingCredit(original_id, endpoint, data)}
+                                texts={[
+                                  { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `What is your credit score? It's ok to guess!` }
+                                ]}
+                                incrementerOptions={{
+                                  min: 500,
+                                  max: 900,
+                                  step: 20,
+                                  default: 650
+                                }}
+                                slider
+                                sliderOptions={{
+                                  min: 500,
+                                  max: 900,
+                                  step: 20,
+                                  vertical: false,
+                                }}
+                                initialData={{
+                                  count: this.props.prefs.CREDIT.GUESSED_CREDIT_SCORE
+                                }}
+                                skippable
+                                skipEndpoint='working_studying'
+                             /> )},
       {
          id: 'working_studying',
          component: (<MultiOptionsSegment
@@ -634,7 +663,7 @@ class FinancialDialog extends Component {
         id: 're_adjust_budget',
         component: (<CounterSegment
                       title='Adjust Budget'
-                      schema={{ id: 're_adjust_budget', endpoint: 'budget_flex' }}
+                      schema={{ id: 're_adjust_budget', endpoint: 'see_matches' }}
                       triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                       onDone={(original_id, endpoint, data) => this.doneIdealBudget(original_id, endpoint, data)}
                       texts={[
@@ -658,29 +687,29 @@ class FinancialDialog extends Component {
                       }}
                       renderCountValue={(count) => `$ ${count}`}
                  /> )},
-      {
-        id: 'budget_flex',
-        component: (<CounterSegment
-                     title='Budget Flexability'
-                     schema={{ id: 'budget_flex', endpoint: 'see_matches' }}
-                     triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                     onDone={(original_id, endpoint, data) => this.doneBudgetFlex(original_id, endpoint, data)}
-                     texts={[
-                       ...this.addAnyPreMessages('budget_flex'),
-                       { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Sometimes the perfect place is a little bit outside your ideal budget.' },
-                       { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How flexible are you in rent if the place is right?' },
-                     ]}
-                     incrementerOptions={{
-                       max: 500,
-                       min: 0,
-                       step: 50,
-                       default: 0,
-                     }}
-                     initialData={{
-                       count: this.props.prefs.FINANCIALS.BUDGET_FLEXIBILITY
-                     }}
-                     renderCountValue={(count) => `$ ${count}`}
-                /> )},
+      // {
+      //   id: 'budget_flex',
+      //   component: (<CounterSegment
+      //                title='Budget Flexability'
+      //                schema={{ id: 'budget_flex', endpoint: 'see_matches' }}
+      //                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+      //                onDone={(original_id, endpoint, data) => this.doneBudgetFlex(original_id, endpoint, data)}
+      //                texts={[
+      //                  ...this.addAnyPreMessages('budget_flex'),
+      //                  { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Sometimes the perfect place is a little bit outside your ideal budget.' },
+      //                  { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'How flexible are you in rent if the place is right?' },
+      //                ]}
+      //                incrementerOptions={{
+      //                  max: 500,
+      //                  min: 0,
+      //                  step: 50,
+      //                  default: 0,
+      //                }}
+      //                initialData={{
+      //                  count: this.props.prefs.FINANCIALS.BUDGET_FLEXIBILITY
+      //                }}
+      //                renderCountValue={(count) => `$ ${count}`}
+      //           /> )},
       {
         id: 'see_matches',
         component: (<ActionSegment
@@ -741,6 +770,19 @@ class FinancialDialog extends Component {
       }),
     }).then((FINANCIALS) => {
       this.props.updatePreferences(FINANCIALS)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneEstimatingCredit(original_id, endpoint, data) {
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.CREDIT.KEY,
+      GUESSED_CREDIT_SCORE: data.count,
+    }).then((CREDIT) => {
+      this.props.updatePreferences(CREDIT)
     }).catch((err) => {
       console.log(err)
     })
