@@ -11,14 +11,15 @@ import moment from 'moment'
 import {
   Badge,
   Carousel,
-  Icon,
+  // Icon,
   Modal,
 } from 'antd-mobile'
 import {
   Button,
+  Icon,
+  message,
 } from 'antd'
 import LikeableImage from './LikeableImage'
-
 
 class AdCoverSection extends Component {
 
@@ -46,7 +47,6 @@ class AdCoverSection extends Component {
 			imageCarouselSelectedIndex: nextIndex
 		})
 	}
-
 
   renderCoverImage() {
     return (
@@ -117,6 +117,49 @@ class AdCoverSection extends Component {
           <Button type='default' style={{ position: 'absolute', top: '10px', left: '10px' }} icon='left' onClick={() => this.props.setListing({}, '/matches')}>
             BACK
           </Button>
+          {
+            this.props.listing_is_favorited
+            ?
+            <Icon
+              type="heart"
+              theme="twoTone"
+              twoToneColor="#eb2f96"
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 60,
+                cursor: 'pointer',
+                fontSize: '2rem',
+                ":hover": {
+                  background: 'white',
+                  color: 'white',
+                }
+              }}
+              onClick={() => this.props.favoriteListing()}
+            />
+            :
+            <Icon
+              type="heart"
+              theme="outlined"
+              size='large'
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                zIndex: 60,
+                color: 'white',
+                cursor: 'pointer',
+                fontSize: '2rem',
+                ":hover": {
+                  background: '#eb2f96',
+                  color: 'red',
+                }
+              }}
+              onClick={() => this.props.favoriteListing()}
+            />
+          }
+
         </div>
       </div>
     )
@@ -207,6 +250,8 @@ AdCoverSection.propTypes = {
   scrollDownToImages: PropTypes.func.isRequired,    // passed in
   onShowAll: PropTypes.func.isRequired,             // passed in
   setListing: PropTypes.func.isRequired,            // passed in
+  listing_is_favorited: PropTypes.bool.isRequired,  // passed in
+  favoriteListing: PropTypes.func.isRequired,       // passed in
 }
 
 // for all optional props, define a default value
@@ -220,7 +265,6 @@ const RadiumHOC = Radium(AdCoverSection)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
 	}
 }
 
