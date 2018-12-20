@@ -11,6 +11,7 @@ import { withRouter } from 'react-router-dom'
 import {
   List,
   Card,
+  Input,
 } from 'antd'
 import {
   Button,
@@ -23,6 +24,7 @@ class AdsPage extends Component {
   constructor() {
     super()
     this.state = {
+      search_string: '',
       show_filter: false,
     }
   }
@@ -45,8 +47,11 @@ class AdsPage extends Component {
     } else {
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <h2>{`Homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`}</h2>
-          <Button onClick={() => this.setState({ show_filter: true })} type='ghost' size='small' style={{ width: '100px' }}>Filter</Button>
+          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
+          &nbsp;
+          <Button onClick={() => this.setState({ show_filter: true })} type='ghost' size='small' style={{ width: '100px' }}>
+            Filter {this.props.listings.all_listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1).length}
+          </Button>
         </div>
       )
     }
@@ -64,7 +69,7 @@ class AdsPage extends Component {
               },
               pageSize: 10,
             }}
-           dataSource={listings.filter(li => li.IMAGES.length > 0)}
+           dataSource={listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1)}
            renderItem={item => (
              <List.Item key={item.REFERENCE_ID}>
                <Card
