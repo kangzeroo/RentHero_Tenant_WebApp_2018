@@ -191,18 +191,6 @@ class PhoneOrEmailRegister extends Component {
   renderPhoneOption() {
     return (
       <div style={{ position: 'relative', width: '100%', minHeight: '70px' }}>
-        <div
-          style={{
-            fontSize: '1.1rem',
-            color: FONT_COLOR,
-            textAlign: 'left',
-            // fontFamily: FONT_FAMILY,
-            fontWeight: 'bold',
-            width: '100%',
-            // backgroundColor: 'rgba(0,0,0,0)',
-            margin: '20px 0px 20px 0px',
-          }}
-        >Getting Started</div>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <input
             id={`input_field--${this.props.schema.id}`}

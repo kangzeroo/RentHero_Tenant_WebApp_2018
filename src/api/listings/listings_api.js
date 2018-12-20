@@ -19,9 +19,9 @@ export const getListings = (prefs) => {
 	return p
 }
 
-export const getCurrentListingByReference = (ref_id) => {
+export const getCurrentListingByReference = ({ ref_id, short_id }) => {
   const p = new Promise((res, rej) => {
-    axios.post(GET_LISTING_BY_REF_ENDPOINT, { ref_id: ref_id })
+    axios.post(GET_LISTING_BY_REF_ENDPOINT, { ref_id, short_id })
       .then((data) => {
         console.log(data.data)
         res(data.data.data)
