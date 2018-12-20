@@ -23,6 +23,8 @@ import {
   Modal,
 } from 'antd-mobile'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
+import { saveTenantFavoritesToRedux } from '../../actions/tenant/tenant_actions'
+import { removeFavoriteForTenant, addToFavoritesToSQL } from '../../api/tenant/tenant_api'
 import AdCoverSection from './sections/AdCoverSection'
 import AdFurnishSection from './sections/AdFurnishSection'
 import AdBuildingSection from './sections/AdBuildingSection'
@@ -61,6 +63,9 @@ class AdPage extends Component {
       context: {},
 
       loading: false,
+
+
+      listing_is_favorited: false,
     }
     this.lastScrollTop = 0
   }
@@ -82,6 +87,15 @@ class AdPage extends Component {
 		// 			console.log(err)
 		// 		})
 		// }
+    if (this.props.tenant_favorites) {
+      const listingFavorite = this.props.tenant_favorites.filter(fav => fav.property_id === this.props.current_listing.REFERENCE_ID)
+      if (listingFavorite.length > 0) {
+        this.setState({
+          listing_is_favorited: true,
+        })
+      }
+    }
+
   }
 
 
@@ -128,23 +142,44 @@ class AdPage extends Component {
 		}
 	}
 
-  addToFavorites() {
+  favoriteListing() {
     if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
-      addToFavoritesToSQL({
-        tenant_id: this.props.tenant_profile.tenant_id,
-        property_id: this.props.current_listing.REFERENCE_ID,
-        meta: JSON.stringify(this.props.current_listing)
-      })
-        .then((data) => {
-          console.log(data)
+      if (this.state.listing_is_favorited) {
+        console.log('REMOVE FROM FAVORITES')
+        removeFavoriteForTenant({
+          tenant_id: this.props.tenant_profile.tenant_id,
+          property_id: this.props.current_listing.REFERENCE_ID,
         })
-        .catch((err) => {
-          console.log(err)
+          .then((data) => {
+            message.success(data.message)
+            alert(data.message)
+            this.props.saveTenantFavoritesToRedux(data.favorites)
+            console.log(data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        addToFavoritesToSQL({
+          tenant_id: this.props.tenant_profile.tenant_id,
+          property_id: this.props.current_listing.REFERENCE_ID,
+          meta: '',
         })
+          .then((data) => {
+            message.success(data.message)
+            alert(data.message)
+            this.props.saveTenantFavoritesToRedux(data.favorites)
+            console.log(data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      }
     } else {
       alert('Sign In First!')
     }
   }
+
 
   organizePhotos() {
     const pics = rankOrderPics(this.props.current_listing.IMAGES)
@@ -424,6 +459,8 @@ class AdPage extends Component {
             scrollDownToImages={() => this.scrollDownToImages()}
             onShowAll={() => this.toggleModal(true, 'images', this.props.current_listing)}
             setListing={(listing, url) => this.props.setListing(listing, url)}
+            listing_is_favorited={this.state.listing_is_favorited}
+            favoriteListing={() => this.favoriteListing()}
           />
           <div style={{ margin: '20px' }}>
             <AdMapSection
@@ -466,7 +503,8 @@ AdPage.propTypes = {
 	nextListing: PropTypes.func.isRequired,
 	main_destination: PropTypes.string,
   setCurrentListing: PropTypes.func.isRequired,
-
+  tenant_favorites: PropTypes.array.isRequired,
+  saveTenantFavoritesToRedux: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,   // passed in
   setListing: PropTypes.func.isRequired,    // passed in
 }
@@ -486,6 +524,7 @@ const mapReduxToProps = (redux) => {
     all_listings: redux.listings.all_listings,
 		main_destination: redux.prefs.LOCATION.DESTINATION_ADDRESS,
   	triggerDrawerNav: PropTypes.func.isRequired,
+    tenant_favorites: redux.tenant.favorites,
 	}
 }
 
@@ -495,6 +534,7 @@ export default withRouter(
 		nextListing,
     setCurrentListing,
     triggerDrawerNav,
+    saveTenantFavoritesToRedux,
 	})(RadiumHOC)
 )
 

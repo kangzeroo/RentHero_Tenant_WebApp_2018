@@ -30,6 +30,20 @@ export const getFavoritesForTenant = (tenant_id) => {
   return p
 }
 
+export const removeFavoriteForTenant = ({tenant_id, property_id}) => {
+  const p = new Promise((res, rej) => {
+    axios.post(`${ACCOUNTS_MICROSERVICE}/get_favorites_for_tenant`, { tenant_id, property_id }, authHeaders())
+      .then((data) => {
+        // once we have the response, only then do we dispatch an action to Redux
+        res(data.data)
+      })
+      .catch((err) => {
+        rej(err)
+      })
+  })
+  return p
+}
+
 export const registerTenantPhone = ({ tenant_id, phone_number, national_format, country_code, email, }) => {
   const p = new Promise((res, rej) => {
     axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_phone`, { tenant_id, phone_number, national_format, country_code, email, }, authHeaders())
