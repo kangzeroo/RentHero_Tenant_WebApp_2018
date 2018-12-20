@@ -16,6 +16,12 @@ import CheckboxsModule from '../modules/CheckboxsModule'
 import MapModule from '../modules/MapModule'
 import { updatePreferences } from '../../actions/prefs/prefs_actions'
 import { saveTenantPreferences } from '../../api/prefs/prefs_api'
+import {
+	saveListingsToRedux,
+} from '../../actions/listings/listings_actions'
+import {
+	getListings,
+} from '../../api/listings/listings_api'
 
 
 class EditSearch extends Component {
@@ -138,7 +144,14 @@ class EditSearch extends Component {
 
   updateSearch() {
     if (this.state.searchable && !this.state.loading) {
-      alert('Updating!')
+      getListings(this.props.prefs)
+				.then((data) => {
+					this.props.saveListingsToRedux(data)
+          this.props.onComplete()
+				})
+				.catch((err) => {
+					console.log(err)
+				})
     }
   }
 
@@ -172,9 +185,8 @@ class EditSearch extends Component {
 	render() {
 		return (
 			<div id='EditSearch' style={comStyles().container}>
-        <div style={{ width: '100%', height: '50px' }}></div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', position: 'fixed', top: '0px', width: '100%', zIndex: 5, backgroundColor: 'white' }}>
-          <Icon onClick={() => window.history.back()} type='left' size='lg' style={{ padding: '20px', fontSize: '1.2rem', width: '50px' }} />
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', backgroundColor: 'white' }}>
+          <Icon onClick={() => this.props.onBack()} type='left' size='lg' style={{ padding: '20px', fontSize: '1.2rem', width: '50px' }} />
           <div style={{ width: '80%', height: '100%', fontSize: '0.9rem', fontWeight: 'bold', textAlign: 'left' }}>Update Search</div>
         </div>
         <Card title="Budget Per Person" style={{ maxWidth: '400px', margin: '20px' }}>
@@ -319,6 +331,9 @@ EditSearch.propTypes = {
   prefs: PropTypes.object.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   tenant_id: PropTypes.string.isRequired,
+  onComplete: PropTypes.func.isRequired,
+  onDone: PropTypes.func.isRequired,
+  saveListingsToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -341,6 +356,7 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
     updatePreferences,
+    saveListingsToRedux,
 	})(RadiumHOC)
 )
 

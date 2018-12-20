@@ -15,6 +15,8 @@ import {
 import { saveTenantPreferences } from '../../../../api/prefs/prefs_api'
 import { updatePreferences } from '../../../../actions/prefs/prefs_actions'
 import { toggleInstantCharsSegmentID } from '../../../../actions/app/app_actions'
+import { getCurrentListingByReference } from '../../../../api/listings/listings_api'
+import { setCurrentListing } from '../../../../actions/listings/listings_actions'
 import SegmentTemplate from '../../../modules/AdvisorUI_v2/Segments/SegmentTemplate'
 import MapSegment from '../../../modules/AdvisorUI_v2/Segments/MapSegment'
 import CounterSegment from '../../../modules/AdvisorUI_v2/Segments/CounterSegment'
@@ -77,8 +79,10 @@ class InterestDialog1 extends Component {
                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                          onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
                          texts={[
-                           { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${`this property!`}` },
-                           { id: '2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
+                           { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
+                           { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
+                           { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
+                           { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
                          ]}
                          action={{ enabled: true, label: 'Begin Application', actionStyles: { width: '100%' } }}
                          segmentStyles={{ justifyContent: 'space-between' }}
@@ -597,6 +601,8 @@ InterestDialog1.propTypes = {
   prefs: PropTypes.object.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   tenant_id: PropTypes.string.isRequired,
+  setCurrentListing: PropTypes.func.isRequired,
+  current_listing: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -611,6 +617,7 @@ const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
     tenant_id: redux.auth.tenant_profile.tenant_id,
+    current_listing: redux.listings.current_listing,
 	}
 }
 
@@ -619,6 +626,7 @@ export default withRouter(
 	connect(mapReduxToProps, {
     toggleInstantCharsSegmentID,
     updatePreferences,
+    setCurrentListing,
 	})(RadiumHOC)
 )
 

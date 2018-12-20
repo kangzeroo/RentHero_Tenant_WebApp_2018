@@ -11,7 +11,12 @@ import { withRouter } from 'react-router-dom'
 import {
   List,
   Card,
+  Input,
 } from 'antd'
+import {
+  Button,
+} from 'antd-mobile'
+import EditSearch from '../edits/EditSearch'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 
 class AdsPage extends Component {
@@ -19,23 +24,37 @@ class AdsPage extends Component {
   constructor() {
     super()
     this.state = {
-
+      search_string: '',
+      show_filter: false,
     }
   }
 
 	componentDidUpdate(prevProps, prevState) {
     console.log(this.props.auth.authentication_loaded, this.props.auth.authenticated)
-		if (!this.props.auth.authentication_loaded || !this.props.auth.authenticated) {
+		if (!this.props.auth.authentication_loaded) {
 			this.props.history.push('/')
 		}
 	}
 
   renderTitle(prefs) {
-    return (
-      <div style={{ textAlign: 'left' }}>
-        <h2>{`Homes for you near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`}</h2>
-      </div>
-    )
+    if (this.state.show_filter) {
+      return (
+        <EditSearch
+          onBack={() => this.setState({ show_filter: false })}
+          onComplete={() => this.setState({ show_filter: false })}
+        />
+      )
+    } else {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
+          &nbsp;
+          <Button onClick={() => this.setState({ show_filter: true })} type='ghost' size='small' style={{ width: '100px' }}>
+            Filter {this.props.listings.all_listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1).length}
+          </Button>
+        </div>
+      )
+    }
   }
 
   renderProperties(listings) {
@@ -50,11 +69,11 @@ class AdsPage extends Component {
               },
               pageSize: 10,
             }}
-           dataSource={listings.filter(li => li.IMAGES.length > 0)}
+           dataSource={listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1)}
            renderItem={item => (
              <List.Item key={item.REFERENCE_ID}>
                <Card
-                cover={<img src={item.IMAGES[0].url} style={{ maxHeight: '200px', borderRadius: '5px', }} />}
+                cover={<img src={item.IMAGES[0].url} style={{ maxHeight: '150px', borderRadius: '5px', }} />}
                 bordered={false}
                 bodyStyle={{
                   margin: '10px 0px',

@@ -51,7 +51,7 @@ class AdsHome extends Component {
         })
       }
 
-      getCurrentListingByReference(ref_id)
+      getCurrentListingByReference({ ref_id })
         .then((data) => {
           this.props.setCurrentListing(data)
           this.setState({

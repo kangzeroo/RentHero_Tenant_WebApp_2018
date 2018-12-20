@@ -81,7 +81,6 @@ class AppRoot extends Component {
       <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Browse</span></List.Item>,
       <List.Item key={9} onClick={() => this.clickedDrawerOption('/checklist')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Checklist</span></List.Item>,
       <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Favorites</span></List.Item>,
-      <List.Item key={4} onClick={() => this.clickedDrawerOption('/sandbox')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Sandbox</span></List.Item>,
       <List.Item key={5} onClick={() => this.clickedDrawerOption('/logout')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Logout</span></List.Item>,
     ]
     if (this.props.authentication_loaded) {

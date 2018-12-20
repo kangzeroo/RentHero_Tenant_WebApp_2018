@@ -57,16 +57,7 @@ class HeatMapHunting extends Component {
 
     console.log(this.pins)
 
-    getHeatMapDist({
-      // max_beds: this.props.prefs.max_beds,
-      // max_budget: this.props.prefs.max_budget,
-      destination: {
-        address: this.props.prefs.LOCATION.DESTINATION_ADDRESS,
-        // place_id: this.props.prefs.destination.place_id,
-        // commute_mode: this.props.prefs.destination.commute_mode,
-        gps: { lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0], lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1] }
-      }
-    }).then((data) => {
+    getHeatMapDist(this.props.prefs).then((data) => {
       console.log(data)
       this.setState({
         ads: data,
@@ -375,7 +366,7 @@ class HeatMapHunting extends Component {
           <Ionicon icon="md-menu" color='#117bc7b3' fontSize='2rem' />
         </div>*/}
         <div id="map" style={comStyles().map}></div>
-        {
+        {/*
           this.state.nearby_stats.matches && this.state.nearby_stats.matches.length
           ?
           <div style={statStyles().popup}>
@@ -397,7 +388,7 @@ class HeatMapHunting extends Component {
           </div>
           :
           null //this.renderActionBar()
-        }
+        */}
 			</div>
 		)
 	}

@@ -76,7 +76,7 @@ class AdPage extends Component {
     //   console.log(this.props.location)
 		// 	const ref_id = this.props.location.pathname.slice(this.props.location.search.indexOf('/matches/') + '/matches/'.length + 1)
 		// 	console.log('ref_id: ', ref_id)
-		// 	getCurrentListingByReference(ref_id)
+		// 	getCurrentListingByReference({ ref_id })
 		// 		.then((data) => {
 		// 			this.props.setCurrentListing(data)
     //       this.setState({
@@ -108,7 +108,7 @@ class AdPage extends Component {
     //   console.log(this.props.location)
 		// 	const ref_id = this.props.location.pathname.slice(this.props.location.pathname.indexOf('/matches/') + '/matches/'.length + 1)
 		// 	console.log('ref_id: ', ref_id)
-		// 	getCurrentListingByReference(ref_id)
+		// 	getCurrentListingByReference({ ref_id })
 		// 		.then((data) => {
 		// 			this.props.setCurrentListing(data)
 		// 		})
@@ -420,13 +420,19 @@ class AdPage extends Component {
     return (
       <div style={actionStyles(isMobile()).container}>
         <div style={{ fontSize: '1.2REM', fontWeight: 'bold', color: 'black' }}>{`$ ${this.props.current_listing.PRICE}`}</div>
-        <Button type='primary' style={actionStyles().actionButton} size='large' onClick={() => this.toggleModal(true, 'action', this.props.current_listing)}>
-          Book Tour
+        <Button onClick={() => this.clickedInquire()} type='primary' style={actionStyles().actionButton} size='large'>
+          Inquire
         </Button>
       </div>
     )
   }
 
+  clickedInquire() {
+    console.log(window.location.hostname)
+    const win = window.open(`/p/${this.props.current_listing.SHORT_ID || this.props.current_listing.REFERENCE_ID}`, '_blank');
+    win.focus();
+    // this.toggleModal(true, 'action', this.props.current_listing)
+  }
 
 	render() {
     if (this.props.loading) {

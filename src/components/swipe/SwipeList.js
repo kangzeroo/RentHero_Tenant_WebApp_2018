@@ -65,7 +65,7 @@ class SwipeList extends Component {
 		if (this.props.location.search.indexOf('ref=') > -1) {
 			const ref_id = this.props.location.search.slice(this.props.location.search.indexOf('ref=') + 'ref='.length)
 			console.log('ref_id: ', ref_id)
-			getCurrentListingByReference(ref_id)
+			getCurrentListingByReference({ ref_id })
 				.then((data) => {
 					this.props.setCurrentListing(data)
 				})

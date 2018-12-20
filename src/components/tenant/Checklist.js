@@ -126,49 +126,51 @@ class Checklist extends Component {
 		return (
 			<div id='Checklist' style={comStyles().container}>
         <div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'absolute', left: '10px', top: '10px' }}><i className='ion-navicon-round' style={{ fontSize: '1.3rem' }}></i></div>
-        <div style={{ height: '150px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px' }}>
-					<h3>Tenant Checklist</h3>
-					<br/>
-					<p>Complete the below questions to create the strongest rental profile.</p>
+				<div style={{ display: 'flex', flexDirection: 'column', maxWidth: '800px', width: '100%' }}>
+					<div style={{ height: '150px', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px' }}>
+						<h3>Tenant Checklist</h3>
+						<br/>
+						<p>Complete the below questions to create the strongest rental profile.</p>
+					</div>
+	        <div style={comStyles().dialog_menu}>
+							<div key='finances' onClick={() => this.props.history.push('/dialog/finance')} style={choiceStyles().action}>
+								<div style={choiceStyles().status}><Progress type='circle' percent={this.checkFinanceProgress().progress} width={30} /></div>
+								<div style={choiceStyles().label}>
+									{
+										this.checkFinanceProgress().left == 0
+										?
+										`My Budget`
+										:
+										`My Budget - ${this.checkFinanceProgress().left} Left`
+									}
+								</div>
+							</div>
+					    <div key='group' onClick={() => this.props.history.push('/dialog/group')} style={choiceStyles().action}>
+								<div style={choiceStyles().status}><Progress type='circle' percent={this.checkGroupProgress().progress} width={30} /></div>
+								<div style={choiceStyles().label}>
+									{
+										this.checkGroupProgress().left == 0
+										?
+										`My Group`
+										:
+										`My Group - ${this.checkGroupProgress().left} Left`
+									}
+								</div>
+							</div>
+					    <div key='movein' onClick={() => this.props.history.push('/dialog/movein')} style={choiceStyles().action}>
+								<div style={choiceStyles().status}><Progress type='circle' percent={this.checkMoveInProgress().progress} width={30} /></div>
+								<div style={choiceStyles().label}>
+									{
+										this.checkMoveInProgress().left == 0
+										?
+										`Move In`
+										:
+										`Move In - ${this.checkMoveInProgress().left} Left`
+									}
+								</div>
+							</div>
+	        </div>
 				</div>
-        <div style={comStyles().dialog_menu}>
-						<div key='finances' onClick={() => this.props.history.push('/dialog/finance')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkFinanceProgress().progress} width={30} /></div>
-							<div style={choiceStyles().label}>
-								{
-									this.checkFinanceProgress().left == 0
-									?
-									`My Budget`
-									:
-									`My Budget - ${this.checkFinanceProgress().left} Left`
-								}
-							</div>
-						</div>
-				    <div key='group' onClick={() => this.props.history.push('/dialog/group')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkGroupProgress().progress} width={30} /></div>
-							<div style={choiceStyles().label}>
-								{
-									this.checkGroupProgress().left == 0
-									?
-									`My Group`
-									:
-									`My Group - ${this.checkGroupProgress().left} Left`
-								}
-							</div>
-						</div>
-				    <div key='movein' onClick={() => this.props.history.push('/dialog/movein')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkMoveInProgress().progress} width={30} /></div>
-							<div style={choiceStyles().label}>
-								{
-									this.checkMoveInProgress().left == 0
-									?
-									`Move In`
-									:
-									`Move In - ${this.checkMoveInProgress().left} Left`
-								}
-							</div>
-						</div>
-        </div>
 			</div>
 		)
 	}
@@ -211,6 +213,8 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+			justifyContent: 'flex-start',
+			alignItems: 'center',
 		},
     dialog_menu: {
       padding: '20px',
