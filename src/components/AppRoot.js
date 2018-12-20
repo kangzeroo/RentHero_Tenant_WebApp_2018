@@ -40,7 +40,7 @@ import NoMoreListings from './swipe/NoMoreListings'
 // import ContinueSession from './tenant/ContinueSession'
 import AdvisorUITemplate from './misc/AdvisorUITemplate'
 import AdvisorUI from './modules/AdvisorUI_v2/AdvisorUI'
-import HeatMapHunting from './hunting/HeatMapHunting'
+import OnlyMapHunting from './hunting/OnlyMapHunting'
 import NoResults from './modules/NoResults'
 // import SearchPrefs from './tenant/SearchPrefs'
 import CoverPage from './pages/CoverPage'
@@ -88,7 +88,7 @@ class AppRoot extends Component {
         <LocaleProvider locale={enUS}>
           <Switch>
 
-            <Route exact path='/' render={LandingPage} />
+            <Route exact path='/' render={TenantDuality} />
             {
               //<Route exact path='/login' render={HomePage} />
             }
@@ -130,7 +130,7 @@ class AppRoot extends Component {
               <Route exact path='/register' render={RegisterPage} />
 
                 <Route exact path='/checklist' render={Checklist} />
-              <Route exact path='/heatmap' render={HeatMapHunting} />
+              <Route exact path='/map' render={OnlyMapHunting} />
 
               <Route exact path='/matches' render={AdsHome} />
               <Route exact path='/matches/:ref_id' render={AdsHome} />

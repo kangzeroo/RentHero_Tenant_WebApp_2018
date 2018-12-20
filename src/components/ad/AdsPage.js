@@ -18,6 +18,7 @@ import {
 } from 'antd-mobile'
 import EditSearch from '../edits/EditSearch'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
+import { isMobile } from '../../api/general/general_api'
 
 class AdsPage extends Component {
 
@@ -26,7 +27,14 @@ class AdsPage extends Component {
     this.state = {
       search_string: '',
       show_filter: false,
+      mobile: false,
     }
+  }
+
+  componentWillMount() {
+    this.setState({
+			mobile: isMobile()
+		}, () => console.log(this.state))
   }
 
 	componentDidUpdate(prevProps, prevState) {
@@ -47,11 +55,20 @@ class AdsPage extends Component {
     } else {
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
+          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
           &nbsp;
           <Button onClick={() => this.setState({ show_filter: true })} type='ghost' size='small' style={{ width: '100px' }}>
             Filter {this.props.listings.all_listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1).length}
           </Button>
+          {
+            this.state.mobile
+            ?
+            <Button onClick={() => this.props.history.push('/map')} type='ghost' size='small' style={{ width: '50px', margin: '0px 0px 0px 5px' }}>
+              <i className='ion-ios-location' style={{ fontSize: '0.9rem' }} />
+            </Button>
+            :
+            null
+          }
         </div>
       )
     }

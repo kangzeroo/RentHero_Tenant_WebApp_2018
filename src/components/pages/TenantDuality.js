@@ -12,6 +12,7 @@ import {
 } from 'antd-mobile'
 import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
 import HeatMap from '../hunting/HeatMapHunting'
+import DesktopHeader from '../format/desktop/DesktopHeader'
 import { isMobile } from '../../api/general/general_api'
 
 
@@ -55,7 +56,11 @@ class TenantDuality extends Component {
 					    <TenantInfoDialog width='40vw' />
 	        </div>
 	        <div style={{ width: '60vw' }}>
-	          <HeatMap />
+						<HeatMap
+							preview={true}
+							listings={this.props.all_listings}
+							current_listing={this.props.current_listing}
+						/>
 	        </div>
 				</div>
 			)
@@ -67,6 +72,8 @@ class TenantDuality extends Component {
 // defines the types of variables in this.props
 TenantDuality.propTypes = {
 	history: PropTypes.object.isRequired,
+  all_listings: PropTypes.array.isRequired,
+	current_listing: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -80,7 +87,8 @@ const RadiumHOC = Radium(TenantDuality)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+    all_listings: redux.listings.all_listings,
+		current_listing: redux.listings.current_listing,
 	}
 }
 
