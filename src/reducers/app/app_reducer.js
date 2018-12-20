@@ -5,6 +5,7 @@ import {
   TOGGLE_DRAWER_NAV,
   TOGGLE_INSTANT_CHARS,
   TOGGLE_IS_MOBILE,
+  TOGGLE_DROPDOWN,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -14,6 +15,7 @@ const INITIAL_STATE = {
   drawer_nav_open: false,
   instant_chars_segment_id: '',
   is_mobile: false,
+  dropdown_open: false,
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -47,6 +49,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         is_mobile: action.payload,
+      }
+    case TOGGLE_DROPDOWN:
+      return {
+        ...state,
+        dropdown_open: action.payload,
       }
 		default:
 			return {

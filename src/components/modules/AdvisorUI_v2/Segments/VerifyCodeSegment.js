@@ -350,7 +350,7 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '50px 0px 0px 0px',
-      minHeight: '100vh',
+      minHeight: '100%',
       // minHeight: document.documentElement.clientHeight,
 		},
     text: {

@@ -12,11 +12,16 @@ import {
   List,
   Card,
   Input,
-} from 'antd'
-import {
+  Divider,
+  Icon,
+  Tooltip,
   Button,
-} from 'antd-mobile'
+} from 'antd'
+// import {
+//   Button,
+// } from 'antd-mobile'
 import EditSearch from '../edits/EditSearch'
+import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
 
@@ -44,7 +49,21 @@ class AdsPage extends Component {
 		}
 	}
 
-  renderTitle(prefs) {
+  renderTitle() {
+    return (
+      <div>
+        <div style={{ textAlign: 'left' }}>
+          <h2>{`Relevant Listings for you`}</h2>
+          <p>{`Here are the most relevant listings we've found for you, based on the information you've provided for us. If you'd like for your search to be even more specific, please `}<a href='/app/profile' target='_blank'>Click Here</a></p>
+        </div>
+        <Button type='primary' onClick={() => this.props.history.push('/app/profile')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
+          Update Profile
+        </Button>
+      </div>
+    )
+  }
+
+  renderSearchAndFilter(prefs) {
     if (this.state.show_filter) {
       return (
         <EditSearch
@@ -57,9 +76,9 @@ class AdsPage extends Component {
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
           &nbsp;
-          <Button onClick={() => this.setState({ show_filter: true })} type='ghost' size='small' style={{ width: '100px' }}>
-            Filter {this.props.listings.all_listings.filter(li => li.IMAGES.length > 0).filter(li => li.ADDRESS.toLowerCase().indexOf(this.state.search_string.toLowerCase()) > -1).length}
-          </Button>
+          <Tooltip title='Filter'>
+            <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true })} size='large' style={{ fontSize: '1.5rem' }} />
+          </Tooltip>
           {
             this.state.mobile
             ?
@@ -76,7 +95,8 @@ class AdsPage extends Component {
 
   renderProperties(listings) {
     return (
-      <div>
+      <div id='Listings'>
+        <br />
         <List
            grid={{ gutter: 16, column: 2 }}
            loading={!this.props.loading_complete}
@@ -120,15 +140,33 @@ class AdsPage extends Component {
     )
   }
 
+  renderFavoritesSection() {
+    return (
+      <div id='MyList'>
+        <Divider />
+        <FavoritesSection
+
+        />
+      </div>
+    )
+  }
+
 
 	render() {
 		return (
 			<div id='AdsPage' style={comStyles().container}>
 				{
-          this.renderTitle(this.props.prefs)
+          this.renderTitle()
+        }
+        <Divider />
+        {
+          this.renderSearchAndFilter(this.props.prefs)
         }
         {
           this.renderProperties(this.props.listings.all_listings)
+        }
+        {
+          this.renderFavoritesSection()
         }
 			</div>
 		)

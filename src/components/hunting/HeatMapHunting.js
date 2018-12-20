@@ -59,7 +59,7 @@ class HeatMapHunting extends Component {
   componentDidMount() {
     console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
 
-    console.log(this.pins)
+    console.log(this.pins, this.props)
 
     getHeatMapDist(this.props.prefs).then((data) => {
       console.log(data)
@@ -118,6 +118,7 @@ class HeatMapHunting extends Component {
     if (listings && listings.length > 0) {
       listings.forEach((n, i) => {
         if (!pinAlreadyPlaced(n, self.pins)) {
+          console.log('new pin')
           let marker
           marker = new google.maps.Marker({
                   position: new google.maps.LatLng(n.GPS.lat, n.GPS.lng),
@@ -328,9 +329,8 @@ class HeatMapHunting extends Component {
         deletablePolygon: false,
         show_filter: false,
       })
-
-      self.refreshPins(self.props, self.props)
     })
+    self.refreshPins(self.props, self.props)
   }
 
   deletePolygon(polygon) {

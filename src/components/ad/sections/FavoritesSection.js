@@ -9,17 +9,14 @@ import Rx from 'rxjs'
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import {
-  Card,
-  List,
   Icon,
+  List,
+  Card,
   Badge,
-  Divider,
 } from 'antd'
-import { getFavoritesForTenant, } from '../../api/tenant/tenant_api'
-import { saveTenantFavoritesToRedux } from '../../actions/tenant/tenant_actions'
-import { isMobile } from '../../api/general/general_api'
+import { isMobile } from '../../../api/general/general_api'
 
-class TenantFavorites extends Component {
+class FavoritesSection extends Component {
 
   constructor() {
     super()
@@ -58,11 +55,17 @@ class TenantFavorites extends Component {
   renderFavorites(listings) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Badge count={this.props.tenant_favorites.length} style={{ backgroundColor: '#52c41a' }} offset={[12, 0]}>
+            <h2>My List</h2>
+          </Badge>
+          <a href='/app/favorites'>View All</a>
+        </div>
         <br />
         <List
-           grid={isMobile() ? { gutter: 16, column: 1 } : { gutter: 16, column: 3 }}
+           grid={isMobile() ? { gutter: 16, column: 2 } : { gutter: 16, column: 3 }}
            loading={!this.props.loading_complete}
-           dataSource={listings}
+           dataSource={listings.splice(0, 3)}
            renderItem={item => (
              <List.Item key={item.REFERENCE_ID}>
                <Card
@@ -99,13 +102,7 @@ class TenantFavorites extends Component {
 
 	render() {
 		return (
-			<div id='TenantFavorites' style={comStyles().container}>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Badge count={this.props.tenant_favorites && this.props.tenant_favorites.length > 0 ? this.props.tenant_favorites.length : 0} style={{ backgroundColor: '#52c41a' }} offset={[12, 0]}>
-            <h2>My List</h2>
-          </Badge>
-        </div>
-        <Divider />
+			<div id='FavoritesSection' style={comStyles().container}>
         {
           this.state.favorites_to_show && this.state.favorites_to_show.length > 0
           ?
@@ -119,7 +116,7 @@ class TenantFavorites extends Component {
 }
 
 // defines the types of variables in this.props
-TenantFavorites.propTypes = {
+FavoritesSection.propTypes = {
 	history: PropTypes.object.isRequired,
   all_listings: PropTypes.array.isRequired,
   tenant_favorites: PropTypes.array.isRequired,
@@ -127,12 +124,12 @@ TenantFavorites.propTypes = {
 }
 
 // for all optional props, define a default value
-TenantFavorites.defaultProps = {
+FavoritesSection.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TenantFavorites)
+const RadiumHOC = Radium(FavoritesSection)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -146,7 +143,7 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-    saveTenantFavoritesToRedux,
+
 	})(RadiumHOC)
 )
 
@@ -158,8 +155,6 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      padding: '20px',
-      overflowY: 'scroll'
 		}
 	}
 }
