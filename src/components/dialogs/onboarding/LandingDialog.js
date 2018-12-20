@@ -505,13 +505,13 @@ LandingDialog.propTypes = {
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
   updatePreferences: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
-  tenant_id: PropTypes.string.isRequired,
+  tenant_id: PropTypes.string,
   width: PropTypes.string,                  // passed in
 }
 
 // for all optional props, define a default value
 LandingDialog.defaultProps = {
-
+  tenant_id: '',
 }
 
 // Wrap the prop in Radium to allow JS styling
