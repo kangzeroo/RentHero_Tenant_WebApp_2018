@@ -1,6 +1,10 @@
 
 /*
 
+  DOCUMENTS = {
+    ...DOCUMENTS,
+    EMAIL: 'myname@email.com'
+  }
 
   GROUP: {
 
@@ -80,6 +84,10 @@
   MultiCounterSegment             2. Do you have any pets?
                                             - large dogs x2
                                             - parrot x1
+
+  InputSegment                    3. What are you looking for in your next rental?
+
+  InputSegment                    4. What is your email?
 
   MultiCounterSegment             3. What type of bedrooms would you like to see? (has a lockable door with a window)
                                             - 2 beds
