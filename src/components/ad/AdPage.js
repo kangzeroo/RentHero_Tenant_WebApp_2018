@@ -18,6 +18,7 @@ import {
   Icon,
   Card,
   Spin,
+  message,
 } from 'antd'
 import {
   Modal,
@@ -36,6 +37,7 @@ import AdImagesSection from './sections/AdImagesSection'
 import AdImages from './tabs/AdImages'
 import ListingActions from './tabs/ListingActions'
 import { isMobile } from '../../api/general/general_api'
+import AuthenticatePopup from '../auth/AuthenticatePopup'
 
 class AdPage extends Component {
 
@@ -87,15 +89,7 @@ class AdPage extends Component {
 		// 			console.log(err)
 		// 		})
 		// }
-    if (this.props.tenant_favorites) {
-      const listingFavorite = this.props.tenant_favorites.filter(fav => fav.property_id === this.props.current_listing.REFERENCE_ID)
-      if (listingFavorite.length > 0) {
-        this.setState({
-          listing_is_favorited: true,
-        })
-      }
-    }
-
+    this.refreshFavorites(this.props.tenant_favorites, this.props.current_listing)
   }
 
 
@@ -142,8 +136,36 @@ class AdPage extends Component {
 		}
 	}
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.tenant_favorites !== nextProps.tenant_favorites) {
+      this.refreshFavorites(nextProps.tenant_favorites, nextProps.current_listing)
+    }
+    if (this.props.current_listing !== nextProps.current_listing) {
+      this.refreshFavorites(nextProps.tenant_favorites, nextProps.current_listing)
+    }
+  }
+
+  refreshFavorites(tenant_favorites, current_listing) {
+    console.log('REFRESH FAVORITES ', tenant_favorites)
+    console.log('CURRENT_LISTING: ', current_listing)
+    if (tenant_favorites) {
+      const listingFavorite = tenant_favorites.filter(fav => fav.property_id === current_listing.REFERENCE_ID)
+      console.log(listingFavorite)
+      if (listingFavorite.length > 0) {
+        console.log('THIS IS A FAVORITE')
+        this.setState({
+          listing_is_favorited: true,
+        })
+      } else {
+        this.setState({
+          listing_is_favorited: false,
+        })
+      }
+    }
+  }
+
   favoriteListing() {
-    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
+    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id && this.props.authenticated && this.props.tenant_profile.authenticated) {
       if (this.state.listing_is_favorited) {
         console.log('REMOVE FROM FAVORITES')
         removeFavoriteForTenant({
@@ -151,23 +173,22 @@ class AdPage extends Component {
           property_id: this.props.current_listing.REFERENCE_ID,
         })
           .then((data) => {
-            message.success(data.message)
-            alert(data.message)
-            this.props.saveTenantFavoritesToRedux(data.favorites)
+            this.props.saveTenantFavoritesToRedux(data)
             console.log(data)
           })
           .catch((err) => {
             console.log(err)
           })
       } else {
+        console.log('ADD TO FAVORITES')
         addToFavoritesToSQL({
           tenant_id: this.props.tenant_profile.tenant_id,
           property_id: this.props.current_listing.REFERENCE_ID,
           meta: '',
         })
           .then((data) => {
+            console.log(data)
             message.success(data.message)
-            alert(data.message)
             this.props.saveTenantFavoritesToRedux(data.favorites)
             console.log(data)
           })
@@ -176,7 +197,7 @@ class AdPage extends Component {
           })
       }
     } else {
-      alert('Sign In First!')
+      this.toggleModal(true, 'authenticate', this.props.current_listing)
     }
   }
 
@@ -413,6 +434,41 @@ class AdPage extends Component {
           />
         </Modal>
       )
+    } else if (modal_name === 'authenticate') {
+      return (
+        <Modal
+          visible={this.state.toggle_modal}
+          transparent
+          maskClosable={false}
+          animationType='fade'
+          style={
+            isMobile()
+            ?
+            {
+              height: '100vh',
+              width: '100vw',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
+              borderRadius: '0px !important',
+            }
+            :
+            {
+              height: '93vh',
+              width: '60vw',
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              borderRadius: '0px !important',
+            }
+          }
+        >
+          <AuthenticatePopup
+            onClose={() => this.toggleModal(false)}
+            current_listing={context}
+          />
+        </Modal>
+      )
     }
   }
 
@@ -507,6 +563,8 @@ AdPage.propTypes = {
   saveTenantFavoritesToRedux: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,   // passed in
   setListing: PropTypes.func.isRequired,    // passed in
+  tenant_profile: PropTypes.object.isRequired,
+  authenticated: PropTypes.bool.isRequired,
 }
 
 // for all optional props, define a default value
@@ -525,6 +583,8 @@ const mapReduxToProps = (redux) => {
 		main_destination: redux.prefs.LOCATION.DESTINATION_ADDRESS,
   	triggerDrawerNav: PropTypes.func.isRequired,
     tenant_favorites: redux.tenant.favorites,
+    tenant_profile: redux.auth.tenant_profile,
+    authenticated: PropTypes.bool.isRequired,
 	}
 }
 

@@ -3,6 +3,7 @@ export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE'
 export const CHANGE_TAB = 'CHANGE_TAB'
 export const LOADING_COMPLETE = 'LOADING_COMPLETE'
 export const TOGGLE_IS_MOBILE = 'TOGGLE_IS_MOBILE'
+export const TOGGLE_DROPDOWN = 'TOGGLE_DROPDOWN'
 
 // actions related to auth
 export const AUTHENTICATED_TENANT = 'AUTHENTICATED_TENANT'

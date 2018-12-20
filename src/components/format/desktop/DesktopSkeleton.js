@@ -11,6 +11,7 @@ import {
   Menu,
   Icon,
   Badge,
+  Button,
 } from 'antd'
 import DesktopHeader from './DesktopHeader'
 
@@ -28,7 +29,7 @@ class DesktopSkeleton extends Component {
   componentWillMount() {
     if (this.props.selected_tab) {
       this.setState({
-        currentTabs: ['.$'.concat(this.props.selected_tab)]
+        currentTabs: ['.$:$'.concat(this.props.selected_tab)]
       })
     }
   }
@@ -36,7 +37,7 @@ class DesktopSkeleton extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.selected_tab !== nextProps.selected_tab) {
       this.setState({
-        currentTabs: ['.$'.concat(this.props.selected_tab)]
+        currentTabs: ['.$:$'.concat(this.props.selected_tab)]
       })
     }
   }
@@ -78,7 +79,7 @@ class DesktopSkeleton extends Component {
       <Menu
         mode='inline'
         style={comStyles().menuContainer}
-        onClick={e => this.props.history.push(`/app/${e.key.substr(2)}`)}
+        onClick={e => this.props.history.push(`/app/${e.key.substr(4)}`)}
         selectedKeys={this.state.currentTabs}
         onSelect={(a) => this.setState({ currentTabs: [a.key], })}
       >
@@ -89,7 +90,7 @@ class DesktopSkeleton extends Component {
                 <Menu.SubMenu
                   key={nav.key}
                   title={<span>{nav.icon}<span>{nav.title}</span></span>}
-                  onTitleClick={(a) => this.props.history.push(`/app/${a.key.substr(2)}`)}
+                  onTitleClick={(a) => this.props.history.push(`/app/${a.key.substr(4)}`)}
                 >
                   {
                     nav.submenu.map((sub) => {
@@ -112,6 +113,9 @@ class DesktopSkeleton extends Component {
             }
           })
         }
+        <Button type='primary' icon='search' size='large' onClick={() => this.props.history.push('/matches')} style={comStyles().browseListingsButton}>
+          Browse Listings
+        </Button>
       </Menu>
     )
   }
@@ -216,6 +220,19 @@ const comStyles = (menu_hidden) => {
       maxWidth: '20%',
       // overflowY: 'scroll',
       // ...attrs,
-    }
+    },
+    browseListingsButton: {
+      borderRadius: '25px',
+      width: '16vw',
+      position: 'absolute',
+      bottom: '25px',
+      left: '2vw',
+      // backgroundImage: 'linear-gradient(to top, #4481eb 0%, #04befe 100%)',
+      border: 'none',
+      fontWeight: 'bold',
+      background: '#56CCF2',  /* fallback for old browsers */
+			background: '-webkit-linear-gradient(to right, #2F80ED, #56CCF2)',  /* Chrome 10-25, Safari 5.1-6 */
+			background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    },
 	}
 }

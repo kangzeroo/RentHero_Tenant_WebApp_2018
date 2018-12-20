@@ -35,7 +35,7 @@ import { setTenantID } from '../../../actions/tenant/tenant_actions'
 import { unauthRoleTenant } from '../../../api/aws/aws-cognito'
 import auth0 from 'auth0-js'
 
-class TenantRegistrationDialoag extends Component {
+class TenantRegistrationDialog extends Component {
 
   constructor() {
     super()
@@ -94,25 +94,6 @@ class TenantRegistrationDialoag extends Component {
       return []
     }
   }
-
-  // {
-  //   id: '1',
-  //   component: (<MessageSegment
-  //                          schema={{ id: '1', endpoint: '2' }}
-  //                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-  //                          onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
-  //                          texts={[
-  //                            ...this.addAnyPreMessages('1'),
-  //                            { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋 My name is RentHero' },
-  //                            { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm an A.I. real estate agent here to help you find your next home! Here's what I can do for you:` },
-  //                            { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'center' }, text: `🔍 Browse Online Rentals` },
-  //                            { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'center' }, text: `👆 Narrow Your Selection` },
-  //                            { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'center' }, text: `📜 Handle The Paperwork` },
-  //                            { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
-  //                          ]}
-  //                          action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%' } }}
-  //                          segmentStyles={{ justifyContent: 'space-between' }}
-  //                        />) },
 
   rehydrateSegments() {
     this.all_segments = [
@@ -409,7 +390,7 @@ class TenantRegistrationDialoag extends Component {
 
 	render() {
 		return (
-			<div id='TenantRegistrationDialoag' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
+			<div id='TenantRegistrationDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles, this.props.width).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles, this.props.width).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -442,7 +423,7 @@ class TenantRegistrationDialoag extends Component {
 }
 
 // defines the types of variables in this.props
-TenantRegistrationDialoag.propTypes = {
+TenantRegistrationDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
   updatePreferences: PropTypes.func.isRequired,
@@ -454,12 +435,12 @@ TenantRegistrationDialoag.propTypes = {
 }
 
 // for all optional props, define a default value
-TenantRegistrationDialoag.defaultProps = {
+TenantRegistrationDialog.defaultProps = {
 
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TenantRegistrationDialoag)
+const RadiumHOC = Radium(TenantRegistrationDialog)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
@@ -487,7 +468,7 @@ const comStyles = (width) => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: '100%',
       width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
@@ -503,7 +484,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }, width) => {
     scroll: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh',
+      minHeight: '100%',
       position: 'fixed',
 			bottom: '0px',
       width: width || '100%',
@@ -516,7 +497,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }, width) => {
 		scrollable: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: '100%',
       width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',

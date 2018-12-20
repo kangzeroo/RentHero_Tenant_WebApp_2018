@@ -11,8 +11,9 @@ import {
 	Spin,
 } from 'antd'
 import { registerPasswordlessAuth0WithCognito } from '../../api/aws/aws-cognito'
-import { registerTenantPhone, registerTenantEmail } from '../../api/tenant/tenant_api'
+import { registerTenantPhone, registerTenantEmail, addToFavoritesToSQL } from '../../api/tenant/tenant_api'
 import { saveTenantProfileToRedux } from '../../actions/auth/auth_actions'
+import { saveTenantFavoritesToRedux } from '../../actions/tenant/tenant_actions'
 // import { getTenantInfo } from '../../api/tenant/tenant_api'
 import auth0 from 'auth0-js'
 
@@ -46,6 +47,7 @@ class Passwordless extends Component {
 						national_format: phoneObj.nationalFormat,
 						country_code: phoneObj.countryCode,
 						email: emailStr,
+						authenticated: true,
 					}
 
 					return registerTenantPhone(tenantObj)
@@ -53,6 +55,7 @@ class Passwordless extends Component {
 					const tenantObj = {
 						tenant_id: IdentityId,
 						email: emailStr,
+						authenticated: true,
 					}
 
 					return registerTenantEmail(tenantObj)
@@ -65,7 +68,27 @@ class Passwordless extends Component {
 				return this.props.saveTenantProfileToRedux(data.tenant)
 			})
 			.then(() => {
-				this.props.history.push('/intro')
+				let auth_listing_id = localStorage.getItem('auth_listing_id')
+				let auth_action = localStorage.getItem('auth_action')
+				if (auth_listing_id && auth_listing_id.length > 0) {
+					console.log('AUTH LISTING TOKEN EXISTS: ', auth_listing_id)
+					this.props.history.push(`/matches/${auth_listing_id}`)
+					if (auth_action === 'favorite') {
+						addToFavoritesToSQL({
+							tenant_id: this.props.tenant_profile.tenant_id,
+							listing_id: listing_id,
+							meta: ''
+						})
+						.then((data) => {
+							this.props.saveTenantFavoritesToRedux(data.favorites)
+						})
+						.catch((err) => {
+							console.log(err)
+						})
+					}
+				} else {
+					this.props.history.push('/intro')
+				}
 			})
 			.catch((err) => {
 				console.log(err)
@@ -85,6 +108,7 @@ class Passwordless extends Component {
 Passwordless.propTypes = {
 	history: PropTypes.object.isRequired,
 	saveTenantProfileToRedux: PropTypes.func.isRequired,
+	saveTenantFavoritesToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -106,6 +130,7 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
 		saveTenantProfileToRedux,
+		saveTenantFavoritesToRedux,
 	})(RadiumHOC)
 )
 

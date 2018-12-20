@@ -19,9 +19,10 @@ import DesktopSkeleton from './format/desktop/DesktopSkeleton'
 import MobileSkeleton from './format/mobile/MobileSkeleton'
 import RequireAuth from './auth/RequireAuth'
 import AppHome from './home/AppHome'
-import AdPage from './ad/AdPage'
+import ProfilePage from './tenant/ProfilePage'
 import SettingsPage from './settings/SettingsPage'
 import RegistrationHome from './registration/RegistrationHome'
+import TenantFavorites from './favorites/TenantFavorites'
 
 
 class AppRoutes extends Component {
@@ -43,12 +44,14 @@ class AppRoutes extends Component {
   componentWillMount() {
     // this.updateWidth()
     const path = this.props.history.location.pathname
-    if (path.startsWith('/app/ads')) {
-      this.props.changeSelectedTab('ads')
+    if (path.startsWith('/app/profile')) {
+      this.props.changeSelectedTab('profile')
     } else if (path.startsWith('/app/settings')) {
       this.props.changeSelectedTab('settings')
     } else if (path.startsWith('/app/home')) {
       this.props.changeSelectedTab('home')
+    } else if (path.startsWith('/app/favorites')) {
+      this.props.changeSelectedTab('favorites')
     }
   }
 
@@ -74,9 +77,10 @@ class AppRoutes extends Component {
 		return (
 			<Switch>
         <Route exact path='/app/home' component={RequireAuth(AppHome)} />
-        <Route exact path='/app/ads' component={RequireAuth(AdPage)} />
+        <Route exact path='/app/profile' component={RequireAuth(ProfilePage)} />
         <Route exact path='/app/settings' component={RequireAuth(SettingsPage)} />
         <Route exact path='/app/registration' component={RequireAuth(RegistrationHome)} />
+        <Route exact path='/app/favorites' component={RequireAuth(TenantFavorites)} />
       </Switch>
 		)
 	}
@@ -108,12 +112,15 @@ class AppRoutes extends Component {
     if (this.props.authenticated) {
       navs = [
         { key: 'home', title: 'Home', path: '/app/home', icon: (<Icon type='home' />), selectedIcon: (<Icon type='home' style={{ color: '#33A3F4' }} />) },
-        { key: 'ads', title: 'Ads', path: '/app/ads', icon: (<Icon type='appstore' />), selectedIcon: (<Icon type='appstore' style={{ color: '#33A3F4' }} />) },
+        { key: 'profile', title: 'Profile', path: '/app/profile', icon: (<Icon type='user' />), selectedIcon: (<Icon type='user' style={{ color: '#33A3F4' }} />) },
+        { key: 'favorites', title: 'Favorites', path: '/app/favorites', icon: (<Icon type='heart' />), selectedIcon: (<Icon type='heart' style={{ color: '#33A3F4' }} />) },
         { key: 'settings', title: 'Settings', path: '/app/settings', icon: (<Icon type='setting' />), selectedIcon: (<Icon type='setting' style={{ color: '#33A3F4' }} />) },
+        { key: 'search', title: 'Search', path: '/matches', icon: (<Icon type='search' />), selectedIcon: (<Icon type='search' style={{ color: '#33A3F4' }} />) },
       ]
       desktop_navs = [
         { key: 'home', title: 'Home', path: '/app/home', icon: (<Icon type='home' />) },
-        { key: 'ads', title: 'Ads', path: '/app/ads', icon: (<Icon type='appstore' />) },
+        { key: 'profile', title: 'Profile', path: '/app/profile', icon: (<Icon type='user' />) },
+        { key: 'favorites', title: 'Favorites', path: '/app/favorites', icon: (<Icon type='heart' />) },
         { key: 'settings', title: 'Settings', path: '/app/settings', icon: (<Icon type='setting' />) },
       ]
     }

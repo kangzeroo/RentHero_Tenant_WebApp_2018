@@ -18,10 +18,10 @@ class DesktopHeader extends Component {
 	render() {
 		return (
 			<div id='DesktopHeader' style={comStyles().container}>
-				<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>
 				<div style={comStyles().font_logo} onClick={() => this.props.history.push('/app/ads')}>RentHero</div>
-				{/*<DesktopDropdown />*/}
-				<div></div>
+
+				{/*<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>*/}
+				<DesktopDropdown />
 			</div>
 		)
 	}

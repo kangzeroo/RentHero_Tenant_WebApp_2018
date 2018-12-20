@@ -136,16 +136,16 @@ export default (ComposedComponent) => {
 					location = '/'
 				}
 				console.log(this.props.location)
-				if (this.props.location.pathname === '/passwordless') {
-					console.log('PASSWORDLESS')
-					this.props.authenticationLoaded()
-					res({ tenant_id: null })
-				} else {
+				// if (this.props.location.pathname === '/passwordless') {
+				// 	console.log('PASSWORDLESS')
+				// 	this.props.authenticationLoaded()
+				// 	res({ tenant_id: null })
+				// } else {
 					this.startLoginForTenant(location)
 						.then((data) => {
 							res(data)
 						})
-				}
+				// }
 
 			})
 			return p
@@ -163,9 +163,9 @@ export default (ComposedComponent) => {
 							location = '/app/home'
 						}
 						// // if they have, then we'll auto log them in
+						this.props.saveTenantProfileToRedux(data)
 						this.props.authenticateTenant(true)
 						this.props.authenticationLoaded(true)
-						this.props.saveTenantProfileToRedux(data)
 		        this.props.setTenantID(data.tenant_id)
 						res({ tenant_id: data.tenant_id })
 					})

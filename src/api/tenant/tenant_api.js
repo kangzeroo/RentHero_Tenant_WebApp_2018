@@ -32,7 +32,7 @@ export const getFavoritesForTenant = (tenant_id) => {
 
 export const removeFavoriteForTenant = ({tenant_id, property_id}) => {
   const p = new Promise((res, rej) => {
-    axios.post(`${ACCOUNTS_MICROSERVICE}/get_favorites_for_tenant`, { tenant_id, property_id }, authHeaders())
+    axios.post(`${ACCOUNTS_MICROSERVICE}/remove_tenant_favorite`, { tenant_id, property_id }, authHeaders())
       .then((data) => {
         // once we have the response, only then do we dispatch an action to Redux
         res(data.data)
@@ -44,9 +44,9 @@ export const removeFavoriteForTenant = ({tenant_id, property_id}) => {
   return p
 }
 
-export const registerTenantPhone = ({ tenant_id, phone_number, national_format, country_code, email, }) => {
+export const registerTenantPhone = ({ tenant_id, phone_number, national_format, country_code, email, authenticated, }) => {
   const p = new Promise((res, rej) => {
-    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_phone`, { tenant_id, phone_number, national_format, country_code, email, }, authHeaders())
+    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_phone`, { tenant_id, phone_number, national_format, country_code, email, authenticated, }, authHeaders())
       .then((data) => {
         res(data.data)
       })
@@ -57,9 +57,9 @@ export const registerTenantPhone = ({ tenant_id, phone_number, national_format, 
   return p
 }
 
-export const registerTenantEmail = ({ tenant_id, email, }) => {
+export const registerTenantEmail = ({ tenant_id, email, authenticated, }) => {
   const p = new Promise((res, rej) => {
-    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_email`, { tenant_id, email, }, authHeaders())
+    axios.post(`${ACCOUNTS_MICROSERVICE}/register_tenant_email`, { tenant_id, email, authenticated, }, authHeaders())
       .then((data) => {
         res(data.data)
       })
