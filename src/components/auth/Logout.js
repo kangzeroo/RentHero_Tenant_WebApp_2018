@@ -18,7 +18,7 @@ class Logout extends Component {
 		this.props.unauthenticateTenant()
 		this.props.removeTenantProfile()
 		signOutTenant()
-		this.props.history.push('/login')
+		this.props.history.push('/')
 	}
 
 	logoutWebAuth() {
