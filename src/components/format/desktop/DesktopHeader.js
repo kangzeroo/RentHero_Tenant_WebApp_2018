@@ -11,14 +11,17 @@ import {
 
 } from 'antd-mobile'
 import DesktopDropdown from './DesktopDropdown'
+import { triggerDrawerNav } from '../../../actions/app/app_actions'
 
 class DesktopHeader extends Component {
 
 	render() {
 		return (
 			<div id='DesktopHeader' style={comStyles().container}>
+				<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>
 				<div style={comStyles().font_logo} onClick={() => this.props.history.push('/app/ads')}>RentHero</div>
-				<DesktopDropdown />
+				{/*<DesktopDropdown />*/}
+				<div></div>
 			</div>
 		)
 	}
@@ -27,6 +30,7 @@ class DesktopHeader extends Component {
 // defines the types of variables in this.props
 DesktopHeader.propTypes = {
 	history: PropTypes.object.isRequired,
+  triggerDrawerNav: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -47,7 +51,7 @@ const mapReduxToProps = (redux) => {
 // Connect together the Redux store with this React component
 export default withRouter(
 	connect(mapReduxToProps, {
-
+		triggerDrawerNav,
 	})(RadiumHOC)
 )
 

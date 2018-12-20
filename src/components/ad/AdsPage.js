@@ -26,7 +26,7 @@ class AdsPage extends Component {
   renderTitle(prefs) {
     return (
       <div style={{ textAlign: 'left' }}>
-        <h2>{`Homes for you in ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`}</h2>
+        <h2>{`Homes for you near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`}</h2>
       </div>
     )
   }

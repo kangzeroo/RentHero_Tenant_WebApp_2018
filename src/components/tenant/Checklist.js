@@ -60,22 +60,30 @@ class Checklist extends Component {
 
 	checkGroupProgress() {
 		let progress = 0
-		let left = 4
+		let left = 6
 		const GROUP = this.props.prefs.GROUP
 		if (GROUP.ACCEPTABLE_UNITS_AS) {
-			progress += 25
+			progress += 20
 			left -= 1
 		}
 		if (GROUP.CERTAIN_MEMBERS || GROUP.FAMILY_MEMBER_AS) {
-			progress += 25
+			progress += 16
 			left -= 1
 		}
 		if (GROUP.SEARCHING_AS) {
-			progress += 25
+			progress += 16
 			left -= 1
 		}
 		if (GROUP.WHOLE_OR_RANDOM_AS) {
+			progress += 16
+			left -= 1
+		}
+		if (GROUP.BIO) {
 			progress += 25
+			left -= 1
+		}
+		if (this.props.prefs.DOCUMENTS.EMAIL) {
+			progress += 16
 			left -= 1
 		}
 		return {
@@ -124,15 +132,15 @@ class Checklist extends Component {
 					<p>Complete the below questions to create the strongest rental profile.</p>
 				</div>
         <div style={comStyles().dialog_menu}>
-				    <div key='movein' onClick={() => this.props.history.push('/dialog/movein')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkMoveInProgress().progress} width={30} /></div>
+						<div key='finances' onClick={() => this.props.history.push('/dialog/finance')} style={choiceStyles().action}>
+							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkFinanceProgress().progress} width={30} /></div>
 							<div style={choiceStyles().label}>
 								{
-									this.checkMoveInProgress().left == 0
+									this.checkFinanceProgress().left == 0
 									?
-									`Move In`
+									`My Budget`
 									:
-									`Move In - ${this.checkMoveInProgress().left} Left`
+									`My Budget - ${this.checkFinanceProgress().left} Left`
 								}
 							</div>
 						</div>
@@ -148,15 +156,15 @@ class Checklist extends Component {
 								}
 							</div>
 						</div>
-				    <div key='finances' onClick={() => this.props.history.push('/dialog/finance')} style={choiceStyles().action}>
-							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkFinanceProgress().progress} width={30} /></div>
+				    <div key='movein' onClick={() => this.props.history.push('/dialog/movein')} style={choiceStyles().action}>
+							<div style={choiceStyles().status}><Progress type='circle' percent={this.checkMoveInProgress().progress} width={30} /></div>
 							<div style={choiceStyles().label}>
 								{
-									this.checkFinanceProgress().left == 0
+									this.checkMoveInProgress().left == 0
 									?
-									`Set Budget`
+									`Move In`
 									:
-									`Set Budget - ${this.checkFinanceProgress().left} Left`
+									`Move In - ${this.checkMoveInProgress().left} Left`
 								}
 							</div>
 						</div>

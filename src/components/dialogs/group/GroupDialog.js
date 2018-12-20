@@ -264,7 +264,7 @@ class GroupDialog extends Component {
        // scrollStyles: { scroll_styles: { backgroundImage: `url('https://images.mentalfloss.com/sites/default/files/styles/mf_image_16x9/public/doge.png?itok=3mQ7N3-a&resize=1100x1100')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<MultiCounterSegment
                      title='PETS'
-                     schema={{ id: 'furry_friends', endpoint: 'finish' }}
+                     schema={{ id: 'furry_friends', endpoint: 'looking_for_in_rental' }}
                      triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                      onDone={(original_id, endpoint, data) => this.doneFurryFriends(original_id, endpoint, data)}
                      texts={[
@@ -287,6 +287,40 @@ class GroupDialog extends Component {
                      }}
                      defaultRenderCountValue={(c) => c}
                   /> )},
+      {
+        id: 'looking_for_in_rental',
+        // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+        component: (<InputSegment
+                              title='Desired Home'
+                              schema={{ id: 'looking_for_in_rental', endpoint: 'my_email' }}
+                              triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                              onDone={(original_id, endpoint, data) => this.doneLookingForInRental(original_id, endpoint, data)}
+                              texts={[
+                                ...this.addAnyPreMessages('looking_for_in_rental'),
+                                { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "What are you looking for in a rental?" },
+                              ]}
+                              initialData={{
+                                input_string: this.props.prefs.GROUP.BIO
+                              }}
+                              inputType={'textarea'}
+                           />)},
+     {
+       id: 'my_email',
+       // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+       component: (<InputSegment
+                             title='Email'
+                             schema={{ id: 'my_email', endpoint: 'finish' }}
+                             triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                             onDone={(original_id, endpoint, data) => this.doneMyEmail(original_id, endpoint, data)}
+                             texts={[
+                               ...this.addAnyPreMessages('my_email'),
+                               { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "What is your email?" },
+                             ]}
+                             initialData={{
+                               input_string: this.props.prefs.DOCUMENTS.EMAIL
+                             }}
+                             inputType={'email'}
+                          />)},
       // {
       //   id: 'desired_rooms',
       //   // scrollStyles: { scroll_styles: { backgroundImage: `url('https://s7d4.scene7.com/is/image/roomandboard/ella_259692_17e_g?$str_g$&size=1968,1450&scl=1')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
@@ -463,6 +497,38 @@ class GroupDialog extends Component {
       GROUP_NAME: data.input_string,
     }).then((GROUP) => {
       this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneLookingForInRental(original_id, endpoint, data) {
+    // the endpoint coming in from <MultiOptionsSegment> is the default
+    // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
+    // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.GROUP.KEY,
+      BIO: data.input_string,
+    }).then((GROUP) => {
+      this.props.updatePreferences(GROUP)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneMyEmail(original_id, endpoint, data) {
+    // the endpoint coming in from <MultiOptionsSegment> is the default
+    // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
+    // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
+    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.DOCUMENTS.KEY,
+      EMAIL: data.input_string,
+    }).then((DOCUMENTS) => {
+      this.props.updatePreferences(DOCUMENTS)
     }).catch((err) => {
       console.log(err)
     })
