@@ -96,7 +96,7 @@ class LandingDialog extends Component {
     if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
       console.log("AUTHENTICATED")
     } else {
-      this.props.history.push('/register')
+      this.props.history.push('/intro')
     }
   }
 
@@ -112,10 +112,10 @@ class LandingDialog extends Component {
                                texts={[
                                  ...this.addAnyPreMessages('1'),
                                  { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋  Welcome to RentHero' },
-                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm an A.I. rental agent here to help you find your next home! Here's what I can do for you:` },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm a virtual rental agent here to help you find your next home! Here's what I can do for you:` },
                                  { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'left' }, text: `💸 Spot the good deals` },
-                                 { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'left' }, text: `📜 Prepare your paperwork` },
-                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'left' }, text: `🔍 Find 1 home from the 1000s online` },
+                                 { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'left' }, text: `📜 Give advice` },
+                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'left' }, text: `🔍 Find your 1 home from 1000s` },
                                  { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
                                ]}
                                action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%', textAlign: 'center', } }}

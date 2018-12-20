@@ -19,6 +19,7 @@ import {
   Icon,
   message,
 } from 'antd'
+import { isMobile } from '../../../api/general/general_api'
 import LikeableImage from './LikeableImage'
 
 class AdCoverSection extends Component {
@@ -47,6 +48,15 @@ class AdCoverSection extends Component {
 			imageCarouselSelectedIndex: nextIndex
 		})
 	}
+
+  clickedBack() {
+    if (isMobile()) {
+      this.props.history.goBack()
+      this.props.setListing({}, null)
+    } else {
+      this.props.setListing({}, '/matches')
+    }
+  }
 
   renderCoverImage() {
     return (
@@ -114,7 +124,7 @@ class AdCoverSection extends Component {
           <Button type='default' style={{ position: 'absolute', bottom: '20px', right: '10px', }} onClick={() => this.props.onShowAll()} icon='appstore'>
             Tour this Home
           </Button>
-          <Button type='default' style={{ position: 'absolute', top: '10px', left: '10px' }} icon='left' onClick={() => this.props.setListing({}, '/matches')}>
+          <Button type='default' style={{ position: 'absolute', top: '10px', left: '10px' }} icon='left' onClick={() => this.clickedBack()}>
             BACK
           </Button>
           {

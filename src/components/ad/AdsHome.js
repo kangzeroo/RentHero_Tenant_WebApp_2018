@@ -72,7 +72,9 @@ class AdsHome extends Component {
       loading: false,
     })
     this.props.setCurrentListing(listing)
-    history.pushState(null, null, url)
+		if (url) {
+    	history.pushState(null, null, url)
+		}
   }
 
 

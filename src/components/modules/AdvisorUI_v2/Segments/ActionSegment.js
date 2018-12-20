@@ -397,7 +397,7 @@ const choiceStyles = (selected_choices, choice) => {
       textAlign: 'center',
       ...selectedStyle,
       ":hover": {
-        backgroundColor: 'rgba(256,256,256,1)',
+        backgroundColor: FONT_COLOR,
         color: INVERSE_FONT_COLOR
       }
     }

@@ -1,9 +1,10 @@
 import {
+  AIRBNB_BLUE,
   BLUE_PACKAGE,
   CLEAN_PAPER,
 } from './color_packs'
 
-const PACKAGE = CLEAN_PAPER
+const PACKAGE = AIRBNB_BLUE
 
 export const FONT_FAMILY = PACKAGE.FONT_FAMILY
 export const FONT_FAMILY_ACCENT = PACKAGE.FONT_FAMILY_ACCENT

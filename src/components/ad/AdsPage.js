@@ -23,6 +23,7 @@ import {
 import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
+import { isMobile } from '../../api/general/general_api'
 
 class AdsPage extends Component {
 
@@ -31,7 +32,14 @@ class AdsPage extends Component {
     this.state = {
       search_string: '',
       show_filter: false,
+      mobile: false,
     }
+  }
+
+  componentWillMount() {
+    this.setState({
+			mobile: isMobile()
+		}, () => console.log(this.state))
   }
 
 	componentDidUpdate(prevProps, prevState) {
@@ -66,16 +74,20 @@ class AdsPage extends Component {
     } else {
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Input
-            value={this.state.search_string}
-            onChange={(e) => this.setState({ search_string: e.target.value })}
-            placeholder={`Homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`}
-            style={{ width: '70%', borderRadius: '25px', }}
-          />
+          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
           &nbsp;
           <Tooltip title='Filter'>
             <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true })} size='large' style={{ fontSize: '1.5rem' }} />
           </Tooltip>
+          {
+            this.state.mobile
+            ?
+            <Button onClick={() => this.props.history.push('/map')} type='ghost' size='small' style={{ width: '50px', margin: '0px 0px 0px 5px' }}>
+              <i className='ion-ios-location' style={{ fontSize: '0.9rem' }} />
+            </Button>
+            :
+            null
+          }
         </div>
       )
     }

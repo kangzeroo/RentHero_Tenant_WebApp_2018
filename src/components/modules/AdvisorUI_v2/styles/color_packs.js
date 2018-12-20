@@ -1,4 +1,18 @@
 
+// THE AIRBNB BLUE PACKAGE
+export const AIRBNB_BLUE = {
+  FONT_FAMILY: `'Open sans', serif`,
+  FONT_FAMILY_ACCENT: `'Prata', serif`,
+  BACKGROUND_COLOR: 'white',  /* fallback for old browsers */
+  BACKGROUND_WEBKIT: 'white',  /* Chrome 10-25, Safari 5.1-6 */
+  BACKGROUND_MODERN: 'white', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  INPUT_BACKGROUND: 'rgba(0,0,0,0.1)',
+  INPUT_PLACEHOLDER_COLOR: 'rgba(0,0,0,0.3)',
+  ACCENT_COLOR: '#108ee9',
+  FONT_COLOR: 'rgba(0, 0, 0, 0.85)',
+  INVERSE_FONT_COLOR: 'rgba(256, 256, 256, 0.85)',
+}
+
 
 // THE BLUE PACKAGE
 export const BLUE_PACKAGE = {

@@ -44,6 +44,7 @@ class OnboardingDialog extends Component {
       progress_percent: 0,
       phone: '',
       first_name: '',
+      group_size: 1,
     }
     this.all_segments = []
     this.shown_segments = []
@@ -51,7 +52,7 @@ class OnboardingDialog extends Component {
   }
 
   componentWillMount() {
-    this.retrieveTenantFromLocalStorage()
+    // this.retrieveTenantFromLocalStorage()
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
     this.setState({ lastUpdated: moment().unix() })
@@ -76,21 +77,21 @@ class OnboardingDialog extends Component {
     }
   }
 
-  retrieveTenantFromLocalStorage() {
-    if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
-      console.log('TENANT PROFILE EXISTS... MOVING ON')
-    } else {
-      const tenant_id = localStorage.getItem('tenant_id')
-      if (tenant_id) {
-        this.props.saveTenantProfileToRedux({
-          tenant_id: tenant_id,
-          authenticated: false,
-        })
-      } else {
-        console.log('NO TENANT ID')
-      }
-    }
-  }
+  // retrieveTenantFromLocalStorage() {
+  //   if (this.props.tenant_profile && this.props.tenant_profile.tenant_id) {
+  //     console.log('TENANT PROFILE EXISTS... MOVING ON')
+  //   } else {
+  //     const tenant_id = localStorage.getItem('tenant_id')
+  //     if (tenant_id) {
+  //       this.props.saveTenantProfileToRedux({
+  //         tenant_id: tenant_id,
+  //         authenticated: false,
+  //       })
+  //     } else {
+  //       console.log('NO TENANT ID')
+  //     }
+  //   }
+  // }
 
   addAnyPreMessages(segment_id) {
     const prem = this.state.premessages.filter((pre) => {
@@ -105,6 +106,24 @@ class OnboardingDialog extends Component {
 
   rehydrateSegments() {
     this.all_segments = [
+      {
+        id: '0',
+        component: (<MessageSegment
+                               schema={{ id: '0', endpoint: '1' }}
+                               triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                               onDone={(original_id, endpoint, data) => this.done(original_id, endpoint, data)}
+                               texts={[
+                                 ...this.addAnyPreMessages('1'),
+                                 { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: 'Hello 👋  Welcome to RentHero' },
+                                 { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `I'm a virtual rental agent here to help you find your next home! Here's what I can do for you:` },
+                                 { id: '0-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '10px 0px 5px 0px', textAlign: 'left' }, text: `💸 Find good deals` },
+                                 { id: '0-5', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 10px 0px', textAlign: 'left' }, text: `📜 Give advice` },
+                                 { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'left' }, text: `🔍 Find your 1 home from 1000s` },
+                                 { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
+                               ]}
+                               action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%', textAlign: 'center', } }}
+                               segmentStyles={{ justifyContent: 'space-between' }}
+                             />) },
      {
        id: '1',
        comment: 'whats your name',
@@ -155,10 +174,10 @@ class OnboardingDialog extends Component {
                                   id: '3',
                                   endpoint: '4',
                                   choices: [
-                                    { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '5' },
-                                    { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '5' },
-                                    { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '5' },
-                                    { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '5' }
+                                    { id: '4-1', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'DRIVING', value: false, endpoint: '4' },
+                                    { id: '4-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'TRANSIT', value: false, endpoint: '4' },
+                                    { id: '4-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'WALKING', value: false, endpoint: '4' },
+                                    { id: '4-4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY_ACCENT }, text: 'BICYCLING', value: false, endpoint: '4' }
                                   ]
                                 }}
                                 texts={[
@@ -209,7 +228,7 @@ class OnboardingDialog extends Component {
                                 }}
                                 texts={[
                                   ...this.addAnyPreMessages('5'),
-                                  { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.props.prefs.GROUP.CERTAIN_MEMBERS} rooms (possibly with other new roommates)?` },
+                                  { id: '6-1', scrollDown: true, text: `And are you looking to rent an entire place, or just ${this.state.group_size} rooms (possibly with other new roommates)?` },
                                 ]}
                                 onDone={(original_id, endpoint, data) => this.suitesRoomsDone(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -265,7 +284,7 @@ class OnboardingDialog extends Component {
        id: '7',
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://s3.amazonaws.com/renthero-public-assets/images/Screen+Shot+2018-12-05+at+11.05.09+PM.png')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<ActionSegment
-                               title='FINISH'
+                               segmentStyles={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                                schema={{
                                  id: '7',
                                  endpoint: null,
@@ -352,6 +371,9 @@ class OnboardingDialog extends Component {
 
   doneGroupSize(original_id, endpoint, data) {
     console.log(data)
+    this.setState({
+      group_size: data.count,
+    })
     this.done(original_id, endpoint, data)
     saveTenantPreferences({
       TENANT_ID: this.props.tenant_profile.tenant_id,

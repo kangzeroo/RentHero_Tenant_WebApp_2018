@@ -11,8 +11,11 @@ import { withRouter } from 'react-router-dom'
 import Ionicon from 'react-ionicons'
 import {
   Icon,
+  Button,
 } from 'antd-mobile'
+import {  } from 'antd'
 import PolarGraph from './PolarGraph'
+import EditSearch from '../edits/EditSearch'
 import { calculateNearbyStats } from '../../api/analytics/analytics_api'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
 import { getHeatMapDist } from '../../api/analytics/analytics_api'
@@ -25,6 +28,7 @@ class HeatMapHunting extends Component {
   constructor() {
     super()
     this.state = {
+      preview_visible: false,
       deletablePolygon: false,
       ads: [],
       heat_points: [],
@@ -33,7 +37,7 @@ class HeatMapHunting extends Component {
         matches: [],
         avg_price_per_bed: 0,
       },
-      show_filter: true,
+      show_filter: false,
     }
     this.map = null
     this.heatMap = null
@@ -52,7 +56,7 @@ class HeatMapHunting extends Component {
     this.refreshPins.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
 
     console.log(this.pins, this.props)
@@ -64,7 +68,10 @@ class HeatMapHunting extends Component {
         heat_points: data.map((d) => {
           return new google.maps.LatLng(d.GPS.lat, d.GPS.lng)
         })
-      }, () => this.loadHeatMap())
+      }, () => {
+        this.loadHeatMap()
+        this.refreshPins(this.props, this.props)
+      })
     }).catch((err) => {
       console.log(err)
     })
@@ -117,7 +124,7 @@ class HeatMapHunting extends Component {
                   position: new google.maps.LatLng(n.GPS.lat, n.GPS.lng),
                   pin_type: 'listing',
                   icon: this.red_map_pin,
-                  zIndex: 50,
+                  zIndex: 10,
               })
           bounds.extend(marker.position)
           marker.pin_id = n.REFERENCE_ID
@@ -127,8 +134,11 @@ class HeatMapHunting extends Component {
             if (self.bufferPin) {
               this.addBackBufferPin()
             }
-
+            self.props.setCurrentListing(n)
             self.props.setListing(n, `/matches/${n.REFERENCE_ID}`)
+            self.setState({
+              preview_visible: true
+            })
             self.bufferPin = marker
             this.createBlueIndicatorPin(marker)
           })
@@ -138,7 +148,6 @@ class HeatMapHunting extends Component {
   				if (marker) {
   					marker.setMap(self.map)
   					self.pins.push(marker)
-            console.log(self.pins)
   				}
         }
       })
@@ -245,7 +254,7 @@ class HeatMapHunting extends Component {
       styles: mapStyles,
       disableDefaultUI: true,
       clickableIcons: false,
-      mapTypeControl: true,
+      mapTypeControl: this.props.fullscreenSearch ? false : true,
       mapTypeControlOptions: {
           style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
           position: google.maps.ControlPosition.TOP_CENTER
@@ -292,6 +301,7 @@ class HeatMapHunting extends Component {
           clicked_point: null,
           nearby_stats: {},
           show_filter: false,
+          preview_visible: false,
         })
       })
     });
@@ -309,12 +319,15 @@ class HeatMapHunting extends Component {
       if (self.current_polygon) {
         self.current_polygon.setOptions({ fillColor: '#529FE2', strokeColor: '#117bc7' })
       }
+      self.setState({
+        preview_visible: false,
+      })
       const nearby_stats = calculateNearbyStats(point, self.state.ads, 1000)
       self.setState({
         clicked_point: point,
         nearby_stats: nearby_stats,
         deletablePolygon: false,
-        show_filter: true,
+        show_filter: false,
       })
     })
     self.refreshPins(self.props, self.props)
@@ -325,70 +338,69 @@ class HeatMapHunting extends Component {
     this.current_polygon = null
     this.setState({
       deletablePolygon: false,
-      show_filter: true,
+      show_filter: false,
     })
   }
 
-  renderActionBar() {
-    if (this.state.show_filter) {
-      return (
-        <div style={searchStyles().searchDiv}>
-          <div onClick={() => this.props.history.push('/matches')} style={searchStyles().filterSearch}>
-            &nbsp;
-            <Ionicon icon="md-search" color='white' fontSize='2rem' />
-            <div style={{ width: '100%', textAlign: 'center' }}>EXPLORE</div>
-          </div>
-          {/*<div style={searchStyles().playSearch}>
-            <Ionicon icon="md-play" color='white' fontSize='2rem' />
-          </div>*/}
-        </div>
-      )
-    } else if (this.state.deletablePolygon && this.current_polygon) {
-      return (
-        <div style={searchStyles().searchDiv}>
-          <div style={searchStyles().applyFilter}>
-            <div style={{ width: '100%', textAlign: 'center' }}>APPLY FILTER</div>
-          </div>
-          <div onClick={() => this.deletePolygon(this.current_polygon)} style={searchStyles().deleteFilter}>
-            <Ionicon icon="md-trash" color='white' fontSize='2rem' />
-          </div>
-        </div>
-      )
-    } else {
-      return null
+  // () => this.deletePolygon(this.current_polygon)
+
+  clickedPreview(e, current_listing) {
+    if (e) {
+      e.stopPropagation()
+    }
+    if (this.props.fullscreenSearch) {
+      // go to the listing
+      this.props.history.push(`/matches/${current_listing.REFERENCE_ID}`)
     }
   }
 
 	render() {
 		return (
 			<div id='HeatMapHunting' style={comStyles().container}>
-        {/*<div onClick={() => this.props.triggerDrawerNav(true)} style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 4, color: 'white', cursor: 'pointer' }}>
-          <Ionicon icon="md-menu" color='#117bc7b3' fontSize='2rem' />
-        </div>*/}
         <div id="map" style={comStyles().map}></div>
-        {/*
-          this.state.nearby_stats.matches && this.state.nearby_stats.matches.length
+        {
+          this.props.fullscreenSearch
           ?
-          <div style={statStyles().popup}>
-            <div style={statStyles().pop_container}>
-              <div onClick={() => this.setState({ nearby_stats: {} })} style={comStyles().exit}>X</div>
-              <PolarGraph
-                ads={this.state.nearby_stats.matches}
-                style={{ width: '400px', height: 'auto' }}
-              />
-              <span style={{ fontSize: '1rem', color: 'black' }}>
-                Average
-                <span style={{ fontSize: '2rem', color: 'black' }}> ${this.state.nearby_stats.avg_price_per_bed} </span>
-                per Room
-              </span>
-              <span style={{ fontSize: '1rem', color: 'black' }}>
-                From {this.state.nearby_stats.matches.length} recent rentals
-              </span>
+          <div style={searchStyles().quickbar}>
+            <Button onClick={() => this.props.history.push('/matches')} size='small' type="ghost" style={searchStyles().list}>List</Button>
+            <Button onClick={() => this.setState({ show_filter: true })} size='small' type="ghost" style={searchStyles().filter}>Filter</Button>
+          </div>
+          :
+          null
+        }
+        {
+          this.state.show_filter
+          ?
+          <div style={{ position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%', backgroundColor: 'white' }}>
+            <EditSearch
+              onBack={() => this.setState({ show_filter: false })}
+              onComplete={() => this.setState({ show_filter: false })}
+            />
+          </div>
+          :
+          null
+        }
+        {
+          this.props.current_listing && this.state.preview_visible && this.props.preview
+          ?
+          <div onClick={(e) => this.clickedPreview(e, this.props.current_listing)} style={previewStyles().popup}>
+            <div style={previewStyles().pop_container}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', height: '100%', width: '150px', maxWidth: '150px', overflow: 'hidden' }}>
+                <img src={this.props.current_listing.IMAGES[0].url} style={{ width: '100%', height: 'auto'  }} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', flexGrow: 1, color: 'black', padding: '5px 10px 5px 10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                  <h3>${this.props.current_listing.PRICE}</h3>
+                  <i className='ion-ios-heart' style={{ fontSize: '1.3rem', color: 'red' }} />
+                </div>
+                <div style={{ fontSize: '0.7rem' }}>{this.props.current_listing.TITLE}</div>
+                <div style={{ fontSize: '0.7rem' }}>{`${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths`}</div>
+              </div>
             </div>
           </div>
           :
-          null //this.renderActionBar()
-        */}
+          null
+        }
 			</div>
 		)
 	}
@@ -404,6 +416,8 @@ HeatMapHunting.propTypes = {
   setCurrentListing: PropTypes.func.isRequired,
   setListing: PropTypes.func,           // passed in
   showFlagPin: PropTypes.bool,            // passed in
+  preview: PropTypes.bool,          // passed in
+  fullscreenSearch: PropTypes.bool,
 }
 
 // for all optional props, define a default value
@@ -412,6 +426,8 @@ HeatMapHunting.defaultProps = {
   current_listing: {},
   setListing: () => {},
   showFlagPin: false,
+  preview: false,
+  fullscreenSearch: false,
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -466,22 +482,21 @@ const comStyles = () => {
 	}
 }
 
-const statStyles = () => {
+const previewStyles = () => {
   return {
     popup: {
-      width: '95%',
-      height: '40vh',
-      minHeight: '300px',
+      width: '100%',
+      height: '20vh',
+      maxHeight: '250px',
       backgroundColor: 'white',
       position: 'absolute',
       bottom: '0px',
-      left: '2.5%',
-      borderRadius: '20px 20px 0px 0px',
+      left: '0px',
     },
     pop_container: {
       display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       color: 'white',
       position: 'relative',
@@ -493,68 +508,26 @@ const statStyles = () => {
 
 const searchStyles = () => {
   return {
-    searchDiv: {
+    quickbar: {
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'flex-end',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
       alignSelf: 'center',
-      width: '80vw',
-      maxWidth: '500px',
       position: 'absolute',
-      bottom: '5vh',
+      left: '20px',
+      top: '10px',
     },
-    filterSearch: {
-        borderRadius: '10px',
-        color: 'white',
-        fontSize: '1.5rem',
-        backgroundColor: 'rgb(17, 123, 199, 0.7)',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        margin: '0px 5px',
-        padding: '10px',
-        width: '100%',
-        cursor: 'pointer',
+    list: {
+      width: '70px',
+      borderRadius: '5px 0px 0px 5px',
+      margin: '0px 5px 0px 0px',
+      backgroundColor: 'white',
     },
-    applyFilter: {
-        borderRadius: '10px',
-        color: 'white',
-        fontSize: '1.5rem',
-        backgroundColor: '#F06767',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        margin: '0px 5px',
-        padding: '10px',
-        width: '100%',
-        cursor: 'pointer',
-    },
-    playSearch: {
-        borderRadius: '50%',
-        color: 'white',
-        fontSize: '2rem',
-        backgroundColor: 'rgb(17, 123, 199, 0.7)',
-        margin: '0px 5px',
-        padding: '10px 10px 10px 12px',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    deleteFilter: {
-        borderRadius: '50%',
-        color: 'white',
-        fontSize: '2rem',
-        backgroundColor: '#F06767',
-        margin: '0px 5px',
-        padding: '10px 10px 10px 10px',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
+    filter: {
+      width: '100px',
+      borderRadius: '0px 5px 5px 0px',
+      backgroundColor: 'white',
     }
   }
 }

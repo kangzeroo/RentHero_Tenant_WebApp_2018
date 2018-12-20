@@ -159,9 +159,9 @@ export default (ComposedComponent) => {
 					})
 					.then((data) => {
 						console.log(data)
-						if (location === '/') {
-							location = '/app/home'
-						}
+						// if (location === '/') {
+						// 	location = '/app/home'
+						// }
 						// // if they have, then we'll auto log them in
 						this.props.saveTenantProfileToRedux(data)
 						this.props.authenticateTenant(true)
