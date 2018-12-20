@@ -23,6 +23,13 @@ class AdsPage extends Component {
     }
   }
 
+	componentDidUpdate(prevProps, prevState) {
+    console.log(this.props.auth.authentication_loaded, this.props.auth.authenticated)
+		if (!this.props.auth.authentication_loaded || !this.props.auth.authenticated) {
+			this.props.history.push('/')
+		}
+	}
+
   renderTitle(prefs) {
     return (
       <div style={{ textAlign: 'left' }}>
@@ -100,6 +107,7 @@ AdsPage.propTypes = {
   setCurrentListing: PropTypes.func.isRequired,
   loading_complete: PropTypes.bool.isRequired,
   setListing: PropTypes.func.isRequired,          // passed in
+  auth: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -116,6 +124,7 @@ const mapReduxToProps = (redux) => {
     prefs: redux.prefs,
     listings: redux.listings,
     loading_complete: redux.app.loading_complete,
+    auth: redux.auth,
 	}
 }
 

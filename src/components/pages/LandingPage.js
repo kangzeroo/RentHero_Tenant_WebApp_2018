@@ -28,13 +28,13 @@ class LandingPage extends Component {
 		this.setState({
 			mobile: isMobile()
 		})
-		if (this.props.authentication_loaded) {
+		if (this.props.auth.authentication_loaded && this.props.auth.authenticated) {
 			this.props.history.push('/matches')
 		}
 	}
 
-	componentDidUpdate() {
-		if (this.props.authentication_loaded) {
+	componentDidMount() {
+		if (this.props.auth.authentication_loaded && this.props.auth.authenticated) {
 			this.props.history.push('/matches')
 		}
 	}
@@ -46,9 +46,9 @@ class LandingPage extends Component {
 				mobile: isMobile(),
 			})
 		}
-		console.log(prevProps.authentication_loaded, this.props.authentication_loaded)
-		if (prevProps.authentication_loaded !== this.props.authentication_loaded) {
-			if (this.props.authentication_loaded) {
+		console.log(prevProps.auth.authentication_loaded, this.props.auth.authentication_loaded)
+		if (prevProps.auth.authentication_loaded !== this.props.auth.authentication_loaded || prevProps.auth.authenticated !== this.props.auth.authenticated) {
+			if (this.props.auth.authentication_loaded && this.props.auth.authenticated) {
 				this.props.history.push('/matches')
 			}
 		}
@@ -82,7 +82,7 @@ class LandingPage extends Component {
 // defines the types of variables in this.props
 LandingPage.propTypes = {
 	history: PropTypes.object.isRequired,
-	authentication_loaded: PropTypes.string.isRequired,
+	auth: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -96,7 +96,7 @@ const RadiumHOC = Radium(LandingPage)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-		authentication_loaded: redux.auth.authentication_loaded,
+		auth: redux.auth,
 	}
 }
 
