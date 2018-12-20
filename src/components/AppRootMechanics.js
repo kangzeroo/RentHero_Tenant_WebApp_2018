@@ -43,7 +43,8 @@ import { DOCUMENTS } from '../reducers/prefs/schemas/documents_schema'
 import { ROOMMATES } from '../reducers/prefs/schemas/roommates_schema'
 import { isMobile } from '../api/general/general_api'
 import { isMobileRedux } from '../actions/app/app_actions'
-import { setTenantID } from '../actions/tenant/tenant_actions'
+import { setTenantID, saveTenantFavoritesToRedux, } from '../actions/tenant/tenant_actions'
+import { getFavoritesForTenant } from '../api/tenant/tenant_api'
 
 
 // this 'higher order component'(HOC) creator takes a component (called ComposedComponent)
@@ -118,6 +119,13 @@ export default (ComposedComponent) => {
 					}).catch((err) => {
 						console.log(err)
 					})
+			getFavoritesForTenant(tenant_id)
+				.then((data) => {
+					this.props.saveTenantFavoritesToRedux(data)
+				})
+				.catch((err) => {
+					console.log(err)
+				})
 		}
 
 		checkIfTenantLoggedIn() {
@@ -275,6 +283,7 @@ export default (ComposedComponent) => {
 		prefs: PropTypes.object.isRequired,
 		isMobileRedux: PropTypes.func.isRequired,
 		setTenantID: PropTypes.func.isRequired,
+		saveTenantFavoritesToRedux: PropTypes.func.isRequired,
   }
 
   // for all optional props, define a default value
@@ -305,6 +314,7 @@ export default (ComposedComponent) => {
 			saveTenantProfileToRedux,
 			isMobileRedux,
 			setTenantID,
+			saveTenantFavoritesToRedux,
     })(AppRootMechanics)
 	)
 }
