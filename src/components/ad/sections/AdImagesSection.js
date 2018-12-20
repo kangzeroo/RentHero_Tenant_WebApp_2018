@@ -44,6 +44,9 @@ class AdImagesSection extends Component {
                 cover={<img src={item.url} style={imgStyles(shown_imgs.length < 3).image} />}
                 bordered={false}
                 bodyStyle={{ height: 0, margin: 0, padding: 0, }}
+                style={{
+                  maxHeight: '250px'
+                }}
               />
             </List.Item>
           )}
@@ -70,6 +73,9 @@ class AdImagesSection extends Component {
                 cover={<img src={item.url} style={imgStyles(shown_imgs.length < 3).image} />}
                 bordered={false}
                 bodyStyle={{ height: 0, margin: 0, padding: 0, }}
+                style={{
+                  maxHeight: '250px'
+                }}
               />
             </List.Item>
           )}
@@ -96,6 +102,9 @@ class AdImagesSection extends Component {
                 cover={<img src={item.url} style={imgStyles(shown_imgs.length < 3).image} />}
                 bordered={false}
                 bodyStyle={{ height: 0, margin: 0, padding: 0, }}
+                style={{
+                  maxHeight: '250px'
+                }}
               />
             </List.Item>
           )}
@@ -151,6 +160,9 @@ class AdImagesSection extends Component {
                 cover={<img src={item.url} style={imgStyles(shown_imgs.length < 3).image} />}
                 bordered={false}
                 bodyStyle={{ height: 0, margin: 0, padding: 0, }}
+                style={{
+                  maxHeight: '250px'
+                }}
               />
             </List.Item>
           )}

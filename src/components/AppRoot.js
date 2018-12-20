@@ -23,6 +23,11 @@ import {
   List,
   Drawer,
 } from 'antd-mobile'
+import {
+  Menu,
+  Dropdown,
+  Icon,
+} from 'antd'
 import enUS from 'antd-mobile/lib/locale-provider/en_US'
 import AppRootMechanics from './AppRootMechanics'
 import AppRoutes from './AppRoutes'
@@ -76,13 +81,59 @@ class AppRoot extends Component {
     this.props.history.push(path)
   }
 
-	render() {
+  renderDrawer() {
     const sidebar = [
       <List.Item key={0} onClick={() => this.clickedDrawerOption('/matches')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Browse</span></List.Item>,
       <List.Item key={9} onClick={() => this.clickedDrawerOption('/checklist')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Checklist</span></List.Item>,
       <List.Item key={3} onClick={() => this.clickedDrawerOption('/favourites')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Favorites</span></List.Item>,
       <List.Item key={5} onClick={() => this.clickedDrawerOption('/logout')} style={{ backgroundColor: 'rgba(0,0,0,0)' }}><span style={{ color: 'black' }}>Logout</span></List.Item>,
     ]
+    return (
+      <Drawer
+        className="main-navigation"
+        style={{ minHeight: document.documentElement.clientHeight }}
+        enableDragHandle={false}
+        sidebarStyle={{
+          zIndex: '99',
+          width: '40vw',
+          minWidth: '250px',
+          background: 'white',
+          // background: '#00c6ff', /* fallback for old browsers */
+          // background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
+          // background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }}
+        contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
+        overlayStyle={{ zIndex: '10', backgroundColor: 'rgba(0,0,0,0.5)' }}
+        sidebar={sidebar}
+        open={this.props.drawer_nav_open}
+        onOpenChange={() => this.props.triggerDrawerNav(false)}
+      >
+        <Route exact path='/sandbox' render={EditSearch} />
+        <Route exact path='/' render={LandingPage} />
+        <Route exact path='/register' render={RegisterPage} />
+
+          <Route exact path='/checklist' render={Checklist} />
+        <Route exact path='/heatmap' render={HeatMapHunting} />
+
+        <Route exact path='/matches' render={AdsHome} />
+        <Route exact path='/matches/:ref_id' render={AdsHome} />
+        {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
+
+        <Route exact path='/no_more' render={NoMoreListings} />
+        <Route exact path='/cover' render={CoverPage} />
+        {/*<Route exact path='/sample' render={AdvisorUI} />
+        <Route exact path='/sino' render={ChineseDialogOnboarding} />*/}
+        {/*<Route exact path='/onboarding' render={OnboardingDialog} />*/}
+        <Route exact path='/dialog/movein' render={MoveInDialog} />
+        <Route exact path='/dialog/group' render={GroupDialog} />
+        {/*<Route exact path='/dialog/personal' render={RoommatesDialog} />*/}
+        <Route exact path='/dialog/finance' render={FinancialDialog} />
+        <Route exact path='/dialog/credit' render={CreditDialog} />
+      </Drawer>
+    )
+  }
+
+	render() {
     if (this.props.authentication_loaded) {
       return (
         <LocaleProvider locale={enUS}>
@@ -106,47 +157,9 @@ class AppRoot extends Component {
 
             <Route path='/app/*' component={AppRoutes} />
 
-            <Drawer
-              className="main-navigation"
-              style={{ minHeight: document.documentElement.clientHeight }}
-              enableDragHandle={false}
-              sidebarStyle={{
-                zIndex: '99',
-                width: '40vw',
-                minWidth: '250px',
-                background: 'white',
-          			// background: '#00c6ff', /* fallback for old browsers */
-          		  // background: '-webkit-linear-gradient(to right, #00c6ff, #0072ff)', /* Chrome 10-25, Safari 5.1-6 */
-          		  // background: 'linear-gradient(to right, #00c6ff, #0072ff)' /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-              }}
-              contentStyle={{ color: '#A6A6A6', textAlign: 'center' }}
-              overlayStyle={{ zIndex: '10', backgroundColor: 'rgba(0,0,0,0.5)' }}
-              sidebar={sidebar}
-              open={this.props.drawer_nav_open}
-              onOpenChange={() => this.props.triggerDrawerNav(false)}
-            >
-              <Route exact path='/sandbox' render={EditSearch} />
-              <Route exact path='/' render={LandingPage} />
-              <Route exact path='/register' render={RegisterPage} />
-
-                <Route exact path='/checklist' render={Checklist} />
-              <Route exact path='/heatmap' render={HeatMapHunting} />
-
-              <Route exact path='/matches' render={AdsHome} />
-              <Route exact path='/matches/:ref_id' render={AdsHome} />
-              {/*<Route exact path='/prefs' render={SearchPrefs} />*/}
-
-              <Route exact path='/no_more' render={NoMoreListings} />
-              <Route exact path='/cover' render={CoverPage} />
-              {/*<Route exact path='/sample' render={AdvisorUI} />
-              <Route exact path='/sino' render={ChineseDialogOnboarding} />*/}
-              {/*<Route exact path='/onboarding' render={OnboardingDialog} />*/}
-              <Route exact path='/dialog/movein' render={MoveInDialog} />
-              <Route exact path='/dialog/group' render={GroupDialog} />
-              {/*<Route exact path='/dialog/personal' render={RoommatesDialog} />*/}
-              <Route exact path='/dialog/finance' render={FinancialDialog} />
-              <Route exact path='/dialog/credit' render={CreditDialog} />
-            </Drawer>
+            {
+              this.renderDrawer()
+            }
           </Switch>
         </LocaleProvider>
       )

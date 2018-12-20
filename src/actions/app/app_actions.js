@@ -5,6 +5,7 @@ import {
   TOGGLE_DRAWER_NAV,
   TOGGLE_INSTANT_CHARS,
   TOGGLE_IS_MOBILE,
+  TOGGLE_DROPDOWN,
 } from '../action_types'
 
 // change the language of the app
@@ -61,6 +62,15 @@ export const isMobileRedux = (bool) => {
   return (dispatch) => {
     dispatch({
       type: TOGGLE_IS_MOBILE,
+      payload: bool,
+    })
+  }
+}
+
+export const toggleDropdown = (bool) => {
+  return (dispatch) => {
+    dispatch({
+      type: TOGGLE_DROPDOWN,
       payload: bool,
     })
   }
