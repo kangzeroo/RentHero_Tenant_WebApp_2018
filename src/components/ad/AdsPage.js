@@ -37,6 +37,12 @@ class AdsPage extends Component {
         <List
            grid={{ gutter: 16, column: 2 }}
            loading={!this.props.loading_complete}
+           pagination={{
+              onChange: (page) => {
+                console.log(page);
+              },
+              pageSize: 10,
+            }}
            dataSource={listings.filter(li => li.IMAGES.length > 0)}
            renderItem={item => (
              <List.Item key={item.REFERENCE_ID}>

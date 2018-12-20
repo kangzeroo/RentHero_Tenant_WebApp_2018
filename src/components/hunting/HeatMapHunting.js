@@ -223,7 +223,7 @@ class HeatMapHunting extends Component {
 				position: new google.maps.LatLng(coords.lat, coords.lng),
 				pin_type: 'listing',
 				icon: this.flag_map_pin,
-				zIndex: 12,
+				zIndex: 55,
 				pin_id: 'flag',
 		})
 
