@@ -152,7 +152,9 @@ class HeatMapHunting extends Component {
         }
       })
 
-      self.map.fitBounds(bounds)
+      if (self.map) {
+        self.map.fitBounds(bounds)
+      }
 
       if (self.props.current_listing && self.props.current_listing.REFERENCE_ID) {
         self.initializeCurrentListing(self.props.current_listing)

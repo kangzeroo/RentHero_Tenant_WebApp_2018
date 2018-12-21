@@ -114,7 +114,6 @@ class AppRoot extends Component {
               <Route exact path='/map' render={OnlyMapHunting} />
 
           <Route exact path='/checklist' render={Checklist} />
-        <Route exact path='/heatmap' render={HeatMapHunting} />
 
         <Route exact path='/matches' render={AdsHome} />
         <Route exact path='/matches/:ref_id' render={AdsHome} />
@@ -157,7 +156,7 @@ class AppRoot extends Component {
             <Route exact path='/p/:pid' render={InterestDialog} />
 
             <Route path='/app/*' component={AppRoutes} />
-        
+
             {
               this.renderDrawer()
             }
