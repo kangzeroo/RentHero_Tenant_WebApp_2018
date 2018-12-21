@@ -56,8 +56,8 @@ class AdsPage extends Component {
           <h2>{`Relevant Listings for you`}</h2>
           <p>{`Here are the most relevant listings we've found for you, based on the information you've provided for us. If you'd like for your search to be even more specific, please `}<a href='/app/profile' target='_blank'>Click Here</a></p>
         </div>
-        <Button type='primary' onClick={() => this.props.history.push('/app/profile')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
-          Update Profile
+        <Button type='primary' icon='caret-right' onClick={() => this.props.history.push('/slideshow')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
+          Start Slideshow
         </Button>
       </div>
     )

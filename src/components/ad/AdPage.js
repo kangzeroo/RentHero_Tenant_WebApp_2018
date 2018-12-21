@@ -584,7 +584,7 @@ const mapReduxToProps = (redux) => {
   	triggerDrawerNav: PropTypes.func.isRequired,
     tenant_favorites: redux.tenant.favorites,
     tenant_profile: redux.auth.tenant_profile,
-    authenticated: PropTypes.bool.isRequired,
+    authenticated: redux.auth.authenticated,
 	}
 }
 

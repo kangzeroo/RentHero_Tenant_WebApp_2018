@@ -6,7 +6,7 @@
 export const AWS_FEDERATED_IDENTITY_ENV = 'us-east-1:11bcd4bb-a4cf-4eec-8bef-6c49488264cb'
 
 // DEV
-export const ACCOUNTS_MICROSERVICE = 'https://0354dc79.ngrok.io'
+export const ACCOUNTS_MICROSERVICE = 'https://32265766.ngrok.io'
 export const GET_LISTINGS_ENDPOINT = 'https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/development/get-listings'
 export const GET_LISTING_BY_REF_ENDPOINT = 'https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/development/get-listings-by-ref'
 export const GET_LISTING_BY_REFS_ENDPOINT = 'https://1w7f6p6d9c.execute-api.us-east-1.amazonaws.com/development/get-listings-by-refs'
