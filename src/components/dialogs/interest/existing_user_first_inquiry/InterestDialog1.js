@@ -56,7 +56,13 @@ class InterestDialog1 extends Component {
   componentWillMount() {
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
-    this.setState({ lastUpdated: moment().unix() })
+    this.setState({
+      lastUpdated: moment().unix(),
+      scrollStyles: {
+        ...this.state.scrollStyles,
+        ...this.props.scrollStyles
+      }
+    })
   }
 
   addAnyPreMessages(segment_id) {

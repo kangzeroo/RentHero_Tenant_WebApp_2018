@@ -25,9 +25,19 @@ class ListingActions extends Component {
 
   renderAppropriateDialog() {
     if (this.props.tenant_id) {
-      return (<InterestDialog1 />)
+      return (
+        <InterestDialog1
+          scrollStyles={{
+            scroll_styles: { width: '60vw' }
+          }}
+        />
+      )
     } else {
-      return (<InterestDialog2 />)
+      return (<InterestDialog2
+        scrollStyles={{
+          scroll_styles: { width: '60vw' }
+        }}
+      />)
     }
   }
 

@@ -65,7 +65,6 @@ class AdPage extends Component {
       context: {},
 
       loading: false,
-      actionsOpen: false,
 
       listing_is_favorited: false,
     }
@@ -480,30 +479,15 @@ class AdPage extends Component {
   }
 
   renderStickyFooter() {
-    if (this.state.actionsOpen) {
-      return (
-        <div style={actionStyles(isMobile()).container}>
-          <i className='ion-android-arrow-back' onClick={() => this.setState({ actionsOpen: false })} style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
-          <i className='ion-ios-heart' style={{ color: 'red', fontSize: '2rem', width: '10%' }} />
-          <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={{ width: '35%' }} size='large'>
-            Message
-          </Button>
-          <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={{ width: '35%' }} size='large'>
-            Book Tour
-          </Button>
-        </div>
-      )
-    } else {
-      return (
-        <div style={actionStyles(isMobile()).container}>
-          <i className='ion-arrow-left-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
-          <Button onClick={() => this.setState({ actionsOpen: true })} type='primary' style={actionStyles().actionButton} size='large'>
-            INTERESTED
-          </Button>
-          <i className='ion-arrow-right-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
-        </div>
-      )
-    }
+    return (
+      <div style={actionStyles(isMobile()).container}>
+        <i className='ion-arrow-left-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+        <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
+          INTERESTED
+        </Button>
+        <i className='ion-arrow-right-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+      </div>
+    )
   }
 
   clickedInquire(e) {

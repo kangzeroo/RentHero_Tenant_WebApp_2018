@@ -65,7 +65,13 @@ class InterestDialog2 extends Component {
   componentWillMount() {
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
-    this.setState({ lastUpdated: moment().unix() })
+    this.setState({
+      lastUpdated: moment().unix(),
+      scrollStyles: {
+        ...this.state.scrollStyles,
+        ...this.props.scrollStyles
+      }
+    })
   }
 
   addAnyPreMessages(segment_id) {
@@ -83,19 +89,40 @@ class InterestDialog2 extends Component {
     this.all_segments = [
         {
           id: 'thanks_for_interest',
-          component: (<MessageSegment
-                         schema={{ id: 'thanks_for_interest', endpoint: 'name' }}
-                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                         onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
-                         texts={[
-                           { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
-                           { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
-                           { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
-                           { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
-                         ]}
-                         action={{ enabled: true, label: 'Begin Application', actionStyles: { width: '100%' } }}
-                         segmentStyles={{ justifyContent: 'space-between' }}
-                       />) },
+          component: (<ActionSegment
+                          title='RentHero'
+                          schema={{
+                            id: 'thanks_for_interest',
+                            endpoint: 'name',
+                            choices: [
+                              { id: 'leave_message', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Message Seller', value: true, endpoint: 'name' },
+                              { id: 'tour', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Book A Tour', value: true, endpoint: 'name' },
+                            ]
+                          }}
+                          texts={[
+                            { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
+                            { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
+                            { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
+                            { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
+                          ]}
+                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                          onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
+                          />) },
+        // {
+        //   id: 'thanks_for_interest',
+        //   component: (<MessageSegment
+        //                  schema={{ id: 'thanks_for_interest', endpoint: 'name' }}
+        //                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+        //                  onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
+        //                  texts={[
+        //                    { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
+        //                    { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
+        //                    { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
+        //                    { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
+        //                  ]}
+        //                  action={{ enabled: true, label: 'Begin Application', actionStyles: { width: '100%' } }}
+        //                  segmentStyles={{ justifyContent: 'space-between' }}
+        //                />) },
       {
         id: 'name',
         comment: 'whats your name',
@@ -878,7 +905,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
       minHeight: '100vh',
       position: 'fixed',
 			bottom: '0px',
-      width: '100vw',
+      width: '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
       backgroundSize: 'cover',
