@@ -56,7 +56,13 @@ class InterestDialog1 extends Component {
   componentWillMount() {
     this.rehydrateSegments()
     this.shown_segments = this.shown_segments.concat(this.all_segments.slice(0, 1))
-    this.setState({ lastUpdated: moment().unix() })
+    this.setState({
+      lastUpdated: moment().unix(),
+      scrollStyles: {
+        ...this.state.scrollStyles,
+        ...this.props.scrollStyles
+      }
+    })
   }
 
   addAnyPreMessages(segment_id) {
@@ -254,9 +260,9 @@ class InterestDialog1 extends Component {
     // the endpoint coming in from <MultiOptionsSegment> is the default
     // the data.selected_choices are fed in from schema.choices, which has endpoints associated with them
     // so we go to the first employment type endpoint, and when we finish an employment type we can go to any others (see doneProofs)
-    const choices = data.selected_choices.filter(s => s.endpoint)
-    if (choices[0] && choices[0].endpoint) {
-      this.done(original_id, choices[0].endpoint, data)
+    const nextEndpoint = this.getNextSegment(original_id, endpoint, data)
+    if (nextEndpoint && nextEndpoint !== original_id) {
+      this.done(original_id, nextEndpoint, data)
     } else {
       this.done(original_id, endpoint, data)
     }
@@ -283,7 +289,7 @@ class InterestDialog1 extends Component {
     console.log(data)
     console.log(this.props.prefs.FINANCIALS.EMPLOYED_AS_SCHEMAS.filter(sch => sch.endpoint).map(sch => sch.endpoint))
     console.log(this.shown_segments.map(seg => seg.id))
-    let nextEndpoint = ''
+    let nextEndpoint = endpoint
     this.props.prefs.FINANCIALS.EMPLOYED_AS_SCHEMAS.filter(sch => sch.endpoint).forEach((sch) => {
       let doneAlready = false
       this.shown_segments.forEach((seg) => {
@@ -292,7 +298,15 @@ class InterestDialog1 extends Component {
         }
       })
       if (!doneAlready) {
-        nextEndpoint = sch.endpoint
+        let exists = false
+        this.all_segments.forEach((seg) => {
+          if (seg.id === sch.endpoint) {
+            exists = true
+          }
+        })
+        if (exists) {
+          nextEndpoint = sch.endpoint
+        }
       }
     })
     console.log(nextEndpoint)
@@ -654,9 +668,9 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }) => {
       display: 'flex',
       flexDirection: 'column',
       minHeight: '100vh',
-      position: 'fixed',
+      // position: 'fixed',
 			bottom: '0px',
-      width: '100vw',
+      width: '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
       backgroundSize: 'cover',

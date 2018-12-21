@@ -135,17 +135,6 @@ class AdImages extends Component {
 	render() {
 		return (
 			<div id='AdImages' style={comStyles().container}>
-        <Card style={{ width: '100%', position: 'absolute', top: 0, left: 0, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-          <Icon
-            type="left"
-            size='large'
-            style={{
-              cursor: 'pointer'
-            }}
-            onClick={() => this.onClose()}
-          />
-          <div />
-        </Card>
         <div style={{ height: '60px' }} />
 				{
           this.props.photos.outside.length > 0
@@ -232,6 +221,7 @@ const comStyles = () => {
       padding: '25px',
       overflowY: 'scroll',
       borderRadius: '0px',
+      height: '96vh',
 		}
 	}
 }

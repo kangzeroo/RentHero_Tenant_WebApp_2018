@@ -67,7 +67,6 @@ class AdPage extends Component {
 
       loading: false,
 
-
       listing_is_favorited: false,
     }
     this.lastScrollTop = 0
@@ -95,6 +94,10 @@ class AdPage extends Component {
 
 
   componentDidMount() {
+    window.onpopstate = () => {
+      this.toggleModal(false)
+      history.pushState(null, null, `${this.props.location.pathname}`)
+    }
     if (this.props.current_listing) {
       this.organizePhotos()
     }
@@ -369,7 +372,8 @@ class AdPage extends Component {
         <Modal
           visible={this.state.toggle_modal}
           transparent
-          maskClosable={false}
+          maskClosable
+          onClose={() => this.toggleModal(false)}
           animationType='fade'
           style={
             isMobile()
@@ -379,16 +383,16 @@ class AdPage extends Component {
               width: '100vw',
               position: 'absolute',
               left: 0,
-              bottom: 0,
+              top: 0,
               borderRadius: '0px !important',
             }
             :
             {
-              height: '93vh',
+              height: '100vh',
               width: '60vw',
               position: 'absolute',
               right: 0,
-              bottom: 0,
+              top: 0,
               borderRadius: '0px !important',
             }
           }
@@ -400,12 +404,13 @@ class AdPage extends Component {
           />
         </Modal>
       )
-    } else if (modal_name === 'action') {
+    } else if (modal_name === 'dialog') {
       return (
         <Modal
           visible={this.state.toggle_modal}
           transparent
-          maskClosable={false}
+          maskClosable
+          onClose={() => this.toggleModal(false)}
           animationType='fade'
           style={
             isMobile()
@@ -415,16 +420,16 @@ class AdPage extends Component {
               width: '100vw',
               position: 'absolute',
               left: 0,
-              bottom: 0,
+              top: 0,
               borderRadius: '0px !important',
             }
             :
             {
-              height: '93vh',
+              height: '101vh',
               width: '60vw',
               position: 'absolute',
               right: 0,
-              bottom: 0,
+              top: '-1vh',
               borderRadius: '0px !important',
             }
           }
@@ -440,7 +445,8 @@ class AdPage extends Component {
         <Modal
           visible={this.state.toggle_modal}
           transparent
-          maskClosable={false}
+          maskClosable
+          onClose={() => this.toggleModal(false)}
           animationType='fade'
           style={
             isMobile()
@@ -450,16 +456,16 @@ class AdPage extends Component {
               width: '100vw',
               position: 'absolute',
               left: 0,
-              bottom: 0,
+              top: 0,
               borderRadius: '0px !important',
             }
             :
             {
-              height: '93vh',
+              height: '100vh',
               width: '60vw',
               position: 'absolute',
               right: 0,
-              bottom: 0,
+              top: 0,
               borderRadius: '0px !important',
             }
           }
@@ -476,19 +482,23 @@ class AdPage extends Component {
   renderStickyFooter() {
     return (
       <div style={actionStyles(isMobile()).container}>
-        <div style={{ fontSize: '1.2REM', fontWeight: 'bold', color: 'black' }}>{`$ ${this.props.current_listing.PRICE}`}</div>
-        <Button onClick={() => this.clickedInquire()} type='primary' style={actionStyles().actionButton} size='large'>
-          Inquire
+        <i className='ion-arrow-left-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+        <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
+          INTERESTED
         </Button>
+        <i className='ion-arrow-right-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
       </div>
     )
   }
 
-  clickedInquire() {
-    console.log(window.location.hostname)
-    const win = window.open(`/p/${this.props.current_listing.SHORT_ID || this.props.current_listing.REFERENCE_ID}`, '_blank');
-    win.focus();
-    // this.toggleModal(true, 'action', this.props.current_listing)
+  clickedInquire(e) {
+    if (e) {
+      e.stopPropagation()
+    }
+    // console.log(window.location.hostname)
+    // const win = window.open(`/p/${this.props.current_listing.SHORT_ID || this.props.current_listing.REFERENCE_ID}`, '_blank');
+    // win.focus();
+    this.toggleModal(true, 'dialog', this.props.current_listing)
   }
 
 	render() {
@@ -736,9 +746,9 @@ const actionStyles = (mobile) => {
     },
     actionButton: {
       backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
-      width: '45%',
       border: 'none',
       fontWeight: 'bold',
+      width: '70%'
       // height: '90%',
     },
     header_container: {
