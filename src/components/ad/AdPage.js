@@ -38,6 +38,7 @@ import AdImages from './tabs/AdImages'
 import ListingActions from './tabs/ListingActions'
 import { isMobile } from '../../api/general/general_api'
 import AuthenticatePopup from '../auth/AuthenticatePopup'
+import NearbyLocations from './sections/NearbyLocations'
 
 class AdPage extends Component {
 
@@ -518,6 +519,7 @@ class AdPage extends Component {
             listing_is_favorited={this.state.listing_is_favorited}
             favoriteListing={() => this.favoriteListing()}
           />
+          {/*
           <div style={{ margin: '20px' }}>
             <AdMapSection
               setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
@@ -528,6 +530,8 @@ class AdPage extends Component {
           </div>
           <div style={{ width: '100%', height: '70px' }}></div>
 
+          */}
+
           <Divider />
           <AdImagesSection
             photos={this.state.photos}
@@ -535,6 +539,10 @@ class AdPage extends Component {
           />
 
           <Divider />
+
+          <NearbyLocations
+            current_listing={this.props.current_listing}
+          />
 
           <div style={{ width: '100%', height: '70px' }}></div>
           {
