@@ -65,7 +65,7 @@ class AdPage extends Component {
       context: {},
 
       loading: false,
-
+      actionsOpen: false,
 
       listing_is_favorited: false,
     }
@@ -480,14 +480,30 @@ class AdPage extends Component {
   }
 
   renderStickyFooter() {
-    return (
-      <div style={actionStyles(isMobile()).container}>
-        <div style={{ fontSize: '1.2REM', fontWeight: 'bold', color: 'black' }}>{`$ ${this.props.current_listing.PRICE}`}</div>
-        <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
-          Inquire
-        </Button>
-      </div>
-    )
+    if (this.state.actionsOpen) {
+      return (
+        <div style={actionStyles(isMobile()).container}>
+          <i className='ion-android-arrow-back' onClick={() => this.setState({ actionsOpen: false })} style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+          <i className='ion-ios-heart' style={{ color: 'red', fontSize: '2rem', width: '10%' }} />
+          <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={{ width: '35%' }} size='large'>
+            Message
+          </Button>
+          <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={{ width: '35%' }} size='large'>
+            Book Tour
+          </Button>
+        </div>
+      )
+    } else {
+      return (
+        <div style={actionStyles(isMobile()).container}>
+          <i className='ion-arrow-left-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+          <Button onClick={() => this.setState({ actionsOpen: true })} type='primary' style={actionStyles().actionButton} size='large'>
+            INTERESTED
+          </Button>
+          <i className='ion-arrow-right-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+        </div>
+      )
+    }
   }
 
   clickedInquire(e) {
@@ -738,9 +754,9 @@ const actionStyles = (mobile) => {
     },
     actionButton: {
       backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
-      width: '45%',
       border: 'none',
       fontWeight: 'bold',
+      width: '70%'
       // height: '90%',
     },
     header_container: {

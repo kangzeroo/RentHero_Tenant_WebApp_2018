@@ -334,9 +334,10 @@ const descriptionStyles = () => {
       color: 'black',
     },
     title: {
-      fontSize: '1.5rem',
+      fontSize: '1rem',
       fontWeight: 'bold',
       color: 'rgb(54, 69, 79)',
+      textAlign: 'left',
     },
     beds_baths: {
       fontSize: '1rem',

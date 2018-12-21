@@ -308,9 +308,6 @@ class AuthenticatePopup extends Component {
 	render() {
 		return (
 			<div id='AuthenticatePopup' style={comStyles().container}>
-  			{
-          this.renderHeader()
-        }
         <div style={{ height: '60px' }} />
         {
           this.renderInputs()
