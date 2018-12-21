@@ -232,6 +232,7 @@ const comStyles = () => {
       padding: '25px',
       overflowY: 'scroll',
       borderRadius: '0px',
+      height: '96vh',
 		}
 	}
 }

@@ -359,6 +359,7 @@ const comStyles = () => {
       flexDirection: 'column',
       padding: '20px',
       alignItems: 'flex-start',
+      height: '96vh',
 		},
     inputContainer: {
       display: 'flex',

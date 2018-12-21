@@ -26,6 +26,9 @@ class TenantDuality extends Component {
 	}
 
 	componentWillMount() {
+		if (this.props.authenticated) {
+			this.props.history.push('/matches')
+		}
 		this.setState({
 			mobile: isMobile()
 		})
@@ -73,12 +76,14 @@ class TenantDuality extends Component {
 TenantDuality.propTypes = {
 	history: PropTypes.object.isRequired,
   all_listings: PropTypes.array.isRequired,
-	current_listing: PropTypes.object.isRequired,
+	current_listing: PropTypes.object,
+	authenticated: PropTypes.bool.isRequired,
 }
 
 // for all optional props, define a default value
 TenantDuality.defaultProps = {
-
+	authenticated: false,
+	current_listing: null,
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -89,6 +94,7 @@ const mapReduxToProps = (redux) => {
 	return {
     all_listings: redux.listings.all_listings,
 		current_listing: redux.listings.current_listing,
+		authenticated: redux.auth.authenticated,
 	}
 }
 

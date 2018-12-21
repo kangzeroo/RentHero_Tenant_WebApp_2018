@@ -11,7 +11,8 @@ import {
   Card,
   Icon,
 } from 'antd'
-
+import InterestDialog1 from '../../dialogs/interest/existing_user_first_inquiry/InterestDialog1'
+import InterestDialog2 from '../../dialogs/interest/new_user_first_inquiry/InterestDialog2'
 
 class ListingActions extends Component {
 
@@ -22,34 +23,20 @@ class ListingActions extends Component {
     }
   }
 
-  onClose() {
-    history.pushState(null, null, `${this.props.location.pathname}/${this.props.current_listing.REFERENCE_ID}`)
-    this.props.onClose()
-  }
-
-  renderStickyHeader() {
-    return (
-      <Card style={{ width: '100%', position: 'absolute', top: 0, left: 0, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
-        <Icon
-          type="left"
-          size='large'
-          style={{
-            cursor: 'pointer'
-          }}
-          onClick={() => this.onClose()}
-        />
-        <div />
-      </Card>
-    )
+  renderAppropriateDialog() {
+    if (this.props.tenant_id) {
+      return (<InterestDialog1 />)
+    } else {
+      return (<InterestDialog2 />)
+    }
   }
 
 	render() {
 		return (
 			<div id='ListingActions' style={comStyles().container}>
         {
-          this.renderStickyHeader()
+          this.renderAppropriateDialog()
         }
-        <div style={{ height: '60px' }} />
 			</div>
 		)
 	}
@@ -58,6 +45,7 @@ class ListingActions extends Component {
 // defines the types of variables in this.props
 ListingActions.propTypes = {
 	history: PropTypes.object.isRequired,
+  tenant_id: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,             // passed in
   current_listing: PropTypes.object.isRequired,   // passed in
 }
@@ -73,7 +61,7 @@ const RadiumHOC = Radium(ListingActions)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+    tenant_id: redux.auth.tenant_profile.tenant_id,
 	}
 }
 
@@ -92,6 +80,7 @@ const comStyles = () => {
 		container: {
       display: 'flex',
       flexDirection: 'column',
+      height: '100vh',
 		}
 	}
 }

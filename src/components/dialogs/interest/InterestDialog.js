@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
+import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import {
 
@@ -69,6 +70,7 @@ class InterestDialog extends Component {
 InterestDialog.propTypes = {
 	history: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
+  tenant_id: PropTypes.string.isRequired,
   setCurrentListing: PropTypes.func.isRequired,
   current_listing: PropTypes.object.isRequired,
 }
