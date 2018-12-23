@@ -53,6 +53,7 @@ class AdsHome extends Component {
 
       getCurrentListingByReference({ ref_id })
         .then((data) => {
+					console.log('CURRENT LISTING: ', data)
           this.props.setCurrentListing(data)
           this.setState({
             loading: false,
@@ -64,6 +65,8 @@ class AdsHome extends Component {
         })
     }
 	}
+
+	componentWillReceiveProps
 
   setListing(listing, url) {
     this.setState({
@@ -135,12 +138,19 @@ class AdsHome extends Component {
 
   	        </div>
   	        <div style={{ width: '60vw', height: '93vh' }}>
-  	          <HeatMap
-                listings={this.props.all_listings}
-                setListing={(listing, url) => this.setListing(listing, url)}
-                current_listing={this.state.current_listing}
-                showFlagPin={true}
-              />
+							{
+								this.props.all_listings && this.props.all_listings.length > 0
+								?
+								<HeatMap
+									listings={this.props.all_listings}
+									setListing={(listing, url) => this.setListing(listing, url)}
+									current_listing={this.state.current_listing}
+									showFlagPin={true}
+								/>
+								:
+								null
+							}
+
   	        </div>
           </div>
 				</div>

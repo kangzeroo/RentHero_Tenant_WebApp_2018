@@ -56,6 +56,10 @@ class HeatMapHunting extends Component {
     this.refreshPins.bind(this)
   }
 
+  componentWillMount() {
+    console.log(this.props.prefs)
+  }
+
   componentDidMount() {
     console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
 
@@ -95,6 +99,7 @@ class HeatMapHunting extends Component {
 
   initializeCurrentListing(current_listing) {
     console.log('NEW LISTING BRUHHH')
+    console.log(this.map)
     console.log(this.bufferPin)
     if (this.bufferPin) {
       this.destroyBlueIndicatorPin()
@@ -171,6 +176,7 @@ class HeatMapHunting extends Component {
   }
 
   temporaryRemoveRedPin(pin) {
+    console.log('TEMPORARY REMOVE RED PIN')
     pin.setMap(null)
     this.bufferPin = pin
   }
@@ -181,6 +187,7 @@ class HeatMapHunting extends Component {
   }
 
 	createBlueIndicatorPin(pin) {
+    console.log('CREATE BLUE INDICATOR: ', pin)
     this.temporaryRemoveRedPin(pin)
 		this.destroyBlueIndicatorPin()
 		let indicatorPin = new google.maps.Marker({

@@ -550,9 +550,7 @@ class AdPage extends Component {
 
           <Divider />
 
-          <NearbyLocations
-            current_listing={this.props.current_listing}
-          />
+        
 
           <div style={{ width: '100%', height: '70px' }}></div>
           {

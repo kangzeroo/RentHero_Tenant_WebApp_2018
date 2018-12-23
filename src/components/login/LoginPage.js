@@ -10,14 +10,16 @@ import { withRouter } from 'react-router-dom'
 import {
 
 } from 'antd'
-
+import AuthenticatePopup from '../auth/AuthenticatePopup'
 
 class LoginPage extends Component {
 
 	render() {
 		return (
 			<div id='LoginPage' style={comStyles().container}>
-				LoginPage
+				<AuthenticatePopup
+
+				/>
 			</div>
 		)
 	}
