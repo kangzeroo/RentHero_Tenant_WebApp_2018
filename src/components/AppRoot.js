@@ -145,6 +145,8 @@ class AppRoot extends Component {
             }
             <Route exact path='/favorites' render={TenantFavorites} />
             <Route exact path='/intro' render={TenantDuality} />
+            <Route exact path='/login' render={LoginPage} />
+
             <Route exact path='/passwordless' render={Passwordless} />
             <Route exact path='/register' render={RegisterPage} />
 

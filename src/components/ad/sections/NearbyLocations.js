@@ -64,11 +64,12 @@ class NearbyLocations extends Component {
     const p =  new Promise((res, rej) => {
   		const self = this
   		const location = { lat: current_listing.GPS.lat, lng: current_listing.GPS.lng }
-  		// const map = new google.maps.Map(document.getElementById('map'), {
-  		// 	center: location,
-  		// 	zoom: 16,
-  		// 	disableDefaultUI: true,
-  		// })
+      //
+  		const map = new google.maps.Map(document.getElementById('map'), {
+  			center: location,
+  			zoom: 16,
+  			disableDefaultUI: true,
+  		})
   		// const marker = new google.maps.Marker({position: location, map: map, icon: BLUE_PIN});
   		const placeService = new google.maps.places.PlacesService(map)
       let params = {
@@ -143,6 +144,7 @@ class NearbyLocations extends Component {
               console.log(page);
             },
             pageSize: 3,
+            simple: true,
           }}
           loading={this.state.loading}
           renderItem={(item) => {

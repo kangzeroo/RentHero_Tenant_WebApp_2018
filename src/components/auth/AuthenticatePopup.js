@@ -320,13 +320,14 @@ class AuthenticatePopup extends Component {
 // defines the types of variables in this.props
 AuthenticatePopup.propTypes = {
 	history: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,       // passed in
+  onClose: PropTypes.func,       // passed in
   current_listing: PropTypes.object,        // passed in
 }
 
 // for all optional props, define a default value
 AuthenticatePopup.defaultProps = {
   current_listing: {},
+  onClose: () => {},
 }
 
 // Wrap the prop in Radium to allow JS styling
