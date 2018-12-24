@@ -66,8 +66,6 @@ class AdsHome extends Component {
     }
 	}
 
-	componentWillReceiveProps
-
   setListing(listing, url) {
     this.setState({
       current_listing: listing,

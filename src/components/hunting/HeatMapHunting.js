@@ -21,6 +21,8 @@ import { triggerDrawerNav } from '../../actions/app/app_actions'
 import { getHeatMapDist } from '../../api/analytics/analytics_api'
 import { pinAlreadyPlaced } from '../../api/map/map_api'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
+import { setCurrentMapLocationToRedux, setMapLoadedToRedux, setMainMapToRedux, } from '../../actions/map/map_actions'
+import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN } from '../../assets/map_pins'
 
 class HeatMapHunting extends Component {
 
@@ -49,15 +51,17 @@ class HeatMapHunting extends Component {
     this.bufferPin = null
     this.flagPin = null
 
-    this.red_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/red-dot.png'
-		this.blue_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/blue-dot.png'
-    this.flag_map_pin = 'https://s3.amazonaws.com/rentburrow-static-assets/Icons/flag-green-icon2.png'
+    this.red_map_pin = RED_PIN
+		this.blue_map_pin = BLUE_PIN
+    this.flag_map_pin = FLAG_PIN
 
-    this.refreshPins.bind(this)
+    // this.refreshPins.bind(this)
   }
 
   componentWillMount() {
     console.log(this.props.prefs)
+
+
   }
 
   componentDidMount() {
@@ -74,7 +78,10 @@ class HeatMapHunting extends Component {
         })
       }, () => {
         this.loadHeatMap()
-        this.refreshPins(this.props, this.props)
+        // this.refreshPins(this.props, this.props)
+        this.props.setMapLoadedToRedux(true)
+        console.log('----> MAP IS: ', this.map)
+        // this.props.setMainMapToRedux(this.map)
       })
     }).catch((err) => {
       console.log(err)
@@ -83,7 +90,7 @@ class HeatMapHunting extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.listings !== this.props.listings) {
-      this.refreshPins(prevProps, this.props)
+      // this.refreshPins(prevProps, this.props)
     }
     // if (prevProps.current_listing !== this.props.current_listing) {
     //   this.initializeCurrentListing(this.props.current_listing)
@@ -91,29 +98,31 @@ class HeatMapHunting extends Component {
     // this.prevCenterCoords = this.props.current_gps_center
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.current_listing !== nextProps.current_listing) {
-      this.initializeCurrentListing(nextProps.current_listing)
-    }
-  }
-
-  initializeCurrentListing(current_listing) {
-    console.log('NEW LISTING BRUHHH')
-    console.log(this.map)
-    console.log(this.bufferPin)
-    if (this.bufferPin) {
-      this.destroyBlueIndicatorPin()
-      this.addBackBufferPin()
-    } else {
-      for (let i = 0; i < this.pins.length; i++) {
-        if (this.pins[i].pin_id === current_listing.REFERENCE_ID) {
-          console.log(this.pins[i])
-          this.bufferPin = this.pins[i]
-          this.createBlueIndicatorPin(this.pins[i])
-        }
-      }
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.current_listing !== nextProps.current_listing) {
+  //     this.initializeCurrentListing(nextProps.current_listing)
+  //   }
+  // }
+  //
+  // initializeCurrentListing(current_listing) {
+  //   console.log('NEW LISTING BRUHHH')
+  //   console.log(this.map)
+  //   console.log(this.bufferPin)
+  //   if (this.bufferPin) {
+  //     this.destroyBlueIndicatorPin()
+  //     this.addBackBufferPin()
+  //   } else {
+  //     for (let i = 0; i < this.pins.length; i++) {
+  //       if (this.pins[i].pin_id === current_listing.REFERENCE_ID) {
+  //         console.log(this.pins[i])
+  //         this.bufferPin = this.pins[i]
+  //         this.props.setCurrentMapLocationToRedux(this.pins[i])
+  //
+  //         this.createBlueIndicatorPin(this.pins[i])
+  //       }
+  //     }
+  //   }
+  // }
 
 
   refreshPins(prevProps, { listings }) {
@@ -145,7 +154,9 @@ class HeatMapHunting extends Component {
               preview_visible: true
             })
             self.bufferPin = marker
-            this.createBlueIndicatorPin(marker)
+            self.props.setCurrentMapLocationToRedux(marker)
+
+            // self.createBlueIndicatorPin(marker)
           })
 
   				// save the pins
@@ -170,88 +181,88 @@ class HeatMapHunting extends Component {
           lat: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0],
           lng: this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1],
         }
-        this.createFlagPin(flagDest)
+        // this.createFlagPin(flagDest)
       }
     }
   }
 
-  temporaryRemoveRedPin(pin) {
-    console.log('TEMPORARY REMOVE RED PIN')
-    pin.setMap(null)
-    this.bufferPin = pin
-  }
+  // temporaryRemoveRedPin(pin) {
+  //   console.log('TEMPORARY REMOVE RED PIN')
+  //   pin.setMap(null)
+  //   this.bufferPin = pin
+  // }
+  //
+  // addBackBufferPin() {
+  //   this.bufferPin.setMap(this.map)
+  //   this.bufferPin = null
+  // }
+  //
+	// createBlueIndicatorPin(pin) {
+  //   console.log('CREATE BLUE INDICATOR: ', pin)
+  //   this.temporaryRemoveRedPin(pin)
+	// 	this.destroyBlueIndicatorPin()
+	// 	let indicatorPin = new google.maps.Marker({
+	// 			position: pin.position,
+	// 			pin_type: pin.pin_type,
+	// 			icon: this.blue_map_pin,
+	// 			zIndex: 12,
+	// 			pin_id: pin.pin_id,
+	// 	})
+	// 	indicatorPin.setAnimation(google.maps.Animation.BOUNCE)
+	// 	indicatorPin.addListener('click', (event) => {
+	// 		// marker.infowindow.open(self.state.mapTarget, marker)
+	// 		// this.props.selectPinToRedux(indicatorPin.pin_id)
+	// 		// const b = locallyFindBuildingById(indicatorPin.pin_id, this.props.listOfResults)
+	// 		// this.props.selectPopupBuilding(b)
+	// 		// setTimeout(() => {
+	// 		// 	marker.infowindow.close()
+	// 		// }, 2000)
+  //
+	// 	})
+  //   this.indicatorPin = indicatorPin
+  //   this.indicatorPin.setMap(this.map)
+  //
+	// 	// this.setState({
+	// 	// 	indicatorPin: indicatorPin
+	// 	// }, () => this.state.indicatorPin.setMap(this.map))
+	// }
+  //
+	// destroyBlueIndicatorPin() {
+	// 	if (this.indicatorPin) {
+	// 		// get rid of any old bouncing blue pins
+	// 		this.indicatorPin.setMap(null)
+  //     this.indicatorPin = null
+	// 		// this.setState({
+	// 		// 	indicatorPin: null
+	// 		// })
+	// 	}
+	// }
 
-  addBackBufferPin() {
-    this.bufferPin.setMap(this.map)
-    this.bufferPin = null
-  }
-
-	createBlueIndicatorPin(pin) {
-    console.log('CREATE BLUE INDICATOR: ', pin)
-    this.temporaryRemoveRedPin(pin)
-		this.destroyBlueIndicatorPin()
-		let indicatorPin = new google.maps.Marker({
-				position: pin.position,
-				pin_type: pin.pin_type,
-				icon: this.blue_map_pin,
-				zIndex: 12,
-				pin_id: pin.pin_id,
-		})
-		indicatorPin.setAnimation(google.maps.Animation.BOUNCE)
-		indicatorPin.addListener('click', (event) => {
-			// marker.infowindow.open(self.state.mapTarget, marker)
-			// this.props.selectPinToRedux(indicatorPin.pin_id)
-			// const b = locallyFindBuildingById(indicatorPin.pin_id, this.props.listOfResults)
-			// this.props.selectPopupBuilding(b)
-			// setTimeout(() => {
-			// 	marker.infowindow.close()
-			// }, 2000)
-
-		})
-    this.indicatorPin = indicatorPin
-    this.indicatorPin.setMap(this.map)
-
-		// this.setState({
-		// 	indicatorPin: indicatorPin
-		// }, () => this.state.indicatorPin.setMap(this.map))
-	}
-
-	destroyBlueIndicatorPin() {
-		if (this.indicatorPin) {
-			// get rid of any old bouncing blue pins
-			this.indicatorPin.setMap(null)
-      this.indicatorPin = null
-			// this.setState({
-			// 	indicatorPin: null
-			// })
-		}
-	}
-
-  createFlagPin(coords) {
-    console.log('FLAG PIN: ', coords)
-    let flagPin = new google.maps.Marker({
-				position: new google.maps.LatLng(coords.lat, coords.lng),
-				pin_type: 'listing',
-				icon: this.flag_map_pin,
-				zIndex: 55,
-				pin_id: 'flag',
-		})
-
-    console.log(flagPin)
-
-		flagPin.addListener('click', (event) => {
-			// marker.infowindow.open(self.state.mapTarget, marker)
-			// this.props.selectPinToRedux(indicatorPin.pin_id)
-			// const b = locallyFindBuildingById(indicatorPin.pin_id, this.props.listOfResults)
-			// this.props.selectPopupBuilding(b)
-			// setTimeout(() => {
-			// 	marker.infowindow.close()
-			// }, 2000)
-
-		})
-    this.flagPin = flagPin
-    this.flagPin.setMap(this.map)
-  }
+  // createFlagPin(coords) {
+  //   console.log('FLAG PIN: ', coords)
+  //   let flagPin = new google.maps.Marker({
+	// 			position: new google.maps.LatLng(coords.lat, coords.lng),
+	// 			pin_type: 'listing',
+	// 			icon: this.flag_map_pin,
+	// 			zIndex: 55,
+	// 			pin_id: 'flag',
+	// 	})
+  //
+  //   console.log(flagPin)
+  //
+	// 	flagPin.addListener('click', (event) => {
+	// 		// marker.infowindow.open(self.state.mapTarget, marker)
+	// 		// this.props.selectPinToRedux(indicatorPin.pin_id)
+	// 		// const b = locallyFindBuildingById(indicatorPin.pin_id, this.props.listOfResults)
+	// 		// this.props.selectPopupBuilding(b)
+	// 		// setTimeout(() => {
+	// 		// 	marker.infowindow.close()
+	// 		// }, 2000)
+  //
+	// 	})
+  //   this.flagPin = flagPin
+  //   this.flagPin.setMap(this.map)
+  // }
 
   loadHeatMap() {
     console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
@@ -339,7 +350,7 @@ class HeatMapHunting extends Component {
         show_filter: false,
       })
     })
-    self.refreshPins(self.props, self.props)
+    // self.refreshPins(self.props, self.props)
   }
 
   deletePolygon(polygon) {
@@ -427,6 +438,9 @@ HeatMapHunting.propTypes = {
   showFlagPin: PropTypes.bool,            // passed in
   preview: PropTypes.bool,          // passed in
   fullscreenSearch: PropTypes.bool,
+  setCurrentMapLocationToRedux: PropTypes.func.isRequired,
+  setMapLoadedToRedux: PropTypes.func.isRequired,
+  setMainMapToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -454,6 +468,9 @@ export default withRouter(
 	connect(mapReduxToProps, {
     triggerDrawerNav,
     setCurrentListing,
+    setCurrentMapLocationToRedux,
+    setMapLoadedToRedux,
+    setMainMapToRedux,
 	})(RadiumHOC)
 )
 

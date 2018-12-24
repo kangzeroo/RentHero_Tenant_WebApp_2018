@@ -8,11 +8,18 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
-
-} from 'antd-mobile'
+  Button,
+} from 'antd'
 
 
 class AdStreetView extends Component {
+
+  constructor() {
+    super()
+    this.state = {
+      begin: false,
+    }
+  }
 
   componentDidMount() {
     this.renderStreetview()
@@ -39,8 +46,19 @@ class AdStreetView extends Component {
 	render() {
 		return (
 			<div id='AdStreetView' style={comStyles().container}>
-        <div id='pano' style={comStyles().pano}>
-        </div>
+        <h2>Street View</h2>
+        {
+          this.state.begin
+          ?
+          <div id='pano' style={comStyles().pano}>
+          </div>
+          :
+          <div style={comStyles().sub}>
+            <Button type='primary' style={comStyles().button} onClick={() => this.setState({ begin: true, })} size='large' icon='caret-right'>
+              Start View
+            </Button>
+          </div>
+        }
 			</div>
 		)
 	}
@@ -83,10 +101,29 @@ const comStyles = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '30px',
+      textAlign: 'left',
 		},
 		pano: {
 			height: '500px',
       width: '100%',
 		},
+    sub: {
+      backgroundImage: 'linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)',
+      height: '500px',
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '10px',
+    },
+    button: {
+      background: 'none',
+      color: 'white',
+      borderColor: 'white',
+      fontWeight: 'bold',
+      ":hover": {
+        background: 'lightgray'
+      }
+    }
 	}
 }
