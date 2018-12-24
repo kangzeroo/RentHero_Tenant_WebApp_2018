@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import Radium from 'radium'
 import PropTypes from 'prop-types'
 import Rx from 'rxjs'
+import Ionicon from 'react-ionicons'
 import moment from 'moment'
 import { withRouter } from 'react-router-dom'
 import {
@@ -42,7 +43,7 @@ class AdsPage extends Component {
     this.setState({
 			mobile: isMobile()
 		}, () => console.log(this.state))
-    if (this.props.all_listings && this.props.all_listings.length > 0 && this.props.map_loaded) {
+    if (this.props.all_listings && this.props.all_listings.length > 0 && this.props.map_loaded && !isMobile()) {
       this.refreshPins(this.props.all_listings)
     }
   }
@@ -58,10 +59,10 @@ class AdsPage extends Component {
 	}
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.all_listings !== nextProps.all_listings && this.props.map_loaded) {
+    if (this.props.all_listings !== nextProps.all_listings && this.props.map_loaded && !isMobile()) {
       this.refreshPins(nextProps.all_listings)
     }
-    if (this.props.map_loaded !== nextProps.map_loaded) {
+    if (this.props.map_loaded !== nextProps.map_loaded && !isMobile()) {
       this.refreshPins(nextProps.all_listings)
     }
   }
@@ -147,20 +148,11 @@ class AdsPage extends Component {
     } else {
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} />
+          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} style={{ maxWidth: '60%', }} />
           &nbsp;
           <Tooltip title='Filter'>
             <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true })} size='large' style={{ fontSize: '1.5rem' }} />
           </Tooltip>
-          {
-            this.state.mobile
-            ?
-            <Button onClick={() => this.props.history.push('/map')} type='ghost' size='small' style={{ width: '50px', margin: '0px 0px 0px 5px' }}>
-              <i className='ion-ios-location' style={{ fontSize: '0.9rem' }} />
-            </Button>
-            :
-            null
-          }
         </div>
       )
     }
@@ -224,6 +216,37 @@ class AdsPage extends Component {
     )
   }
 
+  renderMobileMapButton() {
+    return (
+      <Button type='primary' style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'fixed',
+        bottom: '30px',
+        left: '50%',
+        padding: '0px 20px',
+        borderRadius: '25px',
+        border: 'none',
+        transform: 'translate(-50%, -50%)',
+        background: '#56CCF2',  /* fallback for old browsers */
+        background: '-webkit-linear-gradient(to right, #2F80ED, #56CCF2)',  /* Chrome 10-25, Safari 5.1-6 */
+        background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+      }}
+      onClick={() => this.props.history.push('/map')}
+      size='large'
+      >
+        <Ionicon
+          icon="md-pin"
+          fontSize="1.5rem"
+          color='white'
+        />
+        <div style={{ marginLeft: '10px', color: 'white' }}>MAP</div>
+      </Button>
+    )
+  }
+
 
 	render() {
 		return (
@@ -240,6 +263,13 @@ class AdsPage extends Component {
         }
         {
           this.renderFavoritesSection()
+        }
+        {
+          isMobile()
+          ?
+          this.renderMobileMapButton()
+          :
+          null
         }
 			</div>
 		)

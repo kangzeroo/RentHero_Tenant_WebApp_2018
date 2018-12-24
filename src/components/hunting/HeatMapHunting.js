@@ -12,7 +12,7 @@ import Ionicon from 'react-ionicons'
 import {
   Icon,
   Button,
-} from 'antd-mobile'
+} from 'antd'
 import {  } from 'antd'
 import PolarGraph from './PolarGraph'
 import EditSearch from '../edits/EditSearch'
@@ -374,15 +374,49 @@ class HeatMapHunting extends Component {
     }
   }
 
+  renderMobileListButton() {
+    return (
+      <Button type='primary' style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'fixed',
+        bottom: '30px',
+        left: '50%',
+        border: 'none',
+        padding: '0px 20px',
+        borderRadius: '25px',
+        transform: 'translate(-50%, -50%)',
+        background: '#56CCF2',  /* fallback for old browsers */
+        background: '-webkit-linear-gradient(to right, #2F80ED, #56CCF2)',  /* Chrome 10-25, Safari 5.1-6 */
+        background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        zIndex: 105,
+      }}
+      onClick={() => this.props.history.push('/matches')}
+      size='large'
+      >
+        <Ionicon
+          icon="ios-list"
+          fontSize="1.5rem"
+          color='white'
+        />
+        <div style={{ marginLeft: '5px', color: 'white' }}>LIST</div>
+      </Button>
+    )
+  }
+
 	render() {
 		return (
-			<div id='HeatMapHunting' style={comStyles().container}>
+			<div id='HeatMapHunting' style={comStyles(this.props.style).container}>
         <div id="map" style={comStyles().map}></div>
         {
           this.props.fullscreenSearch
           ?
           <div style={searchStyles().quickbar}>
-            <Button onClick={() => this.props.history.push('/matches')} size='small' type="ghost" style={searchStyles().list}>List</Button>
+            {
+              this.renderMobileListButton()
+            }
             <Button onClick={() => this.setState({ show_filter: true })} size='small' type="ghost" style={searchStyles().filter}>Filter</Button>
           </div>
           :
@@ -441,6 +475,7 @@ HeatMapHunting.propTypes = {
   setCurrentMapLocationToRedux: PropTypes.func.isRequired,
   setMapLoadedToRedux: PropTypes.func.isRequired,
   setMainMapToRedux: PropTypes.func.isRequired,
+  style: PropTypes.object,
 }
 
 // for all optional props, define a default value
@@ -451,6 +486,9 @@ HeatMapHunting.defaultProps = {
   showFlagPin: false,
   preview: false,
   fullscreenSearch: false,
+  style: {
+    height: '100%',
+  },
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -477,14 +515,14 @@ export default withRouter(
 // ===============================
 
 // the JS function that returns Radium JS styling
-const comStyles = () => {
+const comStyles = (style) => {
 	return {
 		container: {
       display: 'flex',
       flexDirection: 'column',
 			backgroundColor: '#f5f5f9',
-      height: '100%',
       position: 'relative',
+      ...style,
 		},
     map: {
       width: '100%',

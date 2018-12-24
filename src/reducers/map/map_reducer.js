@@ -5,6 +5,7 @@ import {
   SET_FLAG_PIN_LOCATION,
   SAVE_NEARBY_LOCATIONS,
   SET_CURRENT_CLICKED_LOCATION,
+  SET_MAP_LISTINGS,
 } from '../../actions/action_types'
 
 const INITIAL_STATE = {
@@ -19,6 +20,8 @@ const INITIAL_STATE = {
   nearby_locations: {},
 
   current_clicked_location: {},
+
+  listings: [],
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -52,6 +55,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         current_clicked_location: action.payload,
+      }
+    case SET_MAP_LISTINGS:
+      return {
+        ...state,
+        listings: action.payload,
       }
     default:
       return {

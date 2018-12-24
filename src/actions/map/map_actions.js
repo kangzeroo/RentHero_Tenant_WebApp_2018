@@ -5,6 +5,7 @@ import {
   SET_FLAG_PIN_LOCATION,
   SAVE_NEARBY_LOCATIONS,
   SET_CURRENT_CLICKED_LOCATION,
+  SET_MAP_LISTINGS,
 } from '../action_types'
 import {
   FLAG_PIN,
@@ -96,6 +97,15 @@ export const setCurrentClickedLocation = (action, item, locations) => {
     dispatch({
       type: SET_CURRENT_CLICKED_LOCATION,
       payload: clicked,
+    })
+  }
+}
+
+export const saveMapListingsToRedux = (listings) => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_MAP_LISTINGS,
+      payload: listings,
     })
   }
 }
