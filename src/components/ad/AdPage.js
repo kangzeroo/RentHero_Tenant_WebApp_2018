@@ -39,6 +39,7 @@ import ListingActions from './tabs/ListingActions'
 import { isMobile } from '../../api/general/general_api'
 import AuthenticatePopup from '../auth/AuthenticatePopup'
 import NearbyLocations from './sections/NearbyLocations'
+import { saveNearbyLocationsToRedux } from '../../actions/map/map_actions'
 
 class AdPage extends Component {
 
@@ -47,10 +48,6 @@ class AdPage extends Component {
     this.state = {
       orderedImages: [],
       show_header: true,
-      commute_state: {
-				commute_time: 0,
-				commute_distance: 0,
-      },
 
       photos: {
         outside: [],
@@ -61,6 +58,13 @@ class AdPage extends Component {
         img_count: 0,
       },
 
+      // commute data
+      commute_state: {
+        commute_time: 0,
+        commute_distance: 0,
+      },
+
+
       toggle_modal: false,
       modal_name: '',
       context: {},
@@ -68,6 +72,7 @@ class AdPage extends Component {
       loading: false,
 
       listing_is_favorited: false,
+
     }
     this.lastScrollTop = 0
   }
@@ -98,7 +103,7 @@ class AdPage extends Component {
       this.toggleModal(false)
       history.pushState(null, null, `${this.props.location.pathname}`)
     }
-    if (this.props.current_listing) {
+    if (this.props.current_listing && this.props.current_listing.REFERENCE_ID) {
       this.organizePhotos()
     }
     console.log(this.props.location)
@@ -134,8 +139,6 @@ class AdPage extends Component {
 
   componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
-			console.log('LOADED UP MAP')
-			// history.pushState(null, null, `${this.props.location.pathname}?ref=${this.props.current_listing.REFERENCE_ID}`)
       this.organizePhotos()
 		}
 	}
@@ -204,7 +207,6 @@ class AdPage extends Component {
       this.toggleModal(true, 'authenticate', this.props.current_listing)
     }
   }
-
 
   organizePhotos() {
     const pics = rankOrderPics(this.props.current_listing.IMAGES)
@@ -351,6 +353,11 @@ class AdPage extends Component {
     //     scrollTop: document.getElementById("AdPage").scrollHeight - $(`#all_images`).position().top
     // }, 1000);
     document.getElementById('all_images').scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
+  backToAllAds(listing, url) {
+
+    this.props.setListing(listing, url)
   }
 
   toggleModal(bool, attr, context) {
@@ -525,7 +532,7 @@ class AdPage extends Component {
             arrival_time={'10am'}
             scrollDownToImages={() => this.scrollDownToImages()}
             onShowAll={() => this.toggleModal(true, 'images', this.props.current_listing)}
-            setListing={(listing, url) => this.props.setListing(listing, url)}
+            setListing={(listing, url) => this.backToAllAds(listing, url)}
             listing_is_favorited={this.state.listing_is_favorited}
             favoriteListing={() => this.favoriteListing()}
           />
@@ -549,8 +556,21 @@ class AdPage extends Component {
           />
 
           <Divider />
+          {
+            this.props.map_loaded
+            ?
+            <NearbyLocations
+              current_listing={this.props.current_listing}
+              setCommuteState={(commute_state) => this.setState({ commute_state: commute_state })}
+            />
+            :
+            null
+          }
+          <Divider />
 
-        
+          <AdStreetView
+            current_listing={this.props.current_listing}
+          />
 
           <div style={{ width: '100%', height: '70px' }}></div>
           {
@@ -581,10 +601,16 @@ AdPage.propTypes = {
   setListing: PropTypes.func.isRequired,    // passed in
   tenant_profile: PropTypes.object.isRequired,
   authenticated: PropTypes.bool.isRequired,
+  map_loaded: PropTypes.bool.isRequired,
+  prefs: PropTypes.object.isRequired,
+  nearby_locations: PropTypes.object,
+  saveNearbyLocationsToRedux: PropTypes.func.isRequired,
+
 }
 
 // for all optional props, define a default value
 AdPage.defaultProps = {
+  nearby_locations: {},
 
 }
 
@@ -601,6 +627,8 @@ const mapReduxToProps = (redux) => {
     tenant_favorites: redux.tenant.favorites,
     tenant_profile: redux.auth.tenant_profile,
     authenticated: redux.auth.authenticated,
+    map_loaded: redux.map.map_loaded,
+    prefs: redux.prefs,
 	}
 }
 
@@ -611,6 +639,7 @@ export default withRouter(
     setCurrentListing,
     triggerDrawerNav,
     saveTenantFavoritesToRedux,
+    saveNearbyLocationsToRedux,
 	})(RadiumHOC)
 )
 

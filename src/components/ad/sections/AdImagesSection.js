@@ -31,7 +31,7 @@ class AdImagesSection extends Component {
     if (imgs.length > 3) {
       shown_imgs = imgs.slice(0, 3)
     }
-    console.log(shown_imgs)
+    // console.log(shown_imgs)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <h2>Exterior</h2>
@@ -60,7 +60,7 @@ class AdImagesSection extends Component {
     if (imgs.length > 3) {
       shown_imgs = imgs.slice(0, 3)
     }
-    console.log(shown_imgs)
+    // console.log(shown_imgs)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <h2>Bedroom</h2>
@@ -89,7 +89,7 @@ class AdImagesSection extends Component {
     if (imgs.length > 3) {
       shown_imgs = imgs.slice(0, 3)
     }
-    console.log(shown_imgs)
+    // console.log(shown_imgs)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <h2>Living room</h2>
@@ -118,7 +118,7 @@ class AdImagesSection extends Component {
     if (imgs.length > 3) {
       shown_imgs = imgs.slice(0, 3)
     }
-    console.log(shown_imgs)
+    // console.log(shown_imgs)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <h2>Kitchen</h2>
@@ -147,7 +147,7 @@ class AdImagesSection extends Component {
     if (imgs.length > 3) {
       shown_imgs = imgs.slice(0, 2)
     }
-    console.log(shown_imgs)
+    // console.log(shown_imgs)
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <h2>Bathroom</h2>

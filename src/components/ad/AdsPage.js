@@ -24,6 +24,8 @@ import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
+import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux } from '../../actions/map/map_actions'
+import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, } from '../../assets/map_pins'
 
 class AdsPage extends Component {
 
@@ -40,6 +42,9 @@ class AdsPage extends Component {
     this.setState({
 			mobile: isMobile()
 		}, () => console.log(this.state))
+    if (this.props.all_listings && this.props.all_listings.length > 0 && this.props.map_loaded) {
+      this.refreshPins(this.props.all_listings)
+    }
   }
 
 	componentDidUpdate(prevProps, prevState) {
@@ -47,7 +52,75 @@ class AdsPage extends Component {
 		if (!this.props.auth.authentication_loaded) {
 			this.props.history.push('/')
 		}
+    // if (this.props.all_listings && this.props.all_listings.length > 0 && this.props.map_loaded) {
+    //   this.refreshPins(this.props.all_listings)
+    // }
 	}
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.all_listings !== nextProps.all_listings && this.props.map_loaded) {
+      this.refreshPins(nextProps.all_listings)
+    }
+    if (this.props.map_loaded !== nextProps.map_loaded) {
+      this.refreshPins(nextProps.all_listings)
+    }
+  }
+
+  refreshPins(listings) {
+    console.log(listings)
+    const map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 12,
+      disableDefaultUI: true,
+      clickableIcons: false,
+    })
+    let bounds = new google.maps.LatLngBounds()
+    let self = this
+    if (listings && listings.length > 0) {
+      listings.forEach((n, i) => {
+          let marker
+          marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(n.GPS.lat, n.GPS.lng),
+                  pin_type: 'listing',
+                  icon: RED_PIN,
+                  zIndex: 10,
+              })
+          bounds.extend(marker.position)
+          marker.pin_id = n.REFERENCE_ID
+          marker.label = n.TITLE
+
+          marker.addListener('click', (event) => {
+            self.props.setCurrentListing(n)
+            self.props.setListing(n, `/matches/${n.REFERENCE_ID}`)
+            // self.setState({
+            //   preview_visible: true
+            // })
+            // self.bufferPin = marker
+            self.props.setCurrentMapLocationToRedux(marker)
+          })
+
+  				// save the pins
+          // console.log(marker)
+  				if (marker) {
+  					marker.setMap(map)
+  				}
+
+      })
+
+      if (map) {
+        map.fitBounds(bounds)
+      }
+
+
+      const dest = this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')
+      this.props.setCurrentFlagPin({
+        coords: {
+          lat: dest[0],
+          lng: dest[1],
+        },
+        map: map,
+      })
+    }
+  }
 
   renderTitle() {
     return (
@@ -178,10 +251,15 @@ AdsPage.propTypes = {
 	history: PropTypes.object.isRequired,
   prefs: PropTypes.object.isRequired,
   listings: PropTypes.object.isRequired,
+  all_listings: PropTypes.array.isRequired,
   setCurrentListing: PropTypes.func.isRequired,
   loading_complete: PropTypes.bool.isRequired,
   setListing: PropTypes.func.isRequired,          // passed in
   auth: PropTypes.object.isRequired,
+  setCurrentFlagPin: PropTypes.func.isRequired,
+  setCurrentClickedLocation: PropTypes.func.isRequired,
+  map_loaded: PropTypes.bool.isRequired,
+  setCurrentMapLocationToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -199,6 +277,8 @@ const mapReduxToProps = (redux) => {
     listings: redux.listings,
     loading_complete: redux.app.loading_complete,
     auth: redux.auth,
+    all_listings: redux.listings.all_listings,
+    map_loaded: redux.map.map_loaded,
 	}
 }
 
@@ -206,6 +286,9 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
     setCurrentListing,
+    setCurrentFlagPin,
+    setCurrentClickedLocation,
+    setCurrentMapLocationToRedux,
 	})(RadiumHOC)
 )
 
