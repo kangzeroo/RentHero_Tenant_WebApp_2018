@@ -21,6 +21,7 @@ import {
 } from 'antd'
 import { setCurrentFlagPin, saveNearbyLocationsToRedux, setCurrentClickedLocation, } from '../../../actions/map/map_actions'
 import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, } from '../../../assets/map_pins'
+import { isMobile } from '../../../api/general/general_api'
 
 class NearbyLocations extends Component {
 
@@ -585,6 +586,10 @@ class NearbyLocations extends Component {
 		return (
 			<div id='NearbyLocations' style={comStyles().container}>
         {
+          isMobile()
+          ?
+          null
+          :
           this.renderSearchContainer()
         }
         {
