@@ -24,7 +24,11 @@ class OnlyMapHunting extends Component {
 	constructor() {
 		super()
 		this.state = {
+			prev_listing: {},
 			current_listing: {},
+			next_listing: {},
+
+			show_filter: false,
 		}
 		this.pins = []
 		this.map = null
@@ -76,7 +80,12 @@ class OnlyMapHunting extends Component {
 							pin.setAnimation(null)
 						})
 						self.setState({
-							current_listing: n,
+							prev_listing: self.state.current_listing,
+						}, () => {
+							self.setState({
+								current_listing: n,
+								next_listing: listings[i+1]
+							})
 						})
             self.props.setCurrentListing(n)
 						marker.setAnimation(google.maps.Animation.BOUNCE)
@@ -140,9 +149,29 @@ class OnlyMapHunting extends Component {
 						padding: '2.5px',
 						display: 'flex',
 						flexDirection: 'row',
+						justifyContent: 'center',
+						alignItems: 'center',
 					}}
 				>
-					<img src={current_listing.IMAGES[0].url} style={{ maxWidth: '50%', maxHeight: '30vh', }} />
+					{
+						current_listing.IMAGES && current_listing.IMAGES.length > 0 && current_listing.IMAGES[0].url
+						?
+						<img src={current_listing.IMAGES[0].url} style={{ maxWidth: '50%', maxHeight: '30vh', }} />
+						:
+						<img
+							id="img_carousel_modal"
+							onClick={() => this.clickedImage()}
+							src={'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'}
+							alt=""
+							style={{ width: '100%', height: '100%', verticalAlign: 'top', borderRadius: '10px', overflow: 'hidden' }}
+							onLoad={() => {
+								// fire window resize event to change height
+								window.dispatchEvent(new Event('resize'));
+								// this.setState({ imgHeight: '50vh' });
+								// this.renderPriceTag()
+							}}
+						/>
+					}
 					<div style={{
 						display: 'flex',
 						flexDirection: 'column',
@@ -153,7 +182,7 @@ class OnlyMapHunting extends Component {
 					>
 						<div style={{ fontSize: '1.2rem', fontWeight: 'bold', }}>{current_listing.TITLE.length > 25 ? `${current_listing.TITLE.slice(0, 25)}...` : current_listing.TITLE}</div>
 						<div>{current_listing.ADDRESS.split(',').slice(0, 2).join(', ')}</div>
-						<div>{`${current_listing.PRICE}`}</div>
+						<div style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{`$ ${current_listing.PRICE}`}</div>
 						<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', }}>
 								<div>{`${current_listing.BEDS} bed`}</div>
 							<Divider type='vertical' />
@@ -168,21 +197,122 @@ class OnlyMapHunting extends Component {
 			)
 	}
 
+	chooseNextOne() {
+		const p = new Promise((res, rej) => {
+			this.props.map_listings.map((listing, i) => {
+				if (listing.pin_id === this.state.current_listing.pin_id || listing.pin_id === this.state.current_listing.REFERENCE_ID) {
+					listing.setAnimation(null)
+					if (i === this.props.map_listings.length - 1) {
+						console.log('GO BACK TO FIRST')
+						res(this.props.map_listings[0])
+					} else {
+						res(this.props.map_listings[i+1])
+					}
+				} else {
+					res(this.props.map_listings[0])
+				}
+			})
+		})
+		return p
+	}
+
+	nextListing() {
+		this.chooseNextOne()
+			.then((nextOne) => {
+				console.log(nextOne)
+				nextOne.setAnimation(google.maps.Animation.BOUNCE)
+				this.map.setCenter(nextOne.position)
+				console.log(this.props.all_listings.filter(li => li.REFERENCE_ID === nextOne.pin_id))
+				this.setState({
+					// prev_listing: this.state.current_listing,
+					current_listing: this.props.all_listings.filter(li => li.REFERENCE_ID === nextOne.pin_id)[0],
+					next_listing: nextOne,
+				})
+				this.props.setCurrentListing(nextOne)
+				this.props.setCurrentMapLocationToRedux(nextOne)
+			})
+			.catch((err) => {
+				console.log(err)
+			})
+
+	}
+
 	renderBottomSemiCircle() {
 		return (
-			<div style={{
-				backgroundColor:'black',
-				borderTopLeftRadius: '90%',
-				borderTopRightRadius: '90%',
-				width: '100vw',
-				position: 'absolute',
-				bottom: 0,
-				left: 0,
-				height: '10vh',
-				zIndex: 100,
-				opacity: '0.6'
-			}}>
+			<div>
+				{
+					// this.state.current_listing && this.state.current_listing.REFERENCE_ID
+					// ?
+					// <Button
+					// 	shape='circle'
+					// 	type='primary'
+					// 	icon='left'
+					// 	style={{
+					// 		position: 'absolute',
+					// 		left: '10vw',
+					// 		bottom: '6vh',
+					// 		zIndex: 105
+					// 	}}
+					// 	size='large'
+					// 	disabled={!this.state.prev_listing}
+					// 	onClick={() => this.setState({ current_listing: this.state.prev_listing, })}
+					// >
+					// </Button>
+					// :
+					// null
+				}
+				<Button
+					shape='circle'
+					type='primary'
+					icon='filter'
+					style={{
+						position: 'absolute',
+						left: '10vw',
+						bottom: '6vh',
+						zIndex: 105,
+						background: 'orange',
+						border: 'none',
+					}}
+					size='large'
+					onClick={() => this.setState({ show_filter: true, })}
+				>
+				</Button>
+				{
+					this.state.current_listing // && this.state.current_listing.REFERENCE_ID
+					?
+					<Button
+						shape='circle'
+						type='primary'
+						icon='right'
+						style={{
+							position: 'absolute',
+							right: '10vw',
+							bottom: '6vh',
+							zIndex: 105
+						}}
+						size='large'
+						onClick={() => this.nextListing()}
+					>
+					</Button>
+					:
+					null
+				}
 
+				<div style={{
+					backgroundColor:'black',
+					borderTopLeftRadius: '90%',
+					borderTopRightRadius: '90%',
+					width: '120vw',
+					marginLeft: '-10vw',
+					position: 'absolute',
+					bottom: 0,
+					left: 0,
+					height: '10vh',
+					zIndex: 100,
+					opacity: '0.6'
+				}}>
+
+				</div>
 			</div>
 		)
 	}
@@ -226,6 +356,7 @@ OnlyMapHunting.propTypes = {
 	saveMapListingsToRedux: PropTypes.func.isRequired,
 	map_listings: PropTypes.array.isRequired,
 	flag_location: PropTypes.object.isRequired,
+	current_location: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -245,6 +376,7 @@ const mapReduxToProps = (redux) => {
 		map_loaded: redux.map.map_loaded,
 		map_listings: redux.map.listings,
 		flag_location: redux.map.flag_location,
+		current_location: redux.map.current_location,
 	}
 }
 
