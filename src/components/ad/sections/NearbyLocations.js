@@ -725,7 +725,7 @@ const searchStyles = () => {
       zIndex: 100,
       height: '50px',
       borderRadius: '10px',
-      border: 'gray solid thin',
+      border: '#2faded solid thin',
       display: 'flex',
       flexDirection: 'row',
       alignItems: 'center',

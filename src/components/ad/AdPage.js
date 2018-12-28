@@ -489,11 +489,51 @@ class AdPage extends Component {
   renderStickyFooter() {
     return (
       <div style={actionStyles(isMobile()).container}>
-        <i className='ion-arrow-left-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
+        {
+          this.state.listing_is_favorited
+          ?
+          <Icon
+            type="heart"
+            theme="twoTone"
+            twoToneColor="#eb2f96"
+            style={{
+              // position: 'absolute',
+              // top: '10px',
+              // right: '10px',
+              zIndex: 60,
+              cursor: 'pointer',
+              fontSize: '2rem',
+              ":hover": {
+                background: 'white',
+                color: 'white',
+              }
+            }}
+            onClick={() => this.favoriteListing()}
+          />
+          :
+          <Icon
+            type="heart"
+            theme="outlined"
+            size='large'
+            style={{
+              // position: 'absolute',
+              // top: '10px',
+              // right: '10px',
+              zIndex: 60,
+              color: '#2faded',
+              cursor: 'pointer',
+              fontSize: '2rem',
+              ":hover": {
+                background: '#eb2f96',
+                color: 'red',
+              }
+            }}
+            onClick={() => this.favoriteListing()}
+          />
+        }
         <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
           INTERESTED
         </Button>
-        <i className='ion-arrow-right-b' style={{ color: 'black', fontSize: '2rem', width: '10%' }} />
       </div>
     )
   }

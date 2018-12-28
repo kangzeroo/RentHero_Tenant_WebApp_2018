@@ -29,6 +29,9 @@ class AdStreetView extends Component {
     if (prevProps.current_listing !== this.props.current_listing) {
       this.renderStreetview()
     }
+    if (prevState.begin !== this.state.begin) {
+      this.renderStreetview()
+    }
   }
 
   renderStreetview() {
