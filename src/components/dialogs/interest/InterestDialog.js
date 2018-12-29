@@ -34,7 +34,7 @@ class InterestDialog extends Component {
 					this.props.setCurrentListing(data)
           this.setState({
             lastUpdated: moment().unix(),
-          }, () => this.rehydrateSegments())
+          })
 				})
 				.catch((err) => {
 					console.log(err)
