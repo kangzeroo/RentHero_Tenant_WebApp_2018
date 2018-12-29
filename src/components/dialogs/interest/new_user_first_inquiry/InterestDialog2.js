@@ -101,6 +101,7 @@ class InterestDialog2 extends Component {
                           }}
                           texts={[
                             { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
+                            // { id: 'img', component: (<img src={this.props.current_listing.IMAGES[0].url} style={{ width: '300px', height: 'auto' }} />) },
                             { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
                             { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
                             { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
@@ -129,12 +130,12 @@ class InterestDialog2 extends Component {
         // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
         component: (<InputSegment
                                 title='Introductions'
-                                schema={{ id: 'name', endpoint: 'phone' }}
+                                schema={{ id: 'name', endpoint: 'ideal_movein' }}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                 onDone={(original_id, endpoint, data) => this.doneName(original_id, endpoint, data)}
                                 texts={[
                                   ...this.addAnyPreMessages('name'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "What is your name?" },
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "First things first, what is your name? 😊" },
                                 ]}
                                 inputType={'text'}
                                 stringInputPlaceholder={'First Name'}
@@ -152,7 +153,7 @@ class InterestDialog2 extends Component {
                                  onDone={(original_id, endpoint, data) => this.doneRegister(original_id, endpoint, data)}
                                  texts={[
                                    ...this.addAnyPreMessages('phone'),
-                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Number is" },
+                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Nice to meet you ${this.state.first_name} 🤝 What is your phone number?` },
                                  ]}
                                  inputType={'tel'}
                                  initialData={{
@@ -169,7 +170,7 @@ class InterestDialog2 extends Component {
                                 onDone={(original_id, endpoint, data) => this.doneVerify(original_id, endpoint, data)}
                                 texts={[
                                   ...this.addAnyPreMessages('verify_phone'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "My Code is" },
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "I sent a verification code to you. Please enter it below 🔒" },
                                 ]}
                                 inputType={'number'}
                                 stringInputPlaceholder={'Verification Code'}
@@ -188,7 +189,8 @@ class InterestDialog2 extends Component {
                           triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                           onDone={(original_id, endpoint, data) => this.doneIdealMoveIn(original_id, endpoint, data)}
                           texts={[
-                            { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal move-in date?' }
+                            { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Awesome! Just a couple of questions now 🤓' },
+                            { id: '2', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal move-in date? 📅' }
                           ]}
                           initialData={{
                             date: this.props.prefs.MOVEIN.IDEAL_MOVEIN_DATE ? moment(this.props.prefs.MOVEIN.IDEAL_MOVEIN_DATE).toDate() : new Date()
@@ -675,15 +677,26 @@ class InterestDialog2 extends Component {
     })
   }
 
-  doneInterest(original_id, endpoint, data) {
-    if (false) {
-      // if already logged in
-    } else if (false) {
-      // if first time visitor
+  doneIdealMoveIn(original_id, endpoint, data) {
+    const nextEndpoint = this.getNextSegment(original_id, endpoint, data)
+    if (nextEndpoint && nextEndpoint !== original_id) {
+      this.done(original_id, nextEndpoint, data)
     } else {
-      // if 2nd time visitor
+      this.done(original_id, endpoint, data)
     }
-    this.done(original_id, endpoint, data)
+    saveTenantPreferences({
+      TENANT_ID: this.props.tenant_id,
+      KEY: this.props.prefs.MOVEIN.KEY,
+      IDEAL_MOVEIN_DATE: moment(data.date).toISOString()
+    }).then((MOVEIN) => {
+      this.props.updatePreferences(MOVEIN)
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
+  doneInterest(original_id, endpoint, data) {
+    this.done(endpoint, endpoint, data)
   }
 
   done(original_id, endpoint, data) {

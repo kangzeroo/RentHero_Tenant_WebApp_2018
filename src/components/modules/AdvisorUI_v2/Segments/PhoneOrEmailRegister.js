@@ -177,6 +177,12 @@ class PhoneOrEmailRegister extends Component {
     if (this.mobile) {
       document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "center" })
     }
+    document.getElementById(id).addEventListener('keyup', (e) => {
+      if (e.keyCode === 13) {
+        // document.getElementById(`input_field--${this.props.schema.id}`).blur()
+        this.nextSegment()
+      }
+    })
   }
 
   renderCustomComponent(text) {
@@ -265,6 +271,55 @@ class PhoneOrEmailRegister extends Component {
           </div>
           :
           null
+        }
+        {
+          this.props.texts.map((text, txtIndex) => {
+            return (
+              <div>
+                {
+                  this.shouldDisplayText(text, txtIndex) || this.state.instantChars
+                  ?
+                  <div>
+                    {
+                      text.component
+                      ?
+                      this.renderCustomComponent(text)
+                      :
+                        <SubtitlesMachine
+                        id={`Subtitle--${this.props.schema.id}--${text.id}`}
+                        key={`${text.id}_${txtIndex}`}
+        								instant={this.state.instantChars || this.shouldInstantChars(txtIndex)}
+        								speed={0.25}
+        								delay={this.state.instantChars || this.shouldInstantChars(txtIndex) ? 0 : 500}
+        								text={text}
+        								textStyles={{
+        									fontSize: '1.1rem',
+        									color: FONT_COLOR,
+        									textAlign: 'left',
+                          fontFamily: FONT_FAMILY,
+                          ...text.textStyles,
+        								}}
+        								containerStyles={{
+        									width: '100%',
+        									backgroundColor: 'rgba(0,0,0,0)',
+        									margin: '20px 0px 20px 0px',
+        								}}
+        								doneEvent={() => {
+      										this.setState({ completedSections: this.state.completedSections.concat([text.id]) }, () => {
+                            if (text.scrollDown) {
+                              this.props.triggerScrollDown(null, 500)
+                            }
+                          })
+        								}}
+        							/>
+                    }
+                  </div>
+                  :
+                  null
+                }
+              </div>
+            )
+          })
         }
         <div style={{ margin: '30px 0px 0px 0px' }}>
           {
@@ -367,7 +422,7 @@ PhoneOrEmailRegister.propTypes = {
   minChars: PropTypes.number,               // passed in
   stringInputPlaceholder: PropTypes.string,
   numberInputPlaceholder: PropTypes.number,
-  onSkip: PropTypes.func.isRequired,          // passed in
+  onSkip: PropTypes.func,          // passed in
 }
 
 // for all optional props, define a default value
@@ -382,6 +437,7 @@ PhoneOrEmailRegister.defaultProps = {
   minChars: 0,
   stringInputPlaceholder: '',
   numberInputPlaceholder: 0,
+  onSkip: () => {},
 }
 
 // Wrap the prop in Radium to allow JS styling

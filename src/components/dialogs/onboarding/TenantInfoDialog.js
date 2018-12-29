@@ -11,6 +11,9 @@ import { withRouter } from 'react-router-dom'
 import $ from 'jquery'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
 import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
+import {
+	getListings,
+} from '../../../api/listings/listings_api'
 import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
@@ -18,6 +21,9 @@ import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
 import DatePickerSegment from '../../modules/AdvisorUI_v2/Segments/DatePickerSegment'
 import CounterSegment from '../../modules/AdvisorUI_v2/Segments/CounterSegment'
 import MultiOptionsSegment from '../../modules/AdvisorUI_v2/Segments/MultiOptionsSegment'
+import {
+	saveListingsToRedux,
+} from '../../../actions/listings/listings_actions'
 import { Progress } from 'antd'
 import {
   Icon,
@@ -491,6 +497,11 @@ class OnboardingDialog extends Component {
       IDEAL_MOVEIN_DATE: moment(data.date).toISOString()
     }).then((MOVEIN) => {
       this.props.updatePreferences(MOVEIN)
+      return Promise.resolve()
+    }).then(() => {
+      return getListings(this.props.prefs)
+    }).then((data) => {
+      this.props.saveListingsToRedux(data)
     }).catch((err) => {
       console.log(err)
     })
@@ -682,6 +693,7 @@ OnboardingDialog.propTypes = {
   updatePreferences: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
+  saveListingsToRedux: PropTypes.func.isRequired,
   width: PropTypes.string,                  // passed in
   tenant_profile: PropTypes.object.isRequired,
   saveTenantProfileToRedux: PropTypes.func.isRequired,
@@ -712,6 +724,7 @@ export default withRouter(
     updatePreferences,
     saveTenantProfileToRedux,
 		setTenantID,
+    saveListingsToRedux,
 	})(RadiumHOC)
 )
 
