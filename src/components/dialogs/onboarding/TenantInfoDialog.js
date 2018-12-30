@@ -11,6 +11,9 @@ import { withRouter } from 'react-router-dom'
 import $ from 'jquery'
 import { updatePreferences } from '../../../actions/prefs/prefs_actions'
 import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
+import {
+	getListings,
+} from '../../../api/listings/listings_api'
 import MessageSegment from '../../modules/AdvisorUI_v2/Segments/MessageSegment'
 import ActionSegment from '../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import InputSegment from '../../modules/AdvisorUI_v2/Segments/InputSegment'
@@ -18,11 +21,14 @@ import MapSegment from '../../modules/AdvisorUI_v2/Segments/MapSegment'
 import DatePickerSegment from '../../modules/AdvisorUI_v2/Segments/DatePickerSegment'
 import CounterSegment from '../../modules/AdvisorUI_v2/Segments/CounterSegment'
 import MultiOptionsSegment from '../../modules/AdvisorUI_v2/Segments/MultiOptionsSegment'
+import {
+	saveListingsToRedux,
+} from '../../../actions/listings/listings_actions'
 import { Progress } from 'antd'
 import {
   Icon,
 } from 'antd-mobile'
-import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
+import { toggleInstantCharsSegmentID, saveLoadingCompleteToRedux } from '../../../actions/app/app_actions'
 import { setTenantID } from '../../../actions/tenant/tenant_actions'
 import { unauthRoleTenant } from '../../../api/aws/aws-cognito'
 import auth0 from 'auth0-js'
@@ -266,11 +272,11 @@ class OnboardingDialog extends Component {
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/yzWqIH9NBZE/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<CounterSegment
                                title='Budget Per Person'
-                               schema={{ id: '6', endpoint: '7' }}
+                               schema={{ id: '6', endpoint: 'ideal_movein' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
                                texts={[
-                                 ...this.addAnyPreMessages('ideal_movein'),
+                                 ...this.addAnyPreMessages('6'),
                                  { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
                                ]}
                                incrementerOptions={{
@@ -491,6 +497,12 @@ class OnboardingDialog extends Component {
       IDEAL_MOVEIN_DATE: moment(data.date).toISOString()
     }).then((MOVEIN) => {
       this.props.updatePreferences(MOVEIN)
+      return Promise.resolve()
+    }).then(() => {
+      return getListings(this.props.prefs)
+    }).then((data) => {
+      this.props.saveListingsToRedux(data)
+			this.props.saveLoadingCompleteToRedux()
     }).catch((err) => {
       console.log(err)
     })
@@ -682,10 +694,12 @@ OnboardingDialog.propTypes = {
   updatePreferences: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
   tenant_id: PropTypes.string.isRequired,
+  saveListingsToRedux: PropTypes.func.isRequired,
   width: PropTypes.string,                  // passed in
   tenant_profile: PropTypes.object.isRequired,
   saveTenantProfileToRedux: PropTypes.func.isRequired,
 	setTenantID: PropTypes.func.isRequired,
+	saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -712,6 +726,8 @@ export default withRouter(
     updatePreferences,
     saveTenantProfileToRedux,
 		setTenantID,
+    saveListingsToRedux,
+		saveLoadingCompleteToRedux,
 	})(RadiumHOC)
 )
 
