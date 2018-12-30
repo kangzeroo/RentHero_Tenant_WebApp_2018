@@ -18,6 +18,9 @@ import {
   Tooltip,
   Button,
 } from 'antd'
+import {
+  Modal,
+} from 'antd-mobile'
 // import {
 //   Button,
 // } from 'antd-mobile'
@@ -36,6 +39,8 @@ class AdsPage extends Component {
       search_string: '',
       show_filter: false,
       mobile: false,
+      toggle_modal: false,
+      modal_name: '',
     }
   }
 
@@ -49,7 +54,6 @@ class AdsPage extends Component {
   }
 
 	componentDidUpdate(prevProps, prevState) {
-    console.log(this.props.auth.authentication_loaded, this.props.auth.authenticated)
 		if (!this.props.auth.authentication_loaded) {
 			this.props.history.push('/')
 		}
@@ -91,7 +95,8 @@ class AdsPage extends Component {
 
           marker.addListener('click', (event) => {
             self.props.setCurrentListing(n)
-            self.props.setListing(n, `/matches/${n.REFERENCE_ID}`)
+            self.props.setListing(n)
+            // self.props.setListing(n, `/matches/${n.REFERENCE_ID}`)
             // self.setState({
             //   preview_visible: true
             // })
@@ -123,6 +128,34 @@ class AdsPage extends Component {
     }
   }
 
+  beginSlideshow() {
+    // no current_listing yet
+    this.props.history.push(`/matches/${this.props.listings.current_listing.REFERENCE_ID}`)
+  }
+
+  renderAppropriateModal(modal_name, context) {
+    return (
+      <Modal
+        visible={this.state.toggle_modal}
+        transparent
+        maskClosable
+        onClose={() => this.toggleModal(false)}
+        animationType='fade'
+      >
+        <div>WHAT TO EXPECT</div>
+        <Button onClick={() => this.beginSlideshow()}>BEGIN</Button>
+      </Modal>
+    )
+  }
+
+  toggleModal(bool, attr, context) {
+    this.setState({
+      toggle_modal: bool,
+      modal_name: attr,
+      context,
+    })
+  }
+
   renderTitle() {
     return (
       <div>
@@ -130,7 +163,7 @@ class AdsPage extends Component {
           <h2>{`Relevant Listings for you`}</h2>
           <p>{`Here are the most relevant listings we've found for you, based on the information you've provided for us. If you'd like for your search to be even more specific, please `}<a href='/app/profile' target='_blank'>Click Here</a></p>
         </div>
-        <Button type='primary' icon='caret-right' onClick={() => this.props.history.push('/slideshow')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
+        <Button type='primary' icon='caret-right' onClick={() => this.toggleModal(true, 'slideshow')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
           Start Slideshow
         </Button>
       </div>
@@ -270,6 +303,9 @@ class AdsPage extends Component {
           this.renderMobileMapButton()
           :
           null
+        }
+        {
+          this.renderAppropriateModal()
         }
 			</div>
 		)

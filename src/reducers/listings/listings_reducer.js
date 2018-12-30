@@ -1,5 +1,6 @@
 import {
   SAVE_LISTINGS_TO_REDUX,
+  PREV_LISTING,
   NEXT_LISTING,
   SET_CURRENT_LISTING,
   SET_CURRENT_LISTINGS_STACK,
@@ -20,7 +21,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         current_listings_stack: action.payload,
         all_listings: action.payload,
-        current_listing: state.current_listing ? state.current_listing : action.payload[0]
+        // current_listing: state.current_listing ? state.current_listing : action.payload[0]
       }
     case SET_CURRENT_LISTING:
       return {
@@ -37,7 +38,7 @@ export default (state = INITIAL_STATE, action) => {
     case NEXT_LISTING:
       let nextListingIndex = 0
       state.current_listings_stack.forEach((listing, index) => {
-        if (listing.ITEM_ID === state.current_listing.ITEM_ID) {
+        if (listing.REFERENCE_ID === state.current_listing.REFERENCE_ID) {
           if (index + 1 <= state.current_listings_stack.length - 1) {
             nextListingIndex = index + 1
           } else {
@@ -50,10 +51,21 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         current_listing: state.current_listings_stack[nextListingIndex]
       }
-    case INCREMENT_LIKES:
+    case PREV_LISTING:
+      let prevListingIndex = 0
+      state.current_listings_stack.forEach((listing, index) => {
+        if (state.current_listing && listing.REFERENCE_ID === state.current_listing.REFERENCE_ID) {
+          if (index - 1 >= 0) {
+            prevListingIndex = index - 1
+          } else {
+            prevListingIndex = 0
+          }
+        }
+      })
+      console.log(prevListingIndex)
       return {
         ...state,
-        current_listings_stack: state.current_listings_stack.filter(l => l.REFERENCE_ID !== action.payload.REFERENCE_ID),
+        current_listing: state.current_listings_stack[prevListingIndex]
       }
 		default:
 			return {

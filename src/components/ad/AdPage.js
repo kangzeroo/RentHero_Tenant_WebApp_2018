@@ -140,6 +140,8 @@ class AdPage extends Component {
   componentDidUpdate(prevProps, prevState) {
 		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
       this.organizePhotos()
+      console.log(this.props.location)
+      history.pushState(null, null, `/matches/${this.props.current_listing.REFERENCE_ID}`)
 		}
 	}
 
@@ -532,8 +534,44 @@ class AdPage extends Component {
           />
         }
         <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
-          INTERESTED
+          INQUIRE
         </Button>
+        <Icon
+          type="caret-left"
+          size='large'
+          style={{
+            // position: 'absolute',
+            // top: '10px',
+            // right: '10px',
+            zIndex: 60,
+            color: '#2faded',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            ":hover": {
+              background: '#eb2f96',
+              color: 'red',
+            }
+          }}
+          onClick={() => this.props.nextListing(-1)}
+        />
+        <Icon
+          type="caret-right"
+          size='large'
+          style={{
+            // position: 'absolute',
+            // top: '10px',
+            // right: '10px',
+            zIndex: 60,
+            color: '#2faded',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            ":hover": {
+              background: '#eb2f96',
+              color: 'red',
+            }
+          }}
+          onClick={() => this.props.nextListing(1)}
+        />
       </div>
     )
   }
@@ -815,7 +853,7 @@ const actionStyles = (mobile) => {
       backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
       border: 'none',
       fontWeight: 'bold',
-      width: '70%'
+      width: '60%'
       // height: '90%',
     },
     header_container: {

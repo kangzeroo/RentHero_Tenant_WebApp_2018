@@ -1,6 +1,7 @@
 import {
   SAVE_LISTINGS_TO_REDUX,
   NEXT_LISTING,
+  PREV_LISTING,
   SAVE_PREFS,
   INCREMENT_LIKES,
   DECREMENT_LIKES,
@@ -44,12 +45,18 @@ export const setCurrentListing = (current_listing) => {
   }
 }
 
-export const nextListing = () => {
+export const nextListing = (int) => {
   // dispatch lets you send actions to Redux
   return (dispatch) => {
-    dispatch({
-      type: NEXT_LISTING
-    })
+    if (int > 0) {
+      dispatch({
+        type: NEXT_LISTING
+      })
+    } else if (int < 0) {
+      dispatch({
+        type: PREV_LISTING
+      })
+    }
   }
 }
 

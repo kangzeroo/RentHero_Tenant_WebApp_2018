@@ -27,6 +27,8 @@ import DatePickerSegment from '../../../modules/AdvisorUI_v2/Segments/DatePicker
 import DateRangeSegment from '../../../modules/AdvisorUI_v2/Segments/DateRangeSegment'
 import InputSegment from '../../../modules/AdvisorUI_v2/Segments/InputSegment'
 import MessageSegment from '../../../modules/AdvisorUI_v2/Segments/MessageSegment'
+import PhoneOrEmailRegister from '../../../modules/AdvisorUI_v2/Segments/PhoneOrEmailRegister'
+import VerifyCodeSegment from '../../../modules/AdvisorUI_v2/Segments/VerifyCodeSegment'
 import ActionSegment from '../../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import FileUploadSegment from '../../../modules/AdvisorUI_v2/Segments/FileUploadSegment'
 import ShareUrlSegment from '../../../modules/AdvisorUI_v2/Segments/ShareUrlSegment'
