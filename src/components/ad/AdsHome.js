@@ -52,6 +52,8 @@ class AdsHome extends Component {
         })
       }
 
+			console.log(ref_id)
+
       getCurrentListingByReference({ ref_id })
         .then((data) => {
 					console.log('CURRENT LISTING: ', data)
@@ -65,6 +67,14 @@ class AdsHome extends Component {
           console.log(err)
         })
     }
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (this.props.current_listing !== nextProps.current_listing) {
+			this.setState({
+				current_listing: nextProps.current_listing,
+			})
+		}
 	}
 
   setListing(listing, url) {

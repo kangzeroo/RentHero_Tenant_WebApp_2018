@@ -16,6 +16,7 @@ import {
 import {  } from 'antd'
 import PolarGraph from './PolarGraph'
 import EditSearch from '../edits/EditSearch'
+import AdPreview from '../ad/preview/AdPreview'
 import { calculateNearbyStats } from '../../api/analytics/analytics_api'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
 import { getHeatMapDist } from '../../api/analytics/analytics_api'
@@ -438,21 +439,9 @@ class HeatMapHunting extends Component {
         {
           this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES[0] && this.props.preview
           ?
-          <div onClick={(e) => this.clickedPreview(e, this.props.current_listing)} style={previewStyles().popup}>
-            <div style={previewStyles().pop_container}>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', height: '100%', width: '250px', maxWidth: '250px', overflow: 'hidden' }}>
-                <img src={this.props.current_listing.IMAGES[0].url} style={{ width: '100%', height: 'auto'  }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', flexGrow: 1, color: 'black', padding: '5px 10px 5px 10px' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                  <h3>${this.props.current_listing.PRICE}</h3>
-                  <i className='ion-ios-heart' style={{ fontSize: '1.3rem', color: 'red' }} />
-                </div>
-                <div style={{ fontSize: '0.7rem' }}>{this.props.current_listing.TITLE}</div>
-                <div style={{ fontSize: '0.7rem' }}>{`${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths`}</div>
-              </div>
-            </div>
-          </div>
+          <AdPreview
+            current_listing={this.props.current_listing}
+          />
           :
           null
         }

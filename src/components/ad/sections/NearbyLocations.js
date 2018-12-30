@@ -143,7 +143,7 @@ class NearbyLocations extends Component {
           //   count: results.length
           // })
           const arrayOfPromises = results.map((result) => {
-            const url = result.photos[0].getUrl()
+            const url = result.photos && result.photos.length > 0 ? result.photos[0].getUrl() : 'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'
             return {
               ...result,
               cover_photo: url,
