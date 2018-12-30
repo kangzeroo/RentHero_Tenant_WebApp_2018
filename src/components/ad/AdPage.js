@@ -445,6 +445,7 @@ class AdPage extends Component {
         >
           <ListingActions
             onClose={() => this.toggleModal(false)}
+            closeModal={() => this.toggleModal(false)}
             current_listing={context}
           />
         </Modal>

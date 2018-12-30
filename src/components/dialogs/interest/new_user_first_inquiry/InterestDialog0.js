@@ -41,7 +41,7 @@ import { getCurrentListingByReference } from '../../../../api/listings/listings_
 import auth0 from 'auth0-js'
 
 
-class InterestDialog2 extends Component {
+class InterestDialog0 extends Component {
 
   constructor() {
     super()
@@ -826,7 +826,7 @@ class InterestDialog2 extends Component {
 
 	render() {
 		return (
-			<div id='InterestDialog2' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
+			<div id='InterestDialog0' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles().container}>
         <div id='scroll' style={scrollStyles(this.state.scrollStyles).scroll}>
           <div id='scrollable' style={scrollStyles(this.state.scrollStyles).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
@@ -852,7 +852,7 @@ class InterestDialog2 extends Component {
 }
 
 // defines the types of variables in this.props
-InterestDialog2.propTypes = {
+InterestDialog0.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleInstantCharsSegmentID: PropTypes.func.isRequired,
   prefs: PropTypes.object.isRequired,
@@ -864,11 +864,11 @@ InterestDialog2.propTypes = {
 }
 
 // for all optional props, define a default value
-InterestDialog2.defaultProps = {
+InterestDialog0.defaultProps = {
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(InterestDialog2)
+const RadiumHOC = Radium(InterestDialog0)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {

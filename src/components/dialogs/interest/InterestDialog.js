@@ -14,8 +14,9 @@ import {
 import { Spin } from 'antd'
 import { getCurrentListingByReference } from '../../../api/listings/listings_api'
 import { setCurrentListing } from '../../../actions/listings/listings_actions'
+import InterestDialog1Waterloo from './existing_user_first_inquiry/InterestDialog1Waterloo'
 import InterestDialog1 from './existing_user_first_inquiry/InterestDialog1'
-import InterestDialog2 from './new_user_first_inquiry/InterestDialog2'
+import InterestDialog0 from './new_user_first_inquiry/InterestDialog0'
 
 
 class InterestDialog extends Component {
@@ -43,9 +44,14 @@ class InterestDialog extends Component {
 
   renderCorrectInterestDialog() {
     if (this.props.tenant_id) {
-      return (<InterestDialog1 />)
+      console.log(this.props.prefs)
+      if (this.props.prefs.LOCATION.DESTINATION_ADDRESS.toLowerCase().indexOf('waterloo') > -1 && this.props.prefs.FINANCIALS.EMPLOYED_AS.toLowerCase().indexOf('student') > -1) {
+        return (<InterestDialog1Waterloo />)
+      } else {
+        return (<InterestDialog1 />)
+      }
     } else {
-      return (<InterestDialog2 />)
+      return (<InterestDialog0 />)
     }
   }
 
@@ -73,6 +79,7 @@ InterestDialog.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   setCurrentListing: PropTypes.func.isRequired,
   current_listing: PropTypes.object.isRequired,
+  prefs: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -87,6 +94,7 @@ const RadiumHOC = Radium(InterestDialog)
 const mapReduxToProps = (redux) => {
 	return {
     tenant_id: redux.auth.tenant_profile.tenant_id,
+    prefs: redux.prefs,
     auth: redux.auth,
     current_listing: redux.listings.current_listing,
 	}
