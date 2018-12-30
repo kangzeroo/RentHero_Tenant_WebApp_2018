@@ -12,6 +12,7 @@ import $ from 'jquery'
 import {
   Icon,
 } from 'antd-mobile'
+import auth0 from 'auth0-js'
 import { saveTenantPreferences } from '../../../../api/prefs/prefs_api'
 import { updatePreferences } from '../../../../actions/prefs/prefs_actions'
 import { toggleInstantCharsSegmentID } from '../../../../actions/app/app_actions'
@@ -29,6 +30,8 @@ import MessageSegment from '../../../modules/AdvisorUI_v2/Segments/MessageSegmen
 import ActionSegment from '../../../modules/AdvisorUI_v2/Segments/ActionSegment'
 import FileUploadSegment from '../../../modules/AdvisorUI_v2/Segments/FileUploadSegment'
 import ShareUrlSegment from '../../../modules/AdvisorUI_v2/Segments/ShareUrlSegment'
+import { PASSWORDLESS_LOGIN_REDIRECT, AUTH0_CLIENT_ID, AUTH0_DOMAIN } from '../../../../api/ENV_CREDs'
+import { verifyPhone } from '../../../../api/phone/phone_api'
 import { ACCENT_COLOR, FONT_COLOR, BACKGROUND_COLOR, BACKGROUND_WEBKIT, BACKGROUND_MODERN, FONT_FAMILY, FONT_FAMILY_ACCENT } from '../../../modules/AdvisorUI_v2/styles/advisor_ui_styles'
 
 
@@ -47,7 +50,8 @@ class InterestDialog1 extends Component {
       },
       premessages: [
         // { segment_id: 'someSegment', texts: [{ id, textStyles, delay, scrollDown, text, component }] }
-      ]
+      ],
+      chosen_action_endpoint: '',
     }
     this.all_segments = []
     this.shown_segments = []
@@ -80,19 +84,78 @@ class InterestDialog1 extends Component {
     this.all_segments = [
         {
           id: 'thanks_for_interest',
+          component: (<ActionSegment
+                          title='RentHero'
+                          schema={{
+                            id: 'thanks_for_interest',
+                            endpoint: 'disclaimer',
+                            choices: [
+                              { id: 'leave_message', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Message Seller', value: true, endpoint: 'disclaimer' },
+                              { id: 'tour', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Book A Tour', value: true, endpoint: 'disclaimer' },
+                            ]
+                          }}
+                          texts={[
+                            { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Hello ${this.props.tenant_profile.first_name}, thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
+                            // { id: 'img', component: (<img src={this.props.current_listing.IMAGES[0].url} style={{ width: '300px', height: 'auto' }} />) },
+                            { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths for $${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
+                            { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `What would you like to do?` },
+                          ]}
+                          triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                          onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
+                          />) },
+        {
+          id: 'phone',
+          // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+          component: (<PhoneOrEmailRegister
+                                  title='Phone Number'
+                                  schema={{ id: 'phone', endpoint: 'verify_phone' }}
+                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                  onDone={(original_id, endpoint, data) => this.doneRegister(original_id, endpoint, data)}
+                                  texts={[
+                                    ...this.addAnyPreMessages('phone'),
+                                    { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `What is your phone number?` },
+                                    { id: '0-2', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Please provide your own phone # as you can also use it to login to RentHero.` },
+                                  ]}
+                                  inputType={'tel'}
+                                  initialData={{
+                                    input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
+                                  }}
+                               />)},
+       {
+         id: 'verify_phone',
+         // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
+         component: (<VerifyCodeSegment
+                                 title='Verification'
+                                 schema={{ id: 'verify_phone', endpoint: 'disclaimer' }}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                 onDone={(original_id, endpoint, data) => this.doneVerify(original_id, endpoint, data)}
+                                 texts={[
+                                   ...this.addAnyPreMessages('verify_phone'),
+                                   { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: "I sent a verification code to you. Please enter it below 🔒" },
+                                 ]}
+                                 inputType={'number'}
+                                 stringInputPlaceholder={'Verification Code'}
+                                 initialData={{
+                                   // input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
+                                 }}
+                                 resendCode={() => this.resendCode()}
+                              />)},
+        {
+          id: 'disclaimer',
           component: (<MessageSegment
-                         schema={{ id: 'thanks_for_interest', endpoint: 'working_studying' }}
-                         triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
-                         onDone={(original_id, endpoint, data) => this.doneInterest(original_id, endpoint, data)}
-                         texts={[
-                           { id: '1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, containerStyles: { margin: '30px 0px 0px 20px' }, text: `Thanks for you interest in ${this.props.current_listing ? this.props.current_listing.ADDRESS : 'this property.' }` },
-                           { id: '2', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `${this.props.current_listing.BEDS} Beds, ${this.props.current_listing.BATHS} Baths` },
-                           { id: '3', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `$${this.props.current_listing.PRICE} on a ${this.props.current_listing.LEASE_LENGTH} month lease` },
-                           { id: '4', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Prospective tenants are asked to answer some brief questions.` },
-                         ]}
-                         action={{ enabled: true, label: 'Begin Application', actionStyles: { width: '100%' } }}
-                         segmentStyles={{ justifyContent: 'space-between' }}
-                       />) },
+                                 schema={{ id: 'disclaimer', endpoint: 'working_studying' }}
+                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                                 onDone={(original_id, endpoint, data) => this.doneDisclaimer(original_id, endpoint, data)}
+                                 texts={[
+                                   ...this.addAnyPreMessages('disclaimer'),
+                                   { id: '0-1', textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'Before we continue...' },
+                                   { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Please answer a few questions about yourself. Don't worry, the landlord will not see these answer in your inquiry.` },
+                                   { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `It helps build your rent resume which acts as your all-in-one file for paperwork, while protecting sensitive information.` },
+                                   { id: '0-2', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `You can see your rent resume in your profile.` },
+                                 ]}
+                                 action={{ enabled: true, label: 'Agree and Continue', actionStyles: { width: '100%', textAlign: 'center', } }}
+                                 segmentStyles={{ justifyContent: 'space-between' }}
+                               />) },
        {
           id: 'working_studying',
           component: (<MultiOptionsSegment
@@ -111,7 +174,7 @@ class InterestDialog1 extends Component {
                                 }}
                                 texts={[
                                   ...this.addAnyPreMessages('working_studying'),
-                                  { id: '1', scrollDown: true, text: 'Are you currently working or studying? Select all that apply.' },
+                                  { id: '1', scrollDown: true, text: 'Specifically are you working or studying? Select all that apply.' },
                                 ]}
                                 onDone={(original_id, endpoint, data) => this.employedAsDone(original_id, endpoint, data)}
                                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
@@ -127,7 +190,7 @@ class InterestDialog1 extends Component {
                               onDone={(original_id, endpoint, data) => this.jobTitlesDone(original_id, endpoint, data)}
                               texts={[
                                 ...this.addAnyPreMessages('job_titles'),
-                                { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your job title at what company? You can put multiple.' },
+                                { id: '1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your job title at your company? You can put multiple.' },
                                 { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'eg. Front Desk support at Toledo Systems' },
                               ]}
                               inputs={this.props.prefs.FINANCIALS.JOB_TITLES_AS_SCHEMAS}
@@ -149,8 +212,8 @@ class InterestDialog1 extends Component {
                             }}
                             texts={[
                               ...this.addAnyPreMessages('proof_of_student'),
-                              { id: '1', text: `Are you able to provide proof of income your student status?` },
-                              { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Select all that you can obtain.' },
+                              { id: '1', text: `Are you able to provide any proof of your student status?` },
+                              { id: '2', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Any of the below are acceptable.' },
                             ]}
                             preselected={this.props.prefs.FINANCIALS.PROOF_OF_INCOMES_AS_SCHEMAS}
                             onDone={(original_id, endpoint, data) => this.doneProofs(original_id, endpoint, data)}
@@ -173,7 +236,7 @@ class InterestDialog1 extends Component {
                        }}
                        texts={[
                          ...this.addAnyPreMessages('any_guarantors'),
-                         { id: '1', text: `If your rent is too high to personally pay, is your family willing to sign your lease as a guarantor?` },
+                         { id: '1', text: `If your rent is over 50% of your monthly income, is your family willing to sign your lease as a guarantor?` },
                          { id: '2', text: `This means they are legally liable for rent if you do not pay it.` },
                          { id: '3', text: `In order to be your guarantor, that family member has to be a Canadian Citizen or Permanent Resident.` },
                        ]}
@@ -354,6 +417,15 @@ class InterestDialog1 extends Component {
     return trimmedList2
   }
 
+  doneDisclaimer(original_id, endpoint, data) {
+    const nextEndpoint = this.getNextSegment(original_id, endpoint, data)
+    if (nextEndpoint && nextEndpoint !== original_id) {
+      this.done(original_id, nextEndpoint, data)
+    } else {
+      this.done(original_id, endpoint, data)
+    }
+  }
+
   doneProofs(original_id, endpoint, data) {
     const nextEndpoint = this.getNextSegment(original_id, endpoint, data)
     if (nextEndpoint && nextEndpoint !== original_id) {
@@ -445,14 +517,115 @@ class InterestDialog1 extends Component {
   }
 
   doneInterest(original_id, endpoint, data) {
-    if (false) {
-      // if already logged in
-    } else if (false) {
-      // if first time visitor
+    this.setState({
+      chosen_action_endpoint: endpoint
+    })
+    if (this.props.tenant_profile.authenticated) {
+      // if logged in and yes phone
+      this.done(original_id, 'disclaimer', data)
     } else {
-      // if 2nd time visitor
+      // if logged in but no phone
+      this.done(original_id, 'phone', data)
     }
-    this.done(original_id, endpoint, data)
+  }
+
+  doneRegister(original_id, endpoint, data) {
+    // this.done(original_id, endpoint, data)
+    const self = this
+    const webAuth = new auth0.WebAuth({
+       domain:       AUTH0_DOMAIN,
+       clientID:     AUTH0_CLIENT_ID,
+       responseType: 'token id_token'
+    })
+
+    if (data.register_option === 'phone') {
+      verifyPhone(data.input_string)
+        .then((data) => {
+          console.log(data)
+          localStorage.setItem('phone', JSON.stringify(data))
+          self.setState({
+            phone: data.phoneNumber,
+            register_option: data.register_option,
+          })
+          webAuth.passwordlessStart({
+            connection: 'sms',
+            send: 'code',
+            phoneNumber: data.phoneNumber
+          }, function (err,res) {
+            console.log(err)
+            console.log(res)
+            self.done(original_id, endpoint, data)
+            // handle errors or continue
+          })
+        })
+        .catch((err) => {
+          console.log(err)
+          message.error('Invalid Phone Number')
+        })
+    } else {
+      const email = data.input_string
+      self.setState({
+        email: data.input_string,
+        register_option: data.register_option,
+      })
+      localStorage.setItem('email', data.input_string)
+      // Send a link using email
+       webAuth.passwordlessStart({
+           connection: 'email',
+           send: 'link',
+           email: email,
+         }, function (err,res) {
+           if (err) {
+             console.log(err)
+           }
+           console.log(res)
+           self.props.history.push('/verifyingemail')
+           // self.done(original_id, endpoint, data)
+         }
+       )
+    }
+  }
+
+  doneVerify(original_id, endpoint, data) {
+    const self = this
+    // this.done(original_id, endpoint, data)
+    const webAuth = new auth0.WebAuth({
+       domain:       AUTH0_DOMAIN,
+       clientID:     AUTH0_CLIENT_ID,
+       responseType: 'token id_token',
+       redirectUri: PASSWORDLESS_LOGIN_REDIRECT
+    })
+
+    webAuth.passwordlessLogin({
+      connection: 'sms',
+      phoneNumber: this.state.phone,
+      verificationCode: data.input_string
+    }, function (err,res) {
+      // handle errors or continue
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(res)
+        self.done(original_id, endpoint, data)
+      }
+    })
+  }
+
+  resendCode() {
+    const webAuth = new auth0.WebAuth({
+       domain:       AUTH0_DOMAIN,
+       clientID:     AUTH0_CLIENT_ID,
+       responseType: 'token id_token'
+    })
+
+    webAuth.passwordlessStart({
+      connection: 'sms',
+      send: 'code',
+      phoneNumber: this.state.phone,
+    }, function (err,res) {
+      console.log(err)
+      console.log(res)
+    })
   }
 
   done(original_id, endpoint, data) {
@@ -617,6 +790,7 @@ InterestDialog1.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   setCurrentListing: PropTypes.func.isRequired,
   current_listing: PropTypes.object.isRequired,
+  tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -630,6 +804,7 @@ const RadiumHOC = Radium(InterestDialog1)
 const mapReduxToProps = (redux) => {
 	return {
     prefs: redux.prefs,
+    tenant_profile: redux.auth.tenant_profile,
     tenant_id: redux.auth.tenant_profile.tenant_id,
     current_listing: redux.listings.current_listing,
 	}
