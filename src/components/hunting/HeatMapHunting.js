@@ -30,7 +30,7 @@ class HeatMapHunting extends Component {
   constructor() {
     super()
     this.state = {
-      preview_visible: false,
+      preview_visible: true,
       deletablePolygon: false,
       ads: [],
       heat_points: [],
@@ -269,7 +269,7 @@ class HeatMapHunting extends Component {
     const self = this
     // INITIATE GOOGLE MAPS
     this.map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
+      zoom: 14,
       center: { lat: parseFloat(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0]), lng: parseFloat(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1]) },
       styles: mapStyles,
       disableDefaultUI: true,
@@ -321,7 +321,7 @@ class HeatMapHunting extends Component {
           clicked_point: null,
           nearby_stats: {},
           show_filter: false,
-          preview_visible: false,
+          // preview_visible: false,
         })
       })
     });
@@ -340,7 +340,7 @@ class HeatMapHunting extends Component {
         self.current_polygon.setOptions({ fillColor: '#529FE2', strokeColor: '#117bc7' })
       }
       self.setState({
-        preview_visible: false,
+        // preview_visible: false,
       })
       const nearby_stats = calculateNearbyStats(point, self.state.ads, 1000)
       self.setState({
@@ -384,7 +384,7 @@ class HeatMapHunting extends Component {
           ?
           <div style={searchStyles().quickbar}>
             <Button onClick={() => this.props.history.push('/matches')} size='small' type="ghost" style={searchStyles().list}>List</Button>
-            <Button onClick={() => this.setState({ show_filter: true })} size='small' type="ghost" style={searchStyles().filter}>Filter</Button>
+            <Button onClick={() => this.setState({ show_filter: true, preview_visible: false })} size='small' type="ghost" style={searchStyles().filter}>Filter</Button>
           </div>
           :
           null
@@ -394,15 +394,15 @@ class HeatMapHunting extends Component {
           ?
           <div style={{ position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%', backgroundColor: 'white' }}>
             <FilterPopup
-              onBack={() => this.setState({ show_filter: false })}
-              onComplete={() => this.setState({ show_filter: false })}
+              onBack={() => this.setState({ show_filter: false, preview_visible: true })}
+              onComplete={() => this.setState({ show_filter: false, preview_visible: true })}
             />
           </div>
           :
           null
         }
         {
-          this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES[0] && this.props.preview
+          this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES[0] && this.props.preview && this.state.preview_visible
           ?
           <div onClick={(e) => this.clickedPreview(e, this.props.current_listing)} style={previewStyles().popup}>
             <div style={previewStyles().pop_container}>

@@ -55,7 +55,7 @@ class OnlyMapHunting extends Component {
   refreshPins(listings) {
     console.log(listings)
     const map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 12,
+      zoom: 14,
       disableDefaultUI: true,
       clickableIcons: false,
     })

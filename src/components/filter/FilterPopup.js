@@ -435,7 +435,7 @@ class FilterPopup extends Component {
 				<h2>Rooms</h2>
 				<br />
 				<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-					<div style={{ fontSize: '1.2rem', color: 'black' }}>Bedrooms</div>
+					<div style={{ fontSize: '1.2rem', color: 'black' }}>Min Beds</div>
 					<div  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
 						<Button type='ghost' shape='circle' onClick={() => this.setState({ bedrooms: this.state.bedrooms - 1.0})} icon='minus' disabled={this.state.bedrooms === 0} />
 						<div style={{ fontSize: '1.2rem', margin: '0px 15px' }}>{this.state.bedrooms}</div>

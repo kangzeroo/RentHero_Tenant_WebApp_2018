@@ -8,7 +8,7 @@ export const GROUP = {
 
       GROUP_ID: '',
       GROUP_NAME: '',
-      CERTAIN_MEMBERS: 0,
+      CERTAIN_MEMBERS: 1,
       UNCERTAIN_MEMBERS: 0,
       BATHROOMS: 0,
       BIO: '',
