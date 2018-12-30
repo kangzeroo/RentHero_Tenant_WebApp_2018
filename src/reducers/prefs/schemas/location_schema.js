@@ -16,8 +16,8 @@ export const LOCATION = {
     GEO_POLYGON: [],
 
     // daily commute info
-    DESTINATION_ADDRESS: 'Toronto, ON M5J 1E6, Canada',
-    DESTINATION_GEOPOINT: '43.6451889,-79.3806131',
+    DESTINATION_ADDRESS: '200 University Ave W, Waterloo, ON N2L 3G1',
+    DESTINATION_GEOPOINT: '43.473811,-80.531618',
     DESTINATION_ARRIVAL: 540,
 
     // modes of transportation

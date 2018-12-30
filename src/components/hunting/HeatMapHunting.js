@@ -368,9 +368,10 @@ class HeatMapHunting extends Component {
     if (e) {
       e.stopPropagation()
     }
-    if (this.props.fullscreenSearch) {
+    if (this.props.fullscreenSearch || this.props.previewEnterable) {
       // go to the listing
-      this.props.history.push(`/matches/${current_listing.REFERENCE_ID}`)
+      // this.props.history.push(`/matches/${current_listing.REFERENCE_ID}`)
+      this.props.setListing(current_listing, `/matches/${current_listing.REFERENCE_ID}`)
     }
   }
 
@@ -435,11 +436,11 @@ class HeatMapHunting extends Component {
           null
         }
         {
-          this.props.current_listing && this.state.preview_visible && this.props.preview
+          this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES[0] && this.props.preview
           ?
           <div onClick={(e) => this.clickedPreview(e, this.props.current_listing)} style={previewStyles().popup}>
             <div style={previewStyles().pop_container}>
-              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', height: '100%', width: '150px', maxWidth: '150px', overflow: 'hidden' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', height: '100%', width: '250px', maxWidth: '250px', overflow: 'hidden' }}>
                 <img src={this.props.current_listing.IMAGES[0].url} style={{ width: '100%', height: 'auto'  }} />
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', height: '100%', flexGrow: 1, color: 'black', padding: '5px 10px 5px 10px' }}>
@@ -472,6 +473,7 @@ HeatMapHunting.propTypes = {
   showFlagPin: PropTypes.bool,            // passed in
   preview: PropTypes.bool,          // passed in
   fullscreenSearch: PropTypes.bool,
+  previewEnterable: PropTypes.bool,   // passed in
   setCurrentMapLocationToRedux: PropTypes.func.isRequired,
   setMapLoadedToRedux: PropTypes.func.isRequired,
   setMainMapToRedux: PropTypes.func.isRequired,
@@ -485,6 +487,7 @@ HeatMapHunting.defaultProps = {
   setListing: () => {},
   showFlagPin: false,
   preview: false,
+  previewEnterable: false,
   fullscreenSearch: false,
   style: {
     height: '100%',

@@ -40,7 +40,8 @@ class AdsHome extends Component {
     if (this.props.location.pathname.indexOf('/matches/') > -1) {
       console.log(this.props.location)
       const ref_id = this.props.location.pathname.slice(this.props.location.search.indexOf('/matches/') + '/matches/'.length + 1)
-      console.log('ref_id: ', ref_id)
+      console.log('ref_id:')
+			console.log(ref_id)
       if (ref_id) {
         this.setState({
           show_listing: true,
@@ -69,21 +70,28 @@ class AdsHome extends Component {
   setListing(listing, url) {
     this.setState({
       current_listing: listing,
-      show_listing: listing && listing.REFERENCE_ID,
+      // show_listing: url && listing && listing.REFERENCE_ID,
       loading: false,
     })
     this.props.setCurrentListing(listing)
 		if (url) {
-    	history.pushState(null, null, url)
+    	// history.pushState(null, null, url)
+			const win = window.open(`${window.location.protocol}//${window.location.host}${url}`, '_blank');
+  		win.focus();
 		}
   }
 
 
-	componentDidUpdate() {
+	componentDidUpdate(prevProps, prevState) {
 		if (isMobile() !== this.state.mobile) {
 			console.log('mobile changed....')
 			this.setState({
 				mobile: isMobile(),
+			})
+		}
+		if (this.props.current_listing && prevProps.current_listing !== this.props.current_listing) {
+      this.setState({
+				current_listing: this.props.current_listing
 			})
 		}
 	}
@@ -144,6 +152,8 @@ class AdsHome extends Component {
 									setListing={(listing, url) => this.setListing(listing, url)}
 									current_listing={this.state.current_listing}
 									showFlagPin={true}
+									previewEnterable={!this.state.show_listing}
+									preview={!this.state.show_listing}
 								/>
 								:
 								null
@@ -162,6 +172,7 @@ class AdsHome extends Component {
 AdsHome.propTypes = {
 	history: PropTypes.object.isRequired,
   all_listings: PropTypes.array.isRequired,
+	current_listing: PropTypes.object,
   setCurrentListing: PropTypes.func.isRequired,
   loading_complete: PropTypes.bool.isRequired,
 }
@@ -179,6 +190,7 @@ const mapReduxToProps = (redux) => {
 	return {
     all_listings: redux.listings.all_listings,
     loading_complete: redux.app.loading_complete,
+		current_listing: redux.listings.current_listing,
 	}
 }
 
