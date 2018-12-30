@@ -111,9 +111,9 @@ class AppRoot extends Component {
         <Route exact path='/sandbox' render={EditSearch} />
         <Route exact path='/' render={LandingPage} />
         <Route exact path='/register' render={RegisterPage} />
-              <Route exact path='/map' render={OnlyMapHunting} />
+        <Route exact path='/map' render={OnlyMapHunting} />
 
-          <Route exact path='/checklist' render={Checklist} />
+        <Route exact path='/checklist' render={Checklist} />
 
         <Route exact path='/matches' render={AdsHome} />
         <Route exact path='/matches/:ref_id' render={AdsHome} />

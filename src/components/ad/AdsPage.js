@@ -21,6 +21,9 @@ import {
 import {
   Modal,
 } from 'antd-mobile'
+import {
+	setCurrentListingsStack,
+} from '../../actions/listings/listings_actions'
 import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
@@ -129,14 +132,79 @@ class AdsPage extends Component {
         maskClosable
         onClose={() => this.toggleModal(false)}
         animationType='fade'
+        style={{ width: '400px' }}
       >
-        <div>WHAT TO EXPECT</div>
-        <Button onClick={() => this.beginSlideshow()}>BEGIN</Button>
+        {this.renderStickyFooter()}
+        <br/>
+        <div>Click ➡️ for the next rental in the slideshow. You can also favorite listings and message the seller.</div>
+        <br/>
+        <Button type='primary' onClick={() => this.beginSlideshow()}>BEGIN SLIDESHOW</Button>
       </Modal>
     )
     }
   }
 
+  renderStickyFooter() {
+    return (
+      <div style={actionStyles(isMobile()).container}>
+        <Icon
+          type="heart"
+          theme="outlined"
+          size='large'
+          style={{
+            // position: 'absolute',
+            // top: '10px',
+            // right: '10px',
+            zIndex: 60,
+            color: '#2faded',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            ":hover": {
+              background: '#eb2f96',
+              color: 'red',
+            }
+          }}
+        />
+        <Button type='primary' style={actionStyles().actionButton} size='large'>
+          INQUIRE
+        </Button>
+        <Icon
+          type="caret-left"
+          size='large'
+          style={{
+            // position: 'absolute',
+            // top: '10px',
+            // right: '10px',
+            zIndex: 60,
+            color: '#2faded',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            ":hover": {
+              background: '#eb2f96',
+              color: 'red',
+            }
+          }}
+        />
+        <Icon
+          type="caret-right"
+          size='large'
+          style={{
+            // position: 'absolute',
+            // top: '10px',
+            // right: '10px',
+            zIndex: 60,
+            color: '#2faded',
+            cursor: 'pointer',
+            fontSize: '2rem',
+            ":hover": {
+              background: '#eb2f96',
+              color: 'red',
+            }
+          }}
+        />
+      </div>
+    )
+  }
 
   refreshPins(listings) {
     console.log(listings)
@@ -197,7 +265,8 @@ class AdsPage extends Component {
 
   beginSlideshow() {
     // no current_listing yet
-    this.props.history.push(`/matches/${this.props.listings.current_listing.REFERENCE_ID}`)
+    this.props.setCurrentListingsStack('/favourites', this.props.listings.current_listings_stack)
+    this.props.history.push(`/matches/${this.props.listings.current_listings_stack[0].REFERENCE_ID}`)
   }
 
   toggleModal(bool, attr, context) {
@@ -215,7 +284,7 @@ class AdsPage extends Component {
           <h2>{`Relevant Listings for you`}</h2>
           <p>{`Here are the most relevant listings we've found for you, based on the information you've provided for us. If you'd like for your search to be even more specific, please `}<a href='/app/profile' target='_blank'>Click Here</a></p>
         </div>
-        <Button type='primary' icon='caret-right' onClick={() => this.toggleModal(true, 'slideshow')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
+        <Button type='primary' icon='caret-right' onClick={() => this.toggleModal(true, 'slideshow')} style={{ borderRadius: '25px', width: '70%' }} size='large'>
           Start Slideshow
         </Button>
       </div>
@@ -309,7 +378,7 @@ class AdsPage extends Component {
         alignItems: 'center',
         justifyContent: 'center',
         position: 'fixed',
-        bottom: '30px',
+        bottom: '5px',
         left: '50%',
         padding: '0px 20px',
         borderRadius: '25px',
@@ -320,11 +389,11 @@ class AdsPage extends Component {
         background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
       }}
       onClick={() => this.props.history.push('/map')}
-      size='large'
+      size='small'
       >
         <Ionicon
           icon="md-pin"
-          fontSize="1.5rem"
+          fontSize="1rem"
           color='white'
         />
         <div style={{ marginLeft: '10px', color: 'white' }}>MAP</div>
@@ -378,6 +447,7 @@ AdsPage.propTypes = {
   setCurrentClickedLocation: PropTypes.func.isRequired,
   map_loaded: PropTypes.bool.isRequired,
   setCurrentMapLocationToRedux: PropTypes.func.isRequired,
+	setCurrentListingsStack: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -407,6 +477,7 @@ export default withRouter(
     setCurrentFlagPin,
     setCurrentClickedLocation,
     setCurrentMapLocationToRedux,
+    setCurrentListingsStack,
 	})(RadiumHOC)
 )
 
@@ -421,4 +492,85 @@ const comStyles = () => {
       padding: '20px'
 		}
 	}
+}
+
+
+const actionStyles = (mobile) => {
+  let attrs
+  if (mobile) {
+    attrs = {
+      width: '100%',
+    }
+  } else {
+    attrs = {
+      width: '100%',
+    }
+  }
+  return {
+    container: {
+      height: '70px',
+      backgroundColor: 'rgba(0,0,0,0.1)',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderRadius: '0px 0px 0px 0px',
+      zIndex: 5,
+      padding: '0px 20px',
+      borderTop: 'lightgray solid thin',
+      ...attrs,
+    },
+    dislike: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '25%',
+      border: '1px solid #f23939',
+      borderRadius: '10px',
+    },
+    like: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '25%',
+      border: '1px solid #0ca20c',
+      borderRadius: '10px',
+    },
+    contact: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      height: '70%',
+      width: '35%',
+      border: '1px solid #2faded',
+      borderRadius: '10px',
+      color: '#2faded',
+      fontWeight: 'regular',
+    },
+    actionButton: {
+      backgroundImage: 'linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)',
+      border: 'none',
+      fontWeight: 'bold',
+      width: '60%'
+      // height: '90%',
+    },
+    header_container: {
+      position: 'fixed',
+      height: '70px',
+      top: '0px',
+      left: '0px',
+      backgroundColor: 'rgba(256,256,256,0.9)',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      borderRadius: '0px 0px 0px 0px',
+      zIndex: 5,
+      padding: '0px 20px',
+      borderTop: 'lightgray solid thin',
+      ...attrs,
+    },
+  }
 }

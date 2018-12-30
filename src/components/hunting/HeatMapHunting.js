@@ -15,7 +15,7 @@ import {
 } from 'antd'
 import {  } from 'antd'
 import PolarGraph from './PolarGraph'
-import EditSearch from '../edits/EditSearch'
+import FilterPopup from '../filter/FilterPopup'
 import { calculateNearbyStats } from '../../api/analytics/analytics_api'
 import { triggerDrawerNav } from '../../actions/app/app_actions'
 import { getHeatMapDist } from '../../api/analytics/analytics_api'
@@ -375,38 +375,6 @@ class HeatMapHunting extends Component {
     }
   }
 
-  renderMobileListButton() {
-    return (
-      <Button type='primary' style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'fixed',
-        bottom: '30px',
-        left: '50%',
-        border: 'none',
-        padding: '0px 20px',
-        borderRadius: '25px',
-        transform: 'translate(-50%, -50%)',
-        background: '#56CCF2',  /* fallback for old browsers */
-        background: '-webkit-linear-gradient(to right, #2F80ED, #56CCF2)',  /* Chrome 10-25, Safari 5.1-6 */
-        background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-        zIndex: 105,
-      }}
-      onClick={() => this.props.history.push('/matches')}
-      size='large'
-      >
-        <Ionicon
-          icon="ios-list"
-          fontSize="1.5rem"
-          color='white'
-        />
-        <div style={{ marginLeft: '5px', color: 'white' }}>LIST</div>
-      </Button>
-    )
-  }
-
 	render() {
 		return (
 			<div id='HeatMapHunting' style={comStyles(this.props.style).container}>
@@ -415,9 +383,7 @@ class HeatMapHunting extends Component {
           this.props.fullscreenSearch
           ?
           <div style={searchStyles().quickbar}>
-            {
-              this.renderMobileListButton()
-            }
+            <Button onClick={() => this.props.history.push('/matches')} size='small' type="ghost" style={searchStyles().list}>List</Button>
             <Button onClick={() => this.setState({ show_filter: true })} size='small' type="ghost" style={searchStyles().filter}>Filter</Button>
           </div>
           :
@@ -427,7 +393,7 @@ class HeatMapHunting extends Component {
           this.state.show_filter
           ?
           <div style={{ position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%', backgroundColor: 'white' }}>
-            <EditSearch
+            <FilterPopup
               onBack={() => this.setState({ show_filter: false })}
               onComplete={() => this.setState({ show_filter: false })}
             />
