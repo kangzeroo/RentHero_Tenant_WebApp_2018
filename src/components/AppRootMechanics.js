@@ -155,6 +155,7 @@ export default (ComposedComponent) => {
 			const p = new Promise((res, rej) => {
 				retrieveTenantFromLocalStorage()
 					.then((tenant) => {
+						console.log(tenant)
 						return getTenantFromSQL(tenant.IdentityId)
 					})
 					.then((data) => {

@@ -21,15 +21,13 @@ import {
 import {
   Modal,
 } from 'antd-mobile'
-// import {
-//   Button,
-// } from 'antd-mobile'
 import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
 import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux } from '../../actions/map/map_actions'
 import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, } from '../../assets/map_pins'
+import FilterPopup from '../filter/FilterPopup'
 
 class AdsPage extends Component {
 
@@ -41,6 +39,7 @@ class AdsPage extends Component {
       mobile: false,
       toggle_modal: false,
       modal_name: '',
+      context: {},
     }
   }
 
@@ -70,6 +69,74 @@ class AdsPage extends Component {
       this.refreshPins(nextProps.all_listings)
     }
   }
+
+  toggleModal(bool, attr, context) {
+    if (attr) {
+      history.pushState(null, null, `/matches?tab=${attr}`)
+    } else {
+      history.pushState(null, null, `/matches`)
+    }
+    this.setState({
+      toggle_modal: bool,
+      modal_name: attr,
+      context,
+    })
+  }
+
+  renderAppropriateModal(modal_name, context) {
+    if (modal_name === 'filter') {
+      return (
+        <Modal
+          visible={this.state.toggle_modal}
+          transparent
+          maskClosable
+          popup
+          animationType='slide-up'
+          onClose={() => this.toggleModal(false)}
+          style={
+            isMobile()
+            ?
+            {
+              height: '100vh',
+              width: '100vw',
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              borderRadius: '0px !important',
+            }
+            :
+            {
+              height: '100vh',
+              width: '40vw',
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              borderRadius: '0px !important',
+            }
+          }
+        >
+          <FilterPopup
+            onBack={() => this.setState({ show_filter: false }, () => { this.toggleModal(false) })}
+            onComplete={() => this.setState({ show_filter: false }, () => { this.toggleModal(false) })}
+          />
+        </Modal>
+      )
+    } else if (modal_name === 'slideshow') {
+      return (
+      <Modal
+        visible={this.state.toggle_modal}
+        transparent
+        maskClosable
+        onClose={() => this.toggleModal(false)}
+        animationType='fade'
+      >
+        <div>WHAT TO EXPECT</div>
+        <Button onClick={() => this.beginSlideshow()}>BEGIN</Button>
+      </Modal>
+    )
+    }
+  }
+
 
   refreshPins(listings) {
     console.log(listings)
@@ -133,21 +200,6 @@ class AdsPage extends Component {
     this.props.history.push(`/matches/${this.props.listings.current_listing.REFERENCE_ID}`)
   }
 
-  renderAppropriateModal(modal_name, context) {
-    return (
-      <Modal
-        visible={this.state.toggle_modal}
-        transparent
-        maskClosable
-        onClose={() => this.toggleModal(false)}
-        animationType='fade'
-      >
-        <div>WHAT TO EXPECT</div>
-        <Button onClick={() => this.beginSlideshow()}>BEGIN</Button>
-      </Modal>
-    )
-  }
-
   toggleModal(bool, attr, context) {
     this.setState({
       toggle_modal: bool,
@@ -171,24 +223,24 @@ class AdsPage extends Component {
   }
 
   renderSearchAndFilter(prefs) {
-    if (this.state.show_filter) {
-      return (
-        <EditSearch
-          onBack={() => this.setState({ show_filter: false })}
-          onComplete={() => this.setState({ show_filter: false })}
-        />
-      )
-    } else {
+    // if (this.state.show_filter) {
+    //   return (
+    //     <EditSearch
+    //       onBack={() => this.setState({ show_filter: false })}
+    //       onComplete={() => this.setState({ show_filter: false })}
+    //     />
+    //   )
+    // } else {
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Input value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} style={{ maxWidth: '60%', }} />
+          <Input size='large' value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} style={{ maxWidth: '60%', borderRadius: '25px', paddingLeft: '20px', }} />
           &nbsp;
           <Tooltip title='Filter'>
-            <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true })} size='large' style={{ fontSize: '1.5rem' }} />
+            <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true }, () => this.toggleModal(true, 'filter'))} size='large' style={{ fontSize: '1.5rem' }} />
           </Tooltip>
         </div>
       )
-    }
+    // }
   }
 
   renderProperties(listings) {
@@ -305,7 +357,7 @@ class AdsPage extends Component {
           null
         }
         {
-          this.renderAppropriateModal()
+          this.renderAppropriateModal(this.state.modal_name, this.state.context)
         }
 			</div>
 		)

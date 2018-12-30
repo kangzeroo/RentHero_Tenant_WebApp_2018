@@ -8,8 +8,8 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
-
-} from 'antd-mobile'
+	Divider,
+} from 'antd'
 import { Card, Spin, Icon } from 'antd'
 import CounterModule from '../modules/CounterModule'
 import CheckboxsModule from '../modules/CheckboxsModule'
@@ -189,7 +189,8 @@ class EditSearch extends Component {
           <Icon onClick={() => this.props.onBack()} type='left' size='lg' style={{ padding: '20px', fontSize: '1.2rem', width: '50px' }} />
           <div style={{ width: '80%', height: '100%', fontSize: '0.9rem', fontWeight: 'bold', textAlign: 'left' }}>Update Search</div>
         </div>
-        <Card title="Budget Per Person" style={{ maxWidth: '400px', margin: '20px' }}>
+        <div>
+					<p style={{ fontWeight: 'bold', color: 'black' }}>Budget Per Person</p>
           <CounterModule
             onComplete={(data) => this.completedBudget(data)}
             incrementerOptions={{
@@ -210,8 +211,10 @@ class EditSearch extends Component {
               count: this.props.prefs.FINANCIALS.IDEAL_PER_PERSON || 500
             }}
           />
-        </Card>
-        <Card title="Bedrooms" style={{ maxWidth: '400px', margin: '20px' }}>
+        </div>
+				<Divider />
+        <div>
+					<p style={{ fontWeight: 'bold', color: 'black' }}>Bedrooms</p>
           <CounterModule
             onComplete={(data) => this.completedBedrooms(data)}
             incrementerOptions={{
@@ -233,7 +236,7 @@ class EditSearch extends Component {
               count: this.props.prefs.GROUP.CERTAIN_MEMBERS || 1
             }}
           />
-        </Card>
+        </div>
         <Card title="Entire Place or Room" style={{ maxWidth: '400px', margin: '20px' }}>
           <CheckboxsModule
             onComplete={(data) => this.completedRoomOrEntirePlace(data)}
