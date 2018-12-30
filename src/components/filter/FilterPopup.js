@@ -207,7 +207,9 @@ class FilterPopup extends Component {
 		Promise.all(arrayOfPromises)
 			.then((data) => {
 				console.log(data)
-				this.updateSearch()
+				return this.updateSearch()
+			})
+			.then(() => {
 				this.setState({
 					saving: false,
 				})
@@ -336,14 +338,17 @@ class FilterPopup extends Component {
   }
 
 	updateSearch() {
-		getListings(this.props.prefs)
-			.then((data) => {
-				this.props.saveListingsToRedux(data)
-				this.props.onComplete()
-			})
-			.catch((err) => {
-				console.log(err)
-			})
+		const p = new Promise((res, rej) => {
+			getListings(this.props.prefs)
+				.then((data) => {
+					this.props.saveListingsToRedux(data)
+					this.props.onComplete()
+				})
+				.catch((err) => {
+					console.log(err)
+				})
+		})
+		return p
 	}
 
 	renderStickyHeader() {

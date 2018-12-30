@@ -76,7 +76,7 @@ class FavoritesSection extends Component {
                   padding: 0,
                 }}
                 style={{ padding: '10px', cursor: 'pointer' }}
-                onClick={() => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`)}
+                onClick={isMobile() ? () => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`) : () => this.props.previewListing(item)}
                >
                   <Card.Meta
                     title={item.TITLE}
@@ -121,6 +121,7 @@ FavoritesSection.propTypes = {
   all_listings: PropTypes.array.isRequired,
   tenant_favorites: PropTypes.array.isRequired,
   loading_complete: PropTypes.bool.isRequired,
+  previewListing: PropTypes.func.isRequired,      // passed in
 }
 
 // for all optional props, define a default value

@@ -108,7 +108,7 @@ class AdPreview extends Component {
                 onClick={() => this.clickedImage()}
                 src={'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'}
                 alt=""
-                style={{ width: '100%', height: '100%', verticalAlign: 'top', borderRadius: '10px', overflow: 'hidden' }}
+                style={{ width: '100%', borderRadius: '5px', height: '100%', }}
                 onLoad={() => {
                   // fire window resize event to change height
                   window.dispatchEvent(new Event('resize'));

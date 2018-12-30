@@ -133,7 +133,7 @@ class NearbyLocations extends Component {
   			location: location,
         keyword: this.state.nearbys_type,
         rankby: google.maps.places.RankBy.DISTANCE,
-  			radius: '2000',
+  			radius: 2000,
   		}
   		placeService.nearbySearch(params, (results, status) => {
   			if (status === 'OK') {
@@ -218,7 +218,7 @@ class NearbyLocations extends Component {
         location: location,
         query: this.state.nearbys_text,
         rankby: google.maps.places.RankBy.DISTANCE,
-        radius: '2000',
+        radius: 1500,
       }
       placeService.textSearch(params, (results, status) => {
         if (status === 'OK') {
@@ -273,18 +273,19 @@ class NearbyLocations extends Component {
           travelMode: this.state.commute_mode
         }, function(response, status) {
           if (status === 'OK') {
+            console.log('-------> Got directions')
+            console.log(response)
             self.props.setCommuteState({
               commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
-              commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
+              commute_distance: response.routes[0].legs[0].distance.text, //.reduce((acc, curr) => acc + curr.distance.value, 0),
             })
             self.setState({
               commute_state: {
                 commute_time: response.routes[0].legs.reduce((acc, curr) => acc + curr.duration.value, 0),
-                commute_distance: response.routes[0].legs.reduce((acc, curr) => acc + curr.distance.value, 0),
+                commute_distance: response.routes[0].legs.text, //reduce((acc, curr) => acc + curr.distance.value, 0),
               }
             })
-            console.log('-------> Got directions')
-            console.log(response)
+
             res(response)
           } else {
             rej(status)
@@ -367,29 +368,58 @@ class NearbyLocations extends Component {
 
     this.map = map
 
-    console.log({
-      origins: [this.props.current_listing.ADDRESS],
-      destinations: nearby_locations.map((loc) => { return loc.vicinity ? loc.vicinity : loc.formatted_address }),
-      travelMode: this.state.commute_mode,
-    })
+    // console.log({
+    //   origins: [this.props.current_listing.ADDRESS],
+    //   destinations: nearby_locations.map((loc) => { return loc.vicinity ? loc.vicinity : loc.formatted_address }),
+    //   travelMode: this.state.commute_mode,
+    // })
+    console.log(nearby_locations)
 
     // enable in google cloud first
-    // const distanceMatrix = new google.maps.DistanceMatrixService()
-    // distanceMatrix.getDistanceMatrix(
-    //   {
-    //     origins: [this.props.current_listing.ADDRESS],
-    //     destinations: nearby_locations.map((loc) => { return loc.vicinity ? loc.vicinity : loc.formatted_address }),
-    //     travelMode: this.state.commute_mode,
-    //   }, (results) => {
-    //     console.log('DISTANCE MATRIX', results)
-    //
-    //   }
-    // )
+    const distanceMatrix = new google.maps.DistanceMatrixService()
+    distanceMatrix.getDistanceMatrix({
+        origins: [this.props.current_listing.ADDRESS],
+        destinations: nearby_locations.map((loc) => { return loc.vicinity ? loc.vicinity : loc.formatted_address }),
+        travelMode: 'WALKING',
+      }, (response, status) => {
+        if (status !== 'OK') {
+          console.log(status)
+          alert('Error was: ' + status);
+        } else {
+          console.log('DISTANCE MATRIX', response)
+
+          if (response && response.rows && response.rows.length > 0 && response.rows[0].elements) {
+            const arrayOfPromises = nearby_locations.map((loc, i) => {
+              return {
+                ...loc,
+                distance: response.rows[0].elements[i],
+              }
+            })
+
+            return Promise.all(arrayOfPromises)
+              .then((data) => {
+                const sortedData = data.sort((a, b) => a.distance.distance.value - b.distance.distance.value)
+                console.log(sortedData)
+                this.setState({
+                  nearbys: sortedData,
+                })
+                this.props.saveNearbyLocationsToRedux({
+                  type: this.state.nearbys_type,
+                  locations: sortedData,
+                })
+              })
+          } else {
+            this.props.saveNearbyLocationsToRedux({
+              type: this.state.nearbys_type,
+              locations: nearby_locations,
+            })
+          }
+
+        }
+      }
+    )
     // console.log('NEARBY LOCATIONS READY TO SAVE TO REDUX: ', nearby_locations)
-    this.props.saveNearbyLocationsToRedux({
-      type: this.state.nearbys_type,
-      locations: nearby_locations,
-    })
+
   }
 
   changeCommuteMode(mode) {
@@ -462,7 +492,12 @@ class NearbyLocations extends Component {
           }}
           loading={this.state.loading}
           renderItem={(item) => {
-            const url = item.cover_photo ? item.cover_photo : item.photos[0].getUrl()
+            let url
+            if (item.cover_photo) {
+              url = item.cover_photo
+            } else {
+              url = item.photos && item.photos.length > 0 ? item.photos[0].getUrl() : 'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'
+            }
             // console.log(url)
             return (
               <List.Item>
@@ -481,6 +516,17 @@ class NearbyLocations extends Component {
                 >
                   <p style={{ fontWeight: 'bold', margin: 0, padding: 0, }}>{item.name}</p>
                   <Rate disabled allowHalf value={item.rating} />
+                  {
+                    item.distance
+                    ?
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                      <div>{item.distance.distance.text}</div>
+                      <Divider type='vertical' />
+                      <div>{`${item.distance.duration.text} walk`}</div>
+                    </div>
+                    :
+                    null
+                  }
                 </Card>
               </List.Item>
             )
@@ -571,6 +617,17 @@ class NearbyLocations extends Component {
             null
           }
           <Rate disabled allowHalf value={item.rating} />
+          {
+            item.distance
+            ?
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+              <div>{item.distance.distance.text}</div>
+              <Divider type='vertical' />
+              <div>{`${item.distance.duration.text} walk`}</div>
+            </div>
+            :
+            null
+          }
         </div>
         <Icon
           type="close-circle"
