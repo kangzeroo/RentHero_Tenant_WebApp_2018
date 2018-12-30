@@ -28,9 +28,10 @@ import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
-import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux } from '../../actions/map/map_actions'
+import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux, saveMapListingsToRedux } from '../../actions/map/map_actions'
 import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, } from '../../assets/map_pins'
 import FilterPopup from '../filter/FilterPopup'
+import AdPreview from './preview/AdPreview'
 
 class AdsPage extends Component {
 
@@ -44,6 +45,7 @@ class AdsPage extends Component {
       modal_name: '',
       context: {},
     }
+    this.pins = []
   }
 
   componentWillMount() {
@@ -126,22 +128,45 @@ class AdsPage extends Component {
       )
     } else if (modal_name === 'slideshow') {
       return (
-      <Modal
-        visible={this.state.toggle_modal}
-        transparent
-        maskClosable
-        onClose={() => this.toggleModal(false)}
-        animationType='fade'
-        style={{ width: '400px' }}
-      >
-        {this.renderStickyFooter()}
-        <br/>
-        <div>Click ➡️ for the next rental in the slideshow. You can also favorite listings and message the seller.</div>
-        <br/>
-        <Button type='primary' onClick={() => this.beginSlideshow()}>BEGIN SLIDESHOW</Button>
-      </Modal>
-    )
+        <Modal
+          visible={this.state.toggle_modal}
+          transparent
+          maskClosable
+          onClose={() => this.toggleModal(false)}
+          animationType='fade'
+          style={{ width: '400px' }}
+        >
+          {this.renderStickyFooter()}
+          <br/>
+          <div>Click ➡️ for the next rental in the slideshow. You can also favorite listings and message the seller.</div>
+          <br/>
+          <Button type='primary' onClick={() => this.beginSlideshow()}>BEGIN SLIDESHOW</Button>
+        </Modal>
+      )
     }
+
+    // else if (modal_name === 'preview') {
+    //   return (
+    //     <Modal
+    //       visible={this.state.toggle_modal}
+    //       transparent
+    //       maskClosable
+    //       onClose={() => this.toggleModal(false)}
+    //       animationType='slide-up'
+    //       style={{
+    //         height: '20vh',
+    //         width: '60vw',
+    //         position: 'absolute',
+    //         right: 0,
+    //         bottom: 0,
+    //       }}
+    //     >
+    //       <AdPreview
+    //         current_listing={context}
+    //       />
+    //     </Modal>
+    //   )
+    // }
   }
 
   renderStickyFooter() {
@@ -215,6 +240,7 @@ class AdsPage extends Component {
     })
     let bounds = new google.maps.LatLngBounds()
     let self = this
+    let markers = []
     if (listings && listings.length > 0) {
       listings.forEach((n, i) => {
           let marker
@@ -229,23 +255,37 @@ class AdsPage extends Component {
           marker.label = n.TITLE
 
           marker.addListener('click', (event) => {
+            self.pins.forEach((pin) => {
+              pin.setAnimation(null)
+            })
             self.props.setCurrentListing(n)
             self.props.setListing(n)
+            marker.setAnimation(google.maps.Animation.BOUNCE)
             // self.props.setListing(n, `/matches/${n.REFERENCE_ID}`)
             // self.setState({
             //   preview_visible: true
             // })
             // self.bufferPin = marker
             self.props.setCurrentMapLocationToRedux(marker)
+            let new_bounds = new google.maps.LatLngBounds()
+            new_bounds.extend(marker.position)
+            new_bounds.extend(new google.maps.LatLng(self.props.flag_location.lat, self.props.flag_location.lng))
+
+            map.fitBounds(new_bounds)
           })
 
   				// save the pins
           // console.log(marker)
   				if (marker) {
   					marker.setMap(map)
+            markers.push(marker)
   				}
 
       })
+
+      console.log('SAVING MARKERS: ', markers)
+			this.pins = markers
+			this.props.saveMapListingsToRedux(markers)
 
       if (map) {
         map.fitBounds(bounds)
@@ -329,7 +369,7 @@ class AdsPage extends Component {
            renderItem={item => (
              <List.Item key={item.REFERENCE_ID}>
                <Card
-                cover={<img src={item.IMAGES[0].url} style={{ maxHeight: '150px', borderRadius: '5px', }} />}
+                cover={<img src={item.IMAGES[0].url} style={{ height: '150px', borderRadius: '5px', }} />}
                 bordered={false}
                 bodyStyle={{
                   margin: '10px 0px',
@@ -447,6 +487,8 @@ AdsPage.propTypes = {
   setCurrentClickedLocation: PropTypes.func.isRequired,
   map_loaded: PropTypes.bool.isRequired,
   setCurrentMapLocationToRedux: PropTypes.func.isRequired,
+  saveMapListingsToRedux: PropTypes.func.isRequired,
+  flag_location: PropTypes.object.isRequired,
 	setCurrentListingsStack: PropTypes.func.isRequired,
 }
 
@@ -467,6 +509,7 @@ const mapReduxToProps = (redux) => {
     auth: redux.auth,
     all_listings: redux.listings.all_listings,
     map_loaded: redux.map.map_loaded,
+    flag_location: redux.map.flag_location,
 	}
 }
 
@@ -477,6 +520,7 @@ export default withRouter(
     setCurrentFlagPin,
     setCurrentClickedLocation,
     setCurrentMapLocationToRedux,
+    saveMapListingsToRedux,
     setCurrentListingsStack,
 	})(RadiumHOC)
 )
