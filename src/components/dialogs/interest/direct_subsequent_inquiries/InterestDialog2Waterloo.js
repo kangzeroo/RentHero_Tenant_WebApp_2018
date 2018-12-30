@@ -103,6 +103,24 @@ class InterestDialog2Waterloo extends Component {
                                 inputType={'textarea'}
                              />)},
       {
+        id: 'redirect',
+        component: (<ActionSegment
+                     title='SEE ORIGINAL'
+                     schema={{
+                       id: 'redirect',
+                       endpoint: null,
+                       choices: [
+                         { id: 'see_matches', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'SEE ORIGINAL', value: 'abort', endpoint: null },
+                       ]
+                     }}
+                     texts={[
+                       ...this.addAnyPreMessages('redirect'),
+                       { id: '1', scrollDown: true, text: `Oh no, this seller did not provide a phone number, but you can still contact them directly via the original ad.` }
+                     ]}
+                     triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                     onDone={(original_id, endpoint, data) => this.seeOriginal(original_id, endpoint, data)}
+                   />) },
+      {
         id: 'finish',
         component: (<ActionSegment
                      title='DONE'
@@ -149,7 +167,11 @@ class InterestDialog2Waterloo extends Component {
   }
 
   messageToSeller(original_id, endpoint, data) {
-    this.done(original_id, endpoint, data)
+    if (this.props.current_listing.PHONE && this.props.current_listing.PHONE !== 'none') {
+      this.done(original_id, endpoint, data)
+    } else {
+      this.done(original_id, 'redirect', data)
+    }
     localStorage.setItem('message_to_seller', data.input_string)
     console.log(data.input_string)
   }
