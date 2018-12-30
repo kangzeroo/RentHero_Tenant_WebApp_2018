@@ -34,7 +34,17 @@ class Passwordless extends Component {
 		console.log(id_token_start)
     // const access_token = hash.slice(access_token_start + 'access_token='.length, id_token_start)
     console.log(id_token)
-    registerPasswordlessAuth0WithCognito(id_token)
+
+		let unauth_exists = false
+		const prev_user_obj = localStorage.getItem('userObj')
+		if (prev_user_obj && prev_user_obj.length > 0) {
+			const prev_userObj = JSON.parse(prev_user_obj)
+			if (prev_userObj.type === 'unauth') {
+				console.log('PREVIOUS USER OBJECT UNAUTH EXISTS')
+				unauth_exists = true
+			}
+		}
+    registerPasswordlessAuth0WithCognito(id_token, unauth_exists)
 			.then(({ IdentityId }) => {
 				console.log(IdentityId)
 				const phoneStr = localStorage.getItem('phone')

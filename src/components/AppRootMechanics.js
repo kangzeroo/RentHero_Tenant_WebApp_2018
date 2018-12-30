@@ -132,9 +132,9 @@ export default (ComposedComponent) => {
 			const p = new Promise((res, rej) => {
 				// grab the url that was given, will be used in this,saveStaffProfileToRedux()
 				let location = this.props.location.pathname + this.props.location.search + this.props.location.hash
-				if (location === '/login') {
-					location = '/'
-				}
+				// if (location === '/login') {
+				// 	location = '/'
+				// }
 				console.log(this.props.location)
 				// if (this.props.location.pathname === '/passwordless') {
 				// 	console.log('PASSWORDLESS')
@@ -256,6 +256,7 @@ export default (ComposedComponent) => {
 					// path = '/sage-5'
 					// actions = [ { type, payload }, { type, payload } ]
 					this.props.dispatchActionsToRedux(actions)
+					console.log(path)
 					this.props.history.push(path)
 				})
 			}

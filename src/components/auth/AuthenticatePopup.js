@@ -225,8 +225,8 @@ class AuthenticatePopup extends Component {
     if (!this.state.verify_screen) {
       return (
         <div style={comStyles().inputContainer}>
-          <h2>Save to list</h2>
-          <p>Save this listing using your phone number or email</p>
+          <h2>{this.props.title}</h2>
+          <p>{this.props.desc}</p>
           <Divider />
           <p style={{ fontWeight: 'bold', color: 'black' }}>Phone Number</p>
           <Input
@@ -250,7 +250,7 @@ class AuthenticatePopup extends Component {
           />
           <br /><br />
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-            <div style={{ color: '#2faded', fontSize: '1.2rem'}} onClick={() => this.setState({ email: '', phone: '', error_message: '', })}>Clear</div>
+            <div style={{ color: '#2faded' }} onClick={() => this.setState({ email: '', phone: '', error_message: '', })}>Clear</div>
             <Button type='primary' size='large' onClick={() => this.sendVerificationCode()}
                     disabled={this.state.phone.length === 0 && this.state.email.length === 0}
                     loading={this.state.verifying} icon='lock'
@@ -307,7 +307,7 @@ class AuthenticatePopup extends Component {
 
 	render() {
 		return (
-			<div id='AuthenticatePopup' style={comStyles().container}>
+			<div id='AuthenticatePopup' style={comStyles(this.props.height).container}>
         <div style={{ height: '60px' }} />
         {
           this.renderInputs()
@@ -322,12 +322,18 @@ AuthenticatePopup.propTypes = {
 	history: PropTypes.object.isRequired,
   onClose: PropTypes.func,       // passed in
   current_listing: PropTypes.object,        // passed in
+  title: PropTypes.string,              // passed in
+  desc: PropTypes.string,               // passed in
+  height: PropTypes.string,             // passed in
 }
 
 // for all optional props, define a default value
 AuthenticatePopup.defaultProps = {
   current_listing: {},
   onClose: () => {},
+  title: 'Log in',
+  desc: 'Authenticate using your phone number or email',
+  height: '100%',
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -350,14 +356,14 @@ export default withRouter(
 // ===============================
 
 // the JS function that returns Radium JS styling
-const comStyles = () => {
+const comStyles = (height) => {
 	return {
 		container: {
       display: 'flex',
       flexDirection: 'column',
       padding: '20px',
       alignItems: 'flex-start',
-      height: '96vh',
+      height: height || '100%',
 		},
     inputContainer: {
       display: 'flex',

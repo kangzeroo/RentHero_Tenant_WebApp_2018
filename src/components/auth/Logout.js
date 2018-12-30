@@ -14,7 +14,7 @@ class Logout extends Component {
 
 	componentWillMount() {
 
-
+		localStorage.clear()
 		this.props.unauthenticateTenant()
 		this.props.removeTenantProfile()
 		signOutTenant()

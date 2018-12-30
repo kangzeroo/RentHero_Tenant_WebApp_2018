@@ -1,4 +1,4 @@
-// Compt for copying as a TenantDuality
+// Compt for copying as a LoginPage
 // This compt is used for...
 
 import React, { Component } from 'react'
@@ -9,14 +9,14 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
 
-} from 'antd-mobile'
-import TenantInfoDialog from '../dialogs/onboarding/TenantInfoDialog'
+} from 'antd'
 import HeatMap from '../hunting/HeatMapHunting'
+import AuthenticatePopup from '../auth/AuthenticatePopup'
 import DesktopHeader from '../format/desktop/DesktopHeader'
 import { isMobile } from '../../api/general/general_api'
 
 
-class TenantDuality extends Component {
+class LoginPage extends Component {
 
 	constructor() {
 		super()
@@ -26,7 +26,7 @@ class TenantDuality extends Component {
 	}
 
 	componentWillMount() {
-		if (this.props.authenticated) {
+		if (this.props.authenticated && this.props.tenant_profile && this.props.tenant_profile.authenticated) {
 			this.props.history.push('/matches')
 		}
 		this.setState({
@@ -46,20 +46,20 @@ class TenantDuality extends Component {
 	render() {
 		if (this.state.mobile) {
 			return (
-				<div id='TenantDuality' style={comStyles().container}>
+				<div id='LoginPage' style={comStyles().container}>
 					<DesktopHeader />
 	        <div style={{ width: '100vw', height: '93vh', }}>
-					    <TenantInfoDialog width='100vw' height='93vh' />
+					    <AuthenticatePopup />
 	        </div>
 				</div>
 			)
 		} else {
 			return (
-				<div id='TenantDuality' style={comStyles().container}>
+				<div id='LoginPage' style={comStyles().container}>
 					<DesktopHeader />
 	        <div style={comStyles().rowContainer}>
 						<div style={{ width: '40vw', height: '93vh' }}>
-								<TenantInfoDialog width='40vw' height='93vh' />
+								<AuthenticatePopup />
 						</div>
 						<div style={{ width: '60vw', height: '93vh' }}>
 							<HeatMap
@@ -77,7 +77,7 @@ class TenantDuality extends Component {
 }
 
 // defines the types of variables in this.props
-TenantDuality.propTypes = {
+LoginPage.propTypes = {
 	history: PropTypes.object.isRequired,
   all_listings: PropTypes.array.isRequired,
 	current_listing: PropTypes.object,
@@ -85,13 +85,13 @@ TenantDuality.propTypes = {
 }
 
 // for all optional props, define a default value
-TenantDuality.defaultProps = {
+LoginPage.defaultProps = {
 	authenticated: false,
 	current_listing: null,
 }
 
 // Wrap the prop in Radium to allow JS styling
-const RadiumHOC = Radium(TenantDuality)
+const RadiumHOC = Radium(LoginPage)
 
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
