@@ -8,12 +8,20 @@ import PropTypes from 'prop-types'
 import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
-
-} from 'antd-mobile'
+	Divider,
+} from 'antd'
 import DesktopDropdown from './DesktopDropdown'
 import { triggerDrawerNav } from '../../../actions/app/app_actions'
 
 class DesktopHeader extends Component {
+
+	renderTenantUnauthenticated() {
+		return (
+			<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+				<div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'white', cursor: 'pointer' }} onClick={() => this.props.history.push('/login')}>Login</div>
+			</div>
+		)
+	}
 
 	render() {
 		return (
@@ -21,7 +29,14 @@ class DesktopHeader extends Component {
 				<div style={comStyles().font_logo} onClick={() => this.props.history.push('/')}>RentHero</div>
 
 				{/*<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>*/}
-				<DesktopDropdown />
+				{
+					this.props.authentication_loaded && this.props.tenant_profile && this.props.tenant_profile.authenticated
+					?
+					<DesktopDropdown />
+					:
+					this.renderTenantUnauthenticated()
+				}
+
 			</div>
 		)
 	}
@@ -31,6 +46,9 @@ class DesktopHeader extends Component {
 DesktopHeader.propTypes = {
 	history: PropTypes.object.isRequired,
   triggerDrawerNav: PropTypes.func.isRequired,
+	authenticated: PropTypes.bool.isRequired,
+	authentication_loaded: PropTypes.bool.isRequired,
+	tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -44,7 +62,9 @@ const RadiumHOC = Radium(DesktopHeader)
 // Get access to state from the Redux store
 const mapReduxToProps = (redux) => {
 	return {
-
+		authenticated: redux.auth.authenticated,
+		authentication_loaded: redux.auth.authentication_loaded,
+		tenant_profile: redux.auth.tenant_profile,
 	}
 }
 

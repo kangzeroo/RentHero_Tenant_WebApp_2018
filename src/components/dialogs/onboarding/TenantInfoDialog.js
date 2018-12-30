@@ -655,9 +655,9 @@ class OnboardingDialog extends Component {
 
 	render() {
 		return (
-			<div id='OnboardingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.width).container}>
-        <div id='scroll' style={scrollStyles(this.state.scrollStyles, this.props.width).scroll}>
-          <div id='scrollable' style={scrollStyles(this.state.scrollStyles, this.props.width).scrollable}>
+			<div id='OnboardingDialog' onClick={() => this.props.toggleInstantCharsSegmentID(this.shown_segments[this.shown_segments.length - 1].id)} style={comStyles(this.props.height, this.props.width).container}>
+        <div id='scroll' style={scrollStyles(this.state.scrollStyles, this.props.height, this.props.width).scroll}>
+          <div id='scrollable' style={scrollStyles(this.state.scrollStyles, this.props.height, this.props.width).scrollable}>
             <div id='containment' style={{ maxWidth: '800px', width: '100%', padding: '0px 20px 0px 20px' }}>
               {
                 this.shown_segments.map((seg) => {
@@ -696,6 +696,7 @@ OnboardingDialog.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   saveListingsToRedux: PropTypes.func.isRequired,
   width: PropTypes.string,                  // passed in
+	height: PropTypes.string,									// passed in
   tenant_profile: PropTypes.object.isRequired,
   saveTenantProfileToRedux: PropTypes.func.isRequired,
 	setTenantID: PropTypes.func.isRequired,
@@ -704,7 +705,7 @@ OnboardingDialog.propTypes = {
 
 // for all optional props, define a default value
 OnboardingDialog.defaultProps = {
-
+	height: '100vh'
 }
 
 // Wrap the prop in Radium to allow JS styling
@@ -734,12 +735,12 @@ export default withRouter(
 // ===============================
 
 // the JS function that returns Radium JS styling
-const comStyles = (width) => {
+const comStyles = (height, width) => {
 	return {
 		container: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: height || '100%',
       width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',
@@ -750,12 +751,12 @@ const comStyles = (width) => {
 	}
 }
 
-const scrollStyles = ({ scroll_styles, scrollable_styles }, width) => {
+const scrollStyles = ({ scroll_styles, scrollable_styles }, height, width) => {
   return {
     scroll: {
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh',
+      minHeight: height || '100%',
       position: 'fixed',
 			bottom: '0px',
       width: width || '100%',
@@ -768,7 +769,7 @@ const scrollStyles = ({ scroll_styles, scrollable_styles }, width) => {
 		scrollable: {
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
+      height: height || '100%',
       width: width || '100%',
       justifyContent: 'flex-start',
       alignItems: 'center',

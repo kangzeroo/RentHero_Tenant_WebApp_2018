@@ -481,6 +481,8 @@ class AdPage extends Component {
           }
         >
           <AuthenticatePopup
+            title={'Save to list'}
+            desc={'Save this listing using your phone number or email'}
             onClose={() => this.toggleModal(false)}
             current_listing={context}
           />

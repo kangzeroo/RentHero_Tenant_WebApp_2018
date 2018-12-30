@@ -106,15 +106,16 @@ export function registerGoogleLoginWithCognito(accessToken) {
   return p
 }
 
-export function registerPasswordlessAuth0WithCognito(id_token){
+export function registerPasswordlessAuth0WithCognito(id_token, objExist){
 	const p = new Promise((res, rej) => {
+		console.log(AWS.config.credentials)
 		// console.log('registerFacebookLoginWithCognito')
 		// console.log(response)
 		// Check if the user logged in successfully.
 		  if (id_token) {
 
 		    // console.log('You are now logged in.');
-		    const cognitoidentity = new AWS.CognitoIdentity();
+		    // const cognitoidentity = new AWS.CognitoIdentity();
 
 				const loginItem = {
 					 'renthero.auth0.com': id_token
@@ -124,36 +125,67 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 					 accessToken: id_token
 				}
 
-		    // Add the Facebook access token to the Cognito credentials login map.
-		    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-		      IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
-		      Logins: loginItem,
-		    })
+				if (objExist) {
+					// there is a userObj in the localStorage. UNAUTH TO AUTH
+					console.log('MATCH EXISTING IDENTITY')
+					console.log(AWS.config.credentials)
+					AWS.config.credentials.params.Logins = loginItem
 
-        AWS.config.credentials.refresh(() => {
-          console.log(AWS.config.credentials)
-          localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
-          localStorage.setItem('header_token', JSON.stringify(id_token))
-          // AWS Cognito Sync to sync Facebook
-          AWS.config.credentials.get(function(err) {
-            console.log(err)
-            const client = new AWS.CognitoSyncManager();
+					// Expire credentials to refresh them on the next request
+					AWS.config.credentials.expired = true;
 
-              console.log(AWS.config.credentials)
-              if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
-								console.log('LOGGED IN')
-                localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
-                res({
-                  IdentityId: AWS.config.credentials.data.IdentityId
-                })
-              } else {
-                res({
-                  IdentityId: 'UNSIGNED'
-                })
-              }
+					AWS.config.credentials.refresh(() => {
 
-          })
-        })
+						console.log(AWS.config.credentials)
+						localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
+						localStorage.setItem('header_token', JSON.stringify(id_token))
+
+						if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
+							console.log('LOGGED IN')
+							localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
+							res({
+								IdentityId: AWS.config.credentials.data.IdentityId
+							})
+						} else {
+							res({
+								IdentityId: 'UNSIGNED'
+							})
+						}
+
+					})
+
+				} else {
+					console.log('CREATE NEW IDENTITY')
+					AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+						IdentityPoolId: generate_TENANT_IDENTITY_POOL_ID(),
+						Logins: loginItem,
+					})
+
+					AWS.config.credentials.refresh(() => {
+						console.log(AWS.config.credentials)
+						localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
+						localStorage.setItem('header_token', JSON.stringify(id_token))
+						// AWS Cognito Sync to sync Facebook
+						AWS.config.credentials.get(function(err) {
+							console.log(err)
+							const client = new AWS.CognitoSyncManager();
+
+								console.log(AWS.config.credentials)
+								if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
+									console.log('LOGGED IN')
+									localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
+									res({
+										IdentityId: AWS.config.credentials.data.IdentityId
+									})
+								} else {
+									res({
+										IdentityId: 'UNSIGNED'
+									})
+								}
+
+						})
+					})
+				}
 
 
 		  } else {
@@ -163,6 +195,7 @@ export function registerPasswordlessAuth0WithCognito(id_token){
 	})
 	return p
 }
+
 
 export const unauthRoleTenant = () => {
 	const p = new Promise((res, rej) => {
