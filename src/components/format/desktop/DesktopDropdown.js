@@ -13,6 +13,7 @@ import {
   Button,
   Icon,
   Divider,
+  Avatar,
 } from 'antd'
 import { toggleDropdown } from '../../../actions/app/app_actions'
 
@@ -30,12 +31,11 @@ class DesktopDropdown extends Component {
     return (
       <Menu size='large' mode="vertical" style={{ width: 256 }}>
         <br />
-        <Divider>Rentals</Divider>
-        <Menu.Item style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
-          <Button type='primary' size='large' icon='search' onClick={() => this.props.history.push('/matches')} style={{ borderRadius: '25px', width: '80%' }}>
-            Browse
-          </Button>
-        </Menu.Item>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <Avatar size={64} icon='user' />
+          <br />
+          <div style={{ fontWeight: 'bold', }}>{`${this.props.tenant_profile.first_name || ''} ${this.props.tenant_profile.last_name || ''}`}</div>
+        </div>
         <Divider>Account</Divider>
         <Menu.Item key={1} onClick={() => this.props.history.push('/app/profile')} style={{ padding: '10px' }}>
             <span>
@@ -43,7 +43,7 @@ class DesktopDropdown extends Component {
               <span>Profile</span>
             </span>
         </Menu.Item>
-        <Menu.Item key={3} onClick={() => this.props.history.push('/app/favourites')} style={{ padding: '10px' }}>
+        <Menu.Item key={3} onClick={() => this.props.history.push('/app/favorites')} style={{ padding: '10px' }}>
             <span>
               <Icon style={{ marginRight: '10px' }} type="heart" theme="twoTone" twoToneColor="#eb2f96" />
               <span>Favorites</span>
@@ -54,6 +54,12 @@ class DesktopDropdown extends Component {
               <Icon style={{ marginRight: '10px' }} type="file" />
               <span>Checklist</span>
             </span>
+        </Menu.Item>
+        <Divider>Rentals</Divider>
+        <Menu.Item style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+          <Button type='primary' size='large' icon='search' onClick={() => this.props.history.push('/matches')} style={{ borderRadius: '25px', width: '80%' }}>
+            Browse
+          </Button>
         </Menu.Item>
         <Divider />
         <Menu.Item>
@@ -82,6 +88,7 @@ DesktopDropdown.propTypes = {
 	history: PropTypes.object.isRequired,
   toggleDropdown: PropTypes.func.isRequired,
   dropdown_open: PropTypes.bool.isRequired,
+  tenant_profile: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -96,6 +103,7 @@ const RadiumHOC = Radium(DesktopDropdown)
 const mapReduxToProps = (redux) => {
 	return {
     dropdown_open: redux.app.dropdown_open,
+    tenant_profile: redux.auth.tenant_profile,
 	}
 }
 

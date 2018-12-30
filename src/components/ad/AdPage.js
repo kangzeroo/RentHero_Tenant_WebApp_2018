@@ -73,6 +73,7 @@ class AdPage extends Component {
 
       listing_is_favorited: false,
 
+      loading_fav: false,
     }
     this.lastScrollTop = 0
   }
@@ -177,6 +178,9 @@ class AdPage extends Component {
     if (this.props.tenant_profile && this.props.tenant_profile.tenant_id && this.props.authenticated && this.props.tenant_profile.authenticated) {
       if (this.state.listing_is_favorited) {
         console.log('REMOVE FROM FAVORITES')
+        this.setState({
+          loading_fav: true,
+        })
         removeFavoriteForTenant({
           tenant_id: this.props.tenant_profile.tenant_id,
           property_id: this.props.current_listing.REFERENCE_ID,
@@ -184,12 +188,21 @@ class AdPage extends Component {
           .then((data) => {
             this.props.saveTenantFavoritesToRedux(data)
             console.log(data)
+            this.setState({
+              loading_fav: false,
+            })
           })
           .catch((err) => {
             console.log(err)
+            this.setState({
+              loading_fav: false,
+            })
           })
       } else {
         console.log('ADD TO FAVORITES')
+        this.setState({
+          loading_fav: true,
+        })
         addToFavoritesToSQL({
           tenant_id: this.props.tenant_profile.tenant_id,
           property_id: this.props.current_listing.REFERENCE_ID,
@@ -200,9 +213,15 @@ class AdPage extends Component {
             message.success(data.message)
             this.props.saveTenantFavoritesToRedux(data.favorites)
             console.log(data)
+            this.setState({
+              loading_fav: false,
+            })
           })
           .catch((err) => {
             console.log(err)
+            this.setState({
+              loading_fav: false,
+            })
           })
       }
     } else {
@@ -513,6 +532,7 @@ class AdPage extends Component {
               }
             }}
             onClick={() => this.favoriteListing()}
+            disabled={this.state.loading_fav}
           />
           :
           <Icon
@@ -532,7 +552,8 @@ class AdPage extends Component {
                 color: 'red',
               }
             }}
-            onClick={() => this.favoriteListing()}
+            onClick={this.state.loading_fav ? () => {} : () => this.favoriteListing()}
+            disabled={this.state.loading_fav}
           />
         }
         <Button onClick={(e) => this.clickedInquire(e)} type='primary' style={actionStyles().actionButton} size='large'>
@@ -609,12 +630,14 @@ class AdPage extends Component {
             baths={this.props.current_listing.BATHS}
             seller={this.props.current_listing.SELLER}
             commute_time={this.state.commute_state.commute_time}
+            commute_distance={this.state.commute_state.commute_distance}
             arrival_time={'10am'}
             scrollDownToImages={() => this.scrollDownToImages()}
             onShowAll={() => this.toggleModal(true, 'images', this.props.current_listing)}
             setListing={(listing, url) => this.backToAllAds(listing, url)}
             listing_is_favorited={this.state.listing_is_favorited}
             favoriteListing={() => this.favoriteListing()}
+            loading={this.state.loading_fav}
           />
           {/*
           <div style={{ margin: '20px' }}>

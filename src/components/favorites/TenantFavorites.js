@@ -73,7 +73,7 @@ class TenantFavorites extends Component {
                   padding: 0,
                 }}
                 style={{ padding: '10px', cursor: 'pointer' }}
-                onClick={() => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`)}
+                onClick={() => window.open(`${window.location.origin}/matches/${item.REFERENCE_ID}`)}
                >
                   <Card.Meta
                     title={item.TITLE}
@@ -104,6 +104,7 @@ class TenantFavorites extends Component {
           <Badge count={this.props.tenant_favorites && this.props.tenant_favorites.length > 0 ? this.props.tenant_favorites.length : 0} style={{ backgroundColor: '#52c41a' }} offset={[12, 0]}>
             <h2>My List</h2>
           </Badge>
+          <Icon type='share' style={{ fontSize: '1.2rem' }} />
         </div>
         <Divider />
         {

@@ -29,6 +29,8 @@ class AdsHome extends Component {
       current_listing: {},
 
       loading: true,
+
+			ref_id: '',
 		}
 	}
 
@@ -45,27 +47,30 @@ class AdsHome extends Component {
       if (ref_id) {
         this.setState({
           show_listing: true,
+					ref_id,
         })
       } else {
         this.setState({
           show_listing: false,
+					ref_id,
         })
       }
 
 			console.log(ref_id)
-
-      getCurrentListingByReference({ ref_id })
-        .then((data) => {
-					console.log('CURRENT LISTING: ', data)
-          this.props.setCurrentListing(data)
-          this.setState({
-            loading: false,
-            current_listing: data,
-          })
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+			getCurrentListingByReference({ ref_id })
+				.then((data) => {
+					if (data) {
+						console.log('CURRENT LISTING: ', data)
+						this.props.setCurrentListing(data)
+						this.setState({
+							loading: false,
+							current_listing: data,
+						})
+					}
+				})
+				.catch((err) => {
+					console.log(err)
+				})
     }
 	}
 
@@ -73,6 +78,23 @@ class AdsHome extends Component {
 		if (this.props.current_listing !== nextProps.current_listing) {
 			this.setState({
 				current_listing: nextProps.current_listing,
+			})
+		}
+		if (this.props.loading_complete !== nextProps.loading_complete) {
+			this.refreshCurrentListing(this.state.ref_id)
+		}
+	}
+
+	refreshCurrentListing(ref_id) {
+		console.log('getCurrentListingByReference FAILED, filtering through all listings...')
+		const foundListing = this.props.all_listings.filter(li => li.REFERENCE_ID === ref_id)
+		if (foundListing && foundListing.length > 0) {
+			const cListing = foundListing[0]
+			console.log('CURRENT LISTING: ', cListing)
+			this.props.setCurrentListing(cListing)
+			this.setState({
+				loading: false,
+				current_listing: cListing,
 			})
 		}
 	}
@@ -185,6 +207,7 @@ AdsHome.propTypes = {
 	current_listing: PropTypes.object,
   setCurrentListing: PropTypes.func.isRequired,
   loading_complete: PropTypes.bool.isRequired,
+	prefs: PropTypes.object.isRequired,
 }
 
 // for all optional props, define a default value
@@ -201,6 +224,7 @@ const mapReduxToProps = (redux) => {
     all_listings: redux.listings.all_listings,
     loading_complete: redux.app.loading_complete,
 		current_listing: redux.listings.current_listing,
+		prefs: redux.prefs,
 	}
 }
 

@@ -146,7 +146,8 @@ class AdCoverSection extends Component {
                   color: 'white',
                 }
               }}
-              onClick={() => this.props.favoriteListing()}
+              onClick={this.props.loading ? () => {} : () => this.props.favoriteListing()}
+              disabled={this.props.loading}
             />
             :
             <Icon
@@ -166,7 +167,8 @@ class AdCoverSection extends Component {
                   color: 'red',
                 }
               }}
-              onClick={() => this.props.favoriteListing()}
+              onClick={this.props.loading ? () => {} : () => this.props.favoriteListing()}
+              disabled={this.props.loading}
             />
           }
 
@@ -232,6 +234,7 @@ class AdCoverSection extends Component {
         <div style={descriptionStyles().right}>
           <div style={descriptionStyles().price}>{`$${this.props.current_listing.PRICE}`}</div>
           <div style={descriptionStyles().commute}>{`${(this.props.commute_time/60).toFixed(0)} MINS`}</div>
+          <div>{`${this.props.commute_distance}`}</div>
           {/*<div onClick={() => window.open(this.props.current_listing.URL, '_blank')} style={descriptionStyles().original}>VIEW ORIGINAL</div>*/}
         </div>
       </div>
@@ -256,12 +259,14 @@ AdCoverSection.propTypes = {
   baths: PropTypes.number.isRequired,     // passed in
   seller: PropTypes.string.isRequired,     // passed in
   commute_time: PropTypes.number.isRequired,     // passed in
+  commute_distance: PropTypes.string.isRequired, // passed in
   current_listing: PropTypes.object.isRequired,     // passed in
   scrollDownToImages: PropTypes.func.isRequired,    // passed in
   onShowAll: PropTypes.func.isRequired,             // passed in
   setListing: PropTypes.func.isRequired,            // passed in
   listing_is_favorited: PropTypes.bool.isRequired,  // passed in
   favoriteListing: PropTypes.func.isRequired,       // passed in
+  loading: PropTypes.bool.isRequired,               // passed in
 }
 
 // for all optional props, define a default value

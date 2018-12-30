@@ -29,7 +29,7 @@ import FavoritesSection from './sections/FavoritesSection'
 import { setCurrentListing } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
 import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux, saveMapListingsToRedux } from '../../actions/map/map_actions'
-import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, } from '../../assets/map_pins'
+import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, HEART_PIN, } from '../../assets/map_pins'
 import FilterPopup from '../filter/FilterPopup'
 import AdPreview from './preview/AdPreview'
 
@@ -247,7 +247,7 @@ class AdsPage extends Component {
           marker = new google.maps.Marker({
                   position: new google.maps.LatLng(n.GPS.lat, n.GPS.lng),
                   pin_type: 'listing',
-                  icon: RED_PIN,
+                  icon: this.props.favorites && this.props.favorites.length > 0 && this.props.favorites.filter(fa => fa.property_id === n.REFERENCE_ID).length > 0 ? HEART_PIN : RED_PIN,
                   zIndex: 10,
               })
           bounds.extend(marker.position)
@@ -353,6 +353,20 @@ class AdsPage extends Component {
   }
 
   renderProperties(listings) {
+    const previewListing = (item) => {
+      this.pins.forEach(pin => pin.setAnimation(null))
+      this.props.setCurrentListing(item)
+      this.props.setListing(item)
+
+      this.pins.forEach(pin => {
+        if (pin.pin_id === item.REFERENCE_ID) {
+          pin.setAnimation(google.maps.Animation.BOUNCE)
+          this.props.setCurrentMapLocationToRedux(pin)
+
+        }
+      })
+
+    }
     return (
       <div id='Listings'>
         <br />
@@ -376,7 +390,7 @@ class AdsPage extends Component {
                   padding: 0,
                 }}
                 style={{ padding: '10px', cursor: 'pointer' }}
-                onClick={() => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`)}
+                onClick={isMobile() ? () => this.props.setListing(item, `/matches/${item.REFERENCE_ID}`) : () => previewListing(item)}
                >
                   <Card.Meta
                     title={item.TITLE}
@@ -400,11 +414,25 @@ class AdsPage extends Component {
   }
 
   renderFavoritesSection() {
+    const previewListing = (item) => {
+      this.pins.forEach(pin => pin.setAnimation(null))
+      this.props.setCurrentListing(item)
+      this.props.setListing(item)
+
+      this.pins.forEach(pin => {
+        if (pin.pin_id === item.REFERENCE_ID) {
+          pin.setAnimation(google.maps.Animation.BOUNCE)
+          this.props.setCurrentMapLocationToRedux(pin)
+
+        }
+      })
+
+    }
     return (
       <div id='MyList'>
         <Divider />
         <FavoritesSection
-
+          previewListing={(item) => previewListing(item)}
         />
       </div>
     )
@@ -490,6 +518,7 @@ AdsPage.propTypes = {
   saveMapListingsToRedux: PropTypes.func.isRequired,
   flag_location: PropTypes.object.isRequired,
 	setCurrentListingsStack: PropTypes.func.isRequired,
+  favorites: PropTypes.array.isRequired,
 }
 
 // for all optional props, define a default value
@@ -510,6 +539,7 @@ const mapReduxToProps = (redux) => {
     all_listings: redux.listings.all_listings,
     map_loaded: redux.map.map_loaded,
     flag_location: redux.map.flag_location,
+    favorites: redux.tenant.favorites,
 	}
 }
 
