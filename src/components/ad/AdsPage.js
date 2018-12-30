@@ -284,7 +284,7 @@ class AdsPage extends Component {
           <h2>{`Relevant Listings for you`}</h2>
           <p>{`Here are the most relevant listings we've found for you, based on the information you've provided for us. If you'd like for your search to be even more specific, please `}<a href='/app/profile' target='_blank'>Click Here</a></p>
         </div>
-        <Button type='primary' icon='caret-right' onClick={() => this.toggleModal(true, 'slideshow')} style={{ borderRadius: '25px', width: '50%' }} size='large'>
+        <Button type='primary' icon='caret-right' onClick={() => this.toggleModal(true, 'slideshow')} style={{ borderRadius: '25px', width: '70%' }} size='large'>
           Start Slideshow
         </Button>
       </div>
@@ -378,7 +378,7 @@ class AdsPage extends Component {
         alignItems: 'center',
         justifyContent: 'center',
         position: 'fixed',
-        bottom: '30px',
+        bottom: '5px',
         left: '50%',
         padding: '0px 20px',
         borderRadius: '25px',
@@ -389,11 +389,11 @@ class AdsPage extends Component {
         background: 'linear-gradient(to right, #2F80ED, #56CCF2)', /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
       }}
       onClick={() => this.props.history.push('/map')}
-      size='large'
+      size='small'
       >
         <Ionicon
           icon="md-pin"
-          fontSize="1.5rem"
+          fontSize="1rem"
           color='white'
         />
         <div style={{ marginLeft: '10px', color: 'white' }}>MAP</div>
