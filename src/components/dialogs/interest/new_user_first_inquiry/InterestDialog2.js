@@ -177,7 +177,6 @@ class InterestDialog2 extends Component {
                                 initialData={{
                                   // input_string: this.props.prefs.DOCUMENTS.PREFERRED_NAME
                                 }}
-                                skipEndpoint='ideal_movein'
                                 resendCode={() => this.resendCode()}
                              />)},
         {

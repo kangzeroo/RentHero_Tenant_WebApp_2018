@@ -28,7 +28,7 @@ import { Progress } from 'antd'
 import {
   Icon,
 } from 'antd-mobile'
-import { toggleInstantCharsSegmentID } from '../../../actions/app/app_actions'
+import { toggleInstantCharsSegmentID, saveLoadingCompleteToRedux } from '../../../actions/app/app_actions'
 import { setTenantID } from '../../../actions/tenant/tenant_actions'
 import { unauthRoleTenant } from '../../../api/aws/aws-cognito'
 import auth0 from 'auth0-js'
@@ -272,11 +272,11 @@ class OnboardingDialog extends Component {
        scrollStyles: { scroll_styles: { backgroundImage: `url('https://i.ytimg.com/vi/yzWqIH9NBZE/maxresdefault.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.7)' } },
        component: (<CounterSegment
                                title='Budget Per Person'
-                               schema={{ id: '6', endpoint: '7' }}
+                               schema={{ id: '6', endpoint: 'ideal_movein' }}
                                triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                onDone={(original_id, endpoint, data) => this.budgetDone(original_id, endpoint, data)}
                                texts={[
-                                 ...this.addAnyPreMessages('ideal_movein'),
+                                 ...this.addAnyPreMessages('6'),
                                  { id: '7-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: 'What is your ideal budget per person? 💵' }
                                ]}
                                incrementerOptions={{
@@ -502,6 +502,7 @@ class OnboardingDialog extends Component {
       return getListings(this.props.prefs)
     }).then((data) => {
       this.props.saveListingsToRedux(data)
+			this.props.saveLoadingCompleteToRedux()
     }).catch((err) => {
       console.log(err)
     })
@@ -698,6 +699,7 @@ OnboardingDialog.propTypes = {
   tenant_profile: PropTypes.object.isRequired,
   saveTenantProfileToRedux: PropTypes.func.isRequired,
 	setTenantID: PropTypes.func.isRequired,
+	saveLoadingCompleteToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -725,6 +727,7 @@ export default withRouter(
     saveTenantProfileToRedux,
 		setTenantID,
     saveListingsToRedux,
+		saveLoadingCompleteToRedux,
 	})(RadiumHOC)
 )
 
