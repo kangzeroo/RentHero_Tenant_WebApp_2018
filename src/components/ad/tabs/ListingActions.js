@@ -12,7 +12,9 @@ import {
   Icon,
 } from 'antd'
 import InterestDialog1 from '../../dialogs/interest/existing_user_first_inquiry/InterestDialog1'
-import InterestDialog2 from '../../dialogs/interest/new_user_first_inquiry/InterestDialog2'
+import InterestDialog0 from '../../dialogs/interest/new_user_first_inquiry/InterestDialog0'
+import InterestDialog1Waterloo from '../../dialogs/interest/existing_user_first_inquiry/InterestDialog1Waterloo'
+import InterestDialog2Waterloo from '../../dialogs/interest/direct_subsequent_inquiries/InterestDialog2Waterloo'
 
 class ListingActions extends Component {
 
@@ -25,15 +27,36 @@ class ListingActions extends Component {
 
   renderAppropriateDialog() {
     if (this.props.tenant_id) {
-      return (
-        <InterestDialog1
-          scrollStyles={{
-            scroll_styles: { width: '60vw' }
-          }}
-        />
-      )
+      if (this.props.prefs.LOCATION.DESTINATION_ADDRESS.toLowerCase().indexOf('waterloo') > -1 && this.props.prefs.FINANCIALS.EMPLOYED_AS.toLowerCase().indexOf('student') > -1) {
+        if (this.props.prefs.FINANCIALS.STUDIED_AS.length === 0) {
+          return (
+            <InterestDialog1Waterloo
+              closeModal={() => this.props.closeModal()}
+              scrollStyles={{
+                scroll_styles: { width: '60vw' }
+              }} />
+          )
+        } else {
+          return (
+            <InterestDialog2Waterloo
+              closeModal={() => this.props.closeModal()}
+              scrollStyles={{
+                scroll_styles: { width: '60vw' }
+              }} />
+          )
+        }
+      } else {
+        return (
+          <InterestDialog1
+            closeModal={() => this.props.closeModal()}
+            scrollStyles={{
+              scroll_styles: { width: '60vw' }
+            }} />
+        )
+      }
     } else {
-      return (<InterestDialog2
+      return (<InterestDialog0
+        closeModal={() => this.props.closeModal()}
         scrollStyles={{
           scroll_styles: { width: '60vw' }
         }}
@@ -58,6 +81,8 @@ ListingActions.propTypes = {
   tenant_id: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,             // passed in
   current_listing: PropTypes.object.isRequired,   // passed in
+  prefs: PropTypes.object.isRequired,
+  closeModal: PropTypes.func.isRequired,          // passed in
 }
 
 // for all optional props, define a default value
@@ -72,6 +97,7 @@ const RadiumHOC = Radium(ListingActions)
 const mapReduxToProps = (redux) => {
 	return {
     tenant_id: redux.auth.tenant_profile.tenant_id,
+    prefs: redux.prefs,
 	}
 }
 
