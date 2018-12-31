@@ -113,9 +113,9 @@ export default (ComposedComponent) => {
 						keys.filter(key => key).forEach((key) => {
 							this.props.updatePreferences(prefs[key] || {})
 						})
-						setTimeout(() => {
+						// setTimeout(() => {
 							this.grabListings()
-						}, 250)
+						// }, 250)
 					}).catch((err) => {
 						console.log(err)
 					})
