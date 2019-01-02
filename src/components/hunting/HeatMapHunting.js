@@ -67,6 +67,7 @@ class HeatMapHunting extends Component {
   }
 
   componentDidMount() {
+    this.props.setMapLoadedToRedux(false)
     console.log(this.props.prefs.LOCATION.DESTINATION_GEOPOINT.split(','))
 
     console.log(this.pins, this.props)

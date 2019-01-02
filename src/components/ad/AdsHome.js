@@ -80,9 +80,9 @@ class AdsHome extends Component {
 				current_listing: nextProps.current_listing,
 			})
 		}
-		if (this.props.loading_complete !== nextProps.loading_complete) {
-			this.refreshCurrentListing(this.state.ref_id)
-		}
+		// if (this.props.loading_complete !== nextProps.loading_complete) {
+		// 	this.refreshCurrentListing(this.state.ref_id)
+		// }
 	}
 
 	refreshCurrentListing(ref_id) {

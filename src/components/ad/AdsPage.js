@@ -66,6 +66,12 @@ class AdsPage extends Component {
     // }
 	}
 
+  componentDidMount() {
+    if (this.props.all_listings && this.props.all_listings.length > 0 && this.props.map_loaded && !isMobile()) {
+      this.refreshPins(this.props.all_listings)
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.all_listings !== nextProps.all_listings && this.props.map_loaded && !isMobile()) {
       this.refreshPins(nextProps.all_listings)
