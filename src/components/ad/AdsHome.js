@@ -176,21 +176,14 @@ class AdsHome extends Component {
 
   	        </div>
   	        <div style={{ width: '60vw', height: '93vh' }}>
-							{
-								this.props.all_listings && this.props.all_listings.length > 0
-								?
-								<HeatMap
-									listings={this.props.all_listings}
-									setListing={(listing, url) => this.setListing(listing, url)}
-									current_listing={this.state.current_listing}
-									showFlagPin={true}
-									previewEnterable={!this.state.show_listing}
-									preview={!this.state.show_listing}
-								/>
-								:
-								null
-							}
-
+							<HeatMap
+								listings={this.props.all_listings}
+								setListing={(listing, url) => this.setListing(listing, url)}
+								current_listing={this.state.current_listing}
+								showFlagPin={true}
+								previewEnterable={!this.state.show_listing}
+								preview={!this.state.show_listing}
+							/>
   	        </div>
           </div>
 				</div>
