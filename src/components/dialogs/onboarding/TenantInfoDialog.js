@@ -130,7 +130,7 @@ class OnboardingDialog extends Component {
                                  { id: '0-3', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY, margin: '5px 0px 5px 0px', textAlign: 'left' }, text: `🔍 Find your 1 home from 1000s` },
                                  { id: '0-6', scrollDown: true, textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: `Ready to get started? 🤓` },
                                ]}
-                               action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%', textAlign: 'center', } }}
+                               action={{ enabled: true, label: 'Get Started', actionStyles: { width: '100%', textAlign: 'center', margin: '0px 0px 50px 0px' } }}
                                segmentStyles={{ justifyContent: 'space-between' }}
                              />) },
      {
