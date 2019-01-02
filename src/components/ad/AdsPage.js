@@ -48,7 +48,7 @@ class AdsPage extends Component {
     this.pins = []
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
 			mobile: isMobile()
 		}, () => console.log(this.state))

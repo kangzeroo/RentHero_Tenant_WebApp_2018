@@ -548,9 +548,11 @@ class OnboardingDialog extends Component {
   }
 
   action(original_id, urlDestination, data) {
-    if (urlDestination) {
-      this.props.history.push(urlDestination)
-    }
+		setTimeout(() => {
+	    if (urlDestination) {
+	      this.props.history.push(urlDestination)
+	    }
+		}, 500)
   }
 
   triggerScrollDown(endpoint, duration = 500) {
