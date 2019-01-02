@@ -134,7 +134,23 @@ class AdPreview extends Component {
         <div style={comStyles().pop_container}>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', maxHeight: '100%', width: '250px', maxWidth: '250px', overflow: 'hidden' }}>
             {
-              this.renderCoverImage()
+              this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES.length > 0
+              ?
+              <img src={this.props.current_listing.IMAGES[0].url} style={{ width: '100%', height: 'auto'  }} />
+              :
+              <img
+                id="img_carousel_modal"
+                onClick={() => this.clickedImage()}
+                src={'https://education.microsoft.com/Assets/images/workspace/placeholder-camera-760x370.png'}
+                alt=""
+                style={{ width: '100%', borderRadius: '5px', height: '100%', }}
+                onLoad={() => {
+                  // fire window resize event to change height
+                  window.dispatchEvent(new Event('resize'));
+                  // this.setState({ imgHeight: '50vh' });
+                  // this.renderPriceTag()
+                }}
+              />
             }
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'flex-start', height: '100%', flexGrow: 1, color: 'black', padding: '5px 10px 5px 10px', textAlign: 'left' }}>
