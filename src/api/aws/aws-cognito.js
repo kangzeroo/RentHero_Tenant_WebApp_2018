@@ -134,7 +134,7 @@ export function registerPasswordlessAuth0WithCognito(id_token, objExist){
 					// Expire credentials to refresh them on the next request
 					AWS.config.credentials.expired = true;
 
-					AWS.config.credentials.refresh(() => {
+					// AWS.config.credentials.refresh(() => {
 
 						console.log(AWS.config.credentials)
 						localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
@@ -152,7 +152,7 @@ export function registerPasswordlessAuth0WithCognito(id_token, objExist){
 							})
 						}
 
-					})
+					// })
 
 				} else {
 					console.log('CREATE NEW IDENTITY')
