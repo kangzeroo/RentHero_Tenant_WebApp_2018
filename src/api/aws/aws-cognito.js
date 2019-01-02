@@ -134,24 +134,46 @@ export function registerPasswordlessAuth0WithCognito(id_token, objExist){
 					// Expire credentials to refresh them on the next request
 					AWS.config.credentials.expired = true;
 
-					// AWS.config.credentials.refresh(() => {
-
-						console.log(AWS.config.credentials)
-						localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
-						localStorage.setItem('header_token', JSON.stringify(id_token))
-
-						if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
-							console.log('LOGGED IN')
-							localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
-							res({
+					res({
 								IdentityId: AWS.config.credentials.data.IdentityId
 							})
-						} else {
-							res({
-								IdentityId: 'UNSIGNED'
-							})
-						}
 
+					// AWS.config.credentials.refresh(() => {
+					//
+					// 	console.log(AWS.config.credentials)
+					// 	localStorage.setItem('userObj', JSON.stringify({ type: 'passwordless', ...localLoginItem, }))
+					// 	localStorage.setItem('header_token', JSON.stringify(id_token))
+					//
+					// 	if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
+					// 		console.log('LOGGED IN')
+					// 		localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
+					// 		res({
+					// 			IdentityId: AWS.config.credentials.data.IdentityId
+					// 		})
+					// 	} else {
+					// 		res({
+					// 			IdentityId: 'UNSIGNED'
+					// 		})
+					// 	}
+					//
+					// })
+					// AWS.config.credentials.get(function(err) {
+					// 	console.log(err)
+					// 	const client = new AWS.CognitoSyncManager();
+					//
+					// 		console.log(AWS.config.credentials)
+					// 		if (AWS.config.credentials.data && AWS.config.credentials.data.IdentityId) {
+					// 			console.log('LOGGED IN')
+					// 			localStorage.setItem('tenant_id', AWS.config.credentials.data.IdentityId)
+					// 			res({
+					// 				IdentityId: AWS.config.credentials.data.IdentityId
+					// 			})
+					// 		} else {
+					// 			res({
+					// 				IdentityId: 'UNSIGNED'
+					// 			})
+					// 		}
+					//
 					// })
 
 				} else {
