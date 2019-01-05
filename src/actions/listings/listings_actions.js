@@ -9,8 +9,22 @@ import {
   CHANGE_CARD_SECTION_SHOWN,
   SET_CURRENT_LISTING,
   SET_CURRENT_LISTINGS_STACK,
+  SORT_LISTINGS_BY,
 } from '../action_types'
 
+
+export const sortBy = (method, destination) => {
+  // dispatch lets you send actions to Redux
+  return (dispatch) => {
+    dispatch({
+      type: SORT_LISTINGS_BY,
+      payload: {
+        title: method,
+        destination: destination,
+      },
+    })
+  }
+}
 
 // change the language of the app
 export const saveListingsToRedux = (listings) => {

@@ -17,6 +17,8 @@ import {
   Icon,
   Tooltip,
   Button,
+  Dropdown,
+  Menu,
 } from 'antd'
 import {
   Modal,
@@ -26,7 +28,7 @@ import {
 } from '../../actions/listings/listings_actions'
 import EditSearch from '../edits/EditSearch'
 import FavoritesSection from './sections/FavoritesSection'
-import { setCurrentListing } from '../../actions/listings/listings_actions'
+import { setCurrentListing, sortBy } from '../../actions/listings/listings_actions'
 import { isMobile } from '../../api/general/general_api'
 import { setCurrentFlagPin, setCurrentClickedLocation, setCurrentMapLocationToRedux, saveMapListingsToRedux } from '../../actions/map/map_actions'
 import { BLUE_PIN, RED_PIN, GREY_PIN, FLAG_PIN, HEART_PIN, } from '../../assets/map_pins'
@@ -44,6 +46,7 @@ class AdsPage extends Component {
       toggle_modal: false,
       modal_name: '',
       context: {},
+      sort_by: '',
     }
     this.pins = []
   }
@@ -346,10 +349,38 @@ class AdsPage extends Component {
     //     />
     //   )
     // } else {
+    // const menu = (
+    //   <Menu>
+    //     <Menu.Item onClick={() => this.props.sortBy('Most Recent')}>
+    //       <span>Most Recent</span>
+    //     </Menu.Item>
+    //     <Menu.Item onClick={() => this.props.sortBy('Closest Distance')}>
+    //       <span>Closest Distance</span>
+    //     </Menu.Item>
+    //     // <Menu.Item>
+    //     //   <span>Most Relevant</span>
+    //     // </Menu.Item>
+    //   </Menu>
+    // )
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" onClick={() => this.props.sortBy('Most Recent', this.props.destination)}>Most Recent</a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" onClick={() => this.props.sortBy('Closest Distance', this.props.destination)}>Closest Distance</a>
+        </Menu.Item>
+      </Menu>
+    )
       return (
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <Input size='large' value={this.state.search_string} onChange={(e) => this.setState({ search_string: e.target.value })} placeholder={`Search homes near ${prefs.LOCATION.DESTINATION_ADDRESS.split(',')[0]}`} style={{ maxWidth: '60%', borderRadius: '25px', paddingLeft: '20px', }} />
           &nbsp;
+          <Dropdown overlay={menu}>
+            <a className="ant-dropdown-link" href="#">
+              Sort by {this.props.sorted_by} <Icon type="down" />
+            </a>
+          </Dropdown>
           <Tooltip title='Filter'>
             <Icon type='filter' theme="twoTone" onClick={() => this.setState({ show_filter: true }, () => this.toggleModal(true, 'filter'))} size='large' style={{ fontSize: '1.5rem' }} />
           </Tooltip>
@@ -525,6 +556,8 @@ AdsPage.propTypes = {
   flag_location: PropTypes.object.isRequired,
 	setCurrentListingsStack: PropTypes.func.isRequired,
   favorites: PropTypes.array.isRequired,
+  sorted_by: PropTypes.string.isRequired,
+  sortBy: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -546,6 +579,11 @@ const mapReduxToProps = (redux) => {
     map_loaded: redux.map.map_loaded,
     flag_location: redux.map.flag_location,
     favorites: redux.tenant.favorites,
+    sorted_by: redux.listings.sorted_by,
+    destination: {
+      lat: parseFloat(redux.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[0]),
+      lng: parseFloat(redux.prefs.LOCATION.DESTINATION_GEOPOINT.split(',')[1]),
+    }
 	}
 }
 
@@ -558,6 +596,7 @@ export default withRouter(
     setCurrentMapLocationToRedux,
     saveMapListingsToRedux,
     setCurrentListingsStack,
+    sortBy,
 	})(RadiumHOC)
 )
 

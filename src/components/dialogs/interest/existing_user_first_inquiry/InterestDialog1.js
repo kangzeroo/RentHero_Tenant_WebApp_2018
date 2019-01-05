@@ -90,10 +90,10 @@ class InterestDialog1 extends Component {
                           title='RentHero'
                           schema={{
                             id: 'thanks_for_interest',
-                            endpoint: 'disclaimer',
+                            endpoint: 'redirect',
                             choices: [
-                              { id: 'leave_message', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Message Seller', value: true, endpoint: 'disclaimer' },
-                              { id: 'tour', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Book A Tour', value: true, endpoint: 'disclaimer' },
+                              { id: 'leave_message', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Message Seller', value: true, endpoint: 'redirect' },
+                              { id: 'tour', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'Book A Tour', value: true, endpoint: 'redirect' },
                             ]
                           }}
                           texts={[
@@ -128,7 +128,7 @@ class InterestDialog1 extends Component {
          // scrollStyles: { scroll_styles: { backgroundImage: `url('http://www.gohaus.com/wp-content/uploads/2015/12/living-room-floor-design-ideas.jpg')` }, scrollable_styles: { backgroundColor: 'rgba(0,0,0,0.6)' } },
          component: (<VerifyCodeSegment
                                  title='Verification'
-                                 schema={{ id: 'verify_phone', endpoint: 'disclaimer' }}
+                                 schema={{ id: 'verify_phone', endpoint: 'redirect' }}
                                  triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
                                  onDone={(original_id, endpoint, data) => this.doneVerify(original_id, endpoint, data)}
                                  texts={[
@@ -299,6 +299,24 @@ class InterestDialog1 extends Component {
                             multi
                             other
                          />) },
+  {
+    id: 'redirect',
+    component: (<ActionSegment
+                 title='SEE ORIGINAL'
+                 schema={{
+                   id: 'redirect',
+                   endpoint: null,
+                   choices: [
+                     { id: 'see_matches', textStyles: { fontSize: '0.9rem', fontFamily: FONT_FAMILY }, text: 'SEE ORIGINAL', value: 'abort', endpoint: null },
+                   ]
+                 }}
+                 texts={[
+                   ...this.addAnyPreMessages('finish'),
+                   { id: '1', scrollDown: true, text: `This seller did not provide a phone number, but you can still contact them directly via the original ad.` }
+                 ]}
+                 triggerScrollDown={(e,d) => this.triggerScrollDown(e,d)}
+                 onDone={(original_id, endpoint, data) => this.seeOriginal(original_id, endpoint, data)}
+               />) },
       {
         id: 'finish',
         component: (<ActionSegment
@@ -524,7 +542,7 @@ class InterestDialog1 extends Component {
     })
     if (this.props.tenant_profile.authenticated) {
       // if logged in and yes phone
-      this.done(original_id, 'disclaimer', data)
+      this.done(original_id, 'redirect', data)
     } else {
       // if logged in but no phone
       this.done(original_id, 'phone', data)
