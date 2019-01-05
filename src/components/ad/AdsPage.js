@@ -276,9 +276,9 @@ class AdsPage extends Component {
             // })
             // self.bufferPin = marker
             self.props.setCurrentMapLocationToRedux(marker)
-            let new_bounds = new google.maps.LatLngBounds()
-            new_bounds.extend(marker.position)
-            new_bounds.extend(new google.maps.LatLng(self.props.flag_location.lat, self.props.flag_location.lng))
+            // let new_bounds = new google.maps.LatLngBounds()
+            // new_bounds.extend(marker.position)
+            // new_bounds.extend(new google.maps.LatLng(self.props.flag_location.lat, self.props.flag_location.lng))
 
             map.fitBounds(new_bounds)
           })
