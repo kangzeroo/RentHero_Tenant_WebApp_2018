@@ -83,7 +83,7 @@ class DesktopHeader extends Component {
 			<div id='DesktopHeader' style={comStyles().container}>
 				<div style={comStyles().font_logo} onClick={() => this.props.history.push('/matches')}>RentHero</div>
 
-				<div style={{ display: 'flex', flexDirection: 'row' }}>
+				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
 					<Dropdown overlay={menu}>
 				    <a className="ant-dropdown-link" href="#" style={{ color: 'white' }}>
 				      {this.props.chosen_city} <Icon type="down" />
@@ -95,8 +95,7 @@ class DesktopHeader extends Component {
 					{
 						this.props.authentication_loaded && this.props.tenant_profile && this.props.tenant_profile.authenticated
 						?
-						//<DesktopDropdown />
-						this.renderTenantAuthenticated()
+						<DesktopDropdown />
 						:
 						this.renderTenantUnauthenticated()
 					}
