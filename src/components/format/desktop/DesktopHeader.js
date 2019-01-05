@@ -9,8 +9,19 @@ import Rx from 'rxjs'
 import { withRouter } from 'react-router-dom'
 import {
 	Divider,
+	Menu,
+	Dropdown,
+	Icon,
 } from 'antd'
 import DesktopDropdown from './DesktopDropdown'
+import {
+	getListings,
+} from '../../../api/listings/listings_api'
+import {
+	saveListingsToRedux,
+} from '../../../actions/listings/listings_actions'
+import { saveTenantPreferences } from '../../../api/prefs/prefs_api'
+import { selectCity } from '../../../actions/listings/listings_actions'
 import { triggerDrawerNav } from '../../../actions/app/app_actions'
 
 class DesktopHeader extends Component {
@@ -23,20 +34,73 @@ class DesktopHeader extends Component {
 		)
 	}
 
+	renderTenantAuthenticated() {
+		return (
+			<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+				<div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'white', cursor: 'pointer' }} onClick={() => this.props.history.push('/favourites')}>Favourites</div>
+			</div>
+		)
+	}
+
+	selectedCity({ DESTINATION_ADDRESS, DESTINATION_GEOPOINT, city }) {
+		// this.props.selectCity(city)
+		// saveTenantPreferences({
+    //   TENANT_ID: this.props.tenant_profile.tenant_id,
+    //   KEY: 'LOCATION',
+    //   DESTINATION_ADDRESS,
+    //   DESTINATION_GEOPOINT,
+    // }).then((LOCATION) => {
+    //   console.log(LOCATION)
+    //   this.props.updatePreferences(LOCATION)
+		// 	return getListings(this.props.prefs)
+    // }).then((data) => {
+    //   this.props.saveListingsToRedux(data)
+    // }).catch((err) => {
+    //   console.log(err)
+    // })
+	}
+
 	render() {
+		const menu = (
+			<Menu>
+		    <Menu.Item>
+		      <a target="_blank" rel="noopener noreferrer" onClick={() => this.selectedCity({
+						DESTINATION_ADDRESS: '200 University Ave W, Waterloo, ON N2L 3G1',
+						DESTINATION_GEOPOINT: '43.473811,-80.531618',
+						city: 'Waterloo, Canada'
+					})}>Waterloo, Canada</a>
+		    </Menu.Item>
+		    {/*<Menu.Item>
+		      <a target="_blank" rel="noopener noreferrer" onClick={() => this.selectedCity({
+						DESTINATION_ADDRESS: 'NO',
+						DESTINATION_GEOPOINT: '54.6576,-45.5675',
+						city: 'Toronto, Canada'
+					})}>Toronto, Canada</a>
+		    </Menu.Item>*/}
+		  </Menu>
+		)
 		return (
 			<div id='DesktopHeader' style={comStyles().container}>
 				<div style={comStyles().font_logo} onClick={() => this.props.history.push('/matches')}>RentHero</div>
 
-				{/*<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>*/}
-				{
-					this.props.authentication_loaded && this.props.tenant_profile && this.props.tenant_profile.authenticated
-					?
-					<DesktopDropdown />
-					:
-					this.renderTenantUnauthenticated()
-				}
+				<div style={{ display: 'flex', flexDirection: 'row' }}>
+					<Dropdown overlay={menu}>
+				    <a className="ant-dropdown-link" href="#" style={{ color: 'white' }}>
+				      {this.props.chosen_city} <Icon type="down" />
+				    </a>
+				  </Dropdown>
+					&nbsp; &nbsp;
 
+					{/*<div onClick={() => this.props.triggerDrawerNav(true)}><i className='ion-navicon-round' style={{ fontSize: '1.3rem', color: 'white', cursor: 'pointer' }}></i></div>*/}
+					{
+						this.props.authentication_loaded && this.props.tenant_profile && this.props.tenant_profile.authenticated
+						?
+						//<DesktopDropdown />
+						this.renderTenantAuthenticated()
+						:
+						this.renderTenantUnauthenticated()
+					}
+				</div>
 			</div>
 		)
 	}
@@ -49,6 +113,9 @@ DesktopHeader.propTypes = {
 	authenticated: PropTypes.bool.isRequired,
 	authentication_loaded: PropTypes.bool.isRequired,
 	tenant_profile: PropTypes.object.isRequired,
+	chosen_city: PropTypes.string.isRequired,
+	selectCity: PropTypes.func.isRequired,
+	saveListingsToRedux: PropTypes.func.isRequired,
 }
 
 // for all optional props, define a default value
@@ -65,6 +132,8 @@ const mapReduxToProps = (redux) => {
 		authenticated: redux.auth.authenticated,
 		authentication_loaded: redux.auth.authentication_loaded,
 		tenant_profile: redux.auth.tenant_profile,
+		chosen_city: redux.listings.chosen_city,
+		prefs: redux.prefs,
 	}
 }
 
@@ -72,6 +141,8 @@ const mapReduxToProps = (redux) => {
 export default withRouter(
 	connect(mapReduxToProps, {
 		triggerDrawerNav,
+		selectCity,
+		saveListingsToRedux,
 	})(RadiumHOC)
 )
 

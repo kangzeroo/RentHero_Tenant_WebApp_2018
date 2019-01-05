@@ -6,6 +6,7 @@ import {
   SET_CURRENT_LISTINGS_STACK,
   INCREMENT_LIKES,
   SORT_LISTINGS_BY,
+  SELECT_CITY,
 } from '../../actions/action_types'
 import { calcDistance } from '../../api/listings/listings_api'
 
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
   all_listings: [],
   current_listing: null,
   sorted_by: '',
+  chosen_city: 'Waterloo, Canada',
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -85,6 +87,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         current_listing: state.current_listings_stack[prevListingIndex]
+      }
+    case SELECT_CITY:
+      return {
+        ...state,
+        chosen_city: action.payload
       }
 		default:
 			return {
