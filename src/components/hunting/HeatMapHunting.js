@@ -405,7 +405,7 @@ class HeatMapHunting extends Component {
           null
         }
         {
-          this.props.current_listing && this.props.current_listing.IMAGES && this.props.current_listing.IMAGES[0] && this.props.preview && this.state.preview_visible
+          this.props.current_listing && this.props.current_listing.REFERENCE_ID && this.props.preview && this.state.preview_visible
           ?
           <AdPreview
             current_listing={this.props.current_listing}
