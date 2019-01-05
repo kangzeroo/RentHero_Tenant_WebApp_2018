@@ -135,8 +135,8 @@ export function registerPasswordlessAuth0WithCognito(id_token, objExist){
 					AWS.config.credentials.expired = true;
 
 					res({
-								IdentityId: AWS.config.credentials.data.IdentityId
-							})
+						IdentityId: AWS.config.credentials.data.IdentityId
+					})
 
 					// AWS.config.credentials.refresh(() => {
 					//
