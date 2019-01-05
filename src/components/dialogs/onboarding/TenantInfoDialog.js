@@ -186,7 +186,7 @@ class OnboardingDialog extends Component {
                                 onDone={(original_id, endpoint, data) => this.mapDone(original_id, endpoint, data)}
                                 texts={[
                                   ...this.addAnyPreMessages('2'),
-                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Where do you commute to most often? I'll find rentals close to it.` }
+                                  { id: '0-1', scrollDown: true, textStyles: { fontSize: '1.2rem', fontFamily: FONT_FAMILY }, text: `Where do you commute to in Waterloo, Canada? I'll find rentals close to it.` }
                                 ]}
                                 initialData={{
                                   address_components: [],

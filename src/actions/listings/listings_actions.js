@@ -10,8 +10,18 @@ import {
   SET_CURRENT_LISTING,
   SET_CURRENT_LISTINGS_STACK,
   SORT_LISTINGS_BY,
+  SELECT_CITY,
 } from '../action_types'
 
+
+export const selectCity = (city) => {
+  return (dispatch) => {
+    dispatch({
+      type: SELECT_CITY,
+      payload: city,
+    })
+  }
+}
 
 export const sortBy = (method, destination) => {
   // dispatch lets you send actions to Redux
