@@ -606,8 +606,9 @@ class AdPage extends Component {
     }
     // console.log(window.location.hostname)
     // const win = window.open(`/p/${this.props.current_listing.SHORT_ID || this.props.current_listing.REFERENCE_ID}`, '_blank');
-    // win.focus();
-    this.toggleModal(true, 'dialog', this.props.current_listing)
+    const win = window.open(this.props.current_listing.URL)
+    win.focus();
+    // this.toggleModal(true, 'dialog', this.props.current_listing)
   }
 
 	render() {
@@ -652,6 +653,7 @@ class AdPage extends Component {
           <div style={{ width: '100%', height: '70px' }}></div>
 
           */}
+          <div dangerouslySetInnerHTML={{ __html: this.props.current_listing.DESCRIPTION }} style={{ margin: '0px 10px 0px 10px' }}></div>
 
           <Divider />
           <AdImagesSection
