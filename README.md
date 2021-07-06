@@ -14,3 +14,7 @@ View at https://sandbox.renthero.com or https://renthero.com
 7. Open a new terminal and run ngrok to expose a url to the internet `$ ngrok http 8888 -host-header="localhost:8888"`
 8. On mobile device browser, go to the generated ngrok url (it points to `localhost:8888` on your computer)
 9. Now you can see localhost:8888 via ngrok at `chrome://inspect/#devices`
+
+<img width="616" alt="Screen Shot 2021-07-06 at 17 31 52" src="https://user-images.githubusercontent.com/22982964/124578520-dd01e080-de80-11eb-9cf3-179854c0f778.png">
+
+![30831067_10211072675879624_295533594_n](https://user-images.githubusercontent.com/22982964/124578559-e5f2b200-de80-11eb-8dce-a50b874836db.jpeg)
